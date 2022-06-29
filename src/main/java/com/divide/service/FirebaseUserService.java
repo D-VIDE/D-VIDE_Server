@@ -3,7 +3,6 @@ package com.divide.service;
 import com.divide.dto.request.SignupRequest;
 import com.divide.entity.User;
 import com.divide.repository.UserRepository;
-import com.divide.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +22,7 @@ public class FirebaseUserService implements UserService {
 
     @Override
     public String signup(@RequestBody SignupRequest signupRequest) throws ExecutionException, InterruptedException {
-        User user = new User(signupRequest.getEmail(), signupRequest.getProfileImgUrl(), signupRequest.getName(), signupRequest.getNickname(), signupRequest.getAddress());
+        User user = new User(signupRequest.getEmail(), signupRequest.getPassword(), signupRequest.getProfileImgUrl(), signupRequest.getName(), signupRequest.getNickname());
         return userRepository.signup(user);
     }
 }
