@@ -3,14 +3,14 @@ package com.divide.repository;
 import com.divide.dto.request.SignupRequest;
 import com.divide.entity.User;
 import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @Repository
@@ -37,6 +37,17 @@ public class FirebaseUserRepository implements UserRepository {
         // db 가져오기
         Firestore db = FirestoreClient.getFirestore();
         // collection에 저장
-        return db.collection(COLLECTION_NAME).add(user).get().getId();
+        DocumentReference saveResult = db.collection(COLLECTION_NAME).add(user).get();
+        // id 가져오기
+        String savedId = saveResult.getId();
+
+        // id를 table에 update
+        Map<String, String> map = new HashMap<>();
+        map.put("id", savedId);
+        saveResult.update("id", savedId);
+
+        return savedId;
+    }
+
     }
 }
