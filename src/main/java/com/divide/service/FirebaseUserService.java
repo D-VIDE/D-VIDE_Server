@@ -22,7 +22,8 @@ public class FirebaseUserService implements UserService {
     }
 
     @Override
-    public void signup(@RequestBody SignupRequest signupRequest) throws ExecutionException, InterruptedException {
-        userRepository.signup(signupRequest);
+    public String signup(@RequestBody SignupRequest signupRequest) throws ExecutionException, InterruptedException {
+        User user = new User(signupRequest.getEmail(), signupRequest.getProfileImgUrl(), signupRequest.getName(), signupRequest.getNickname(), signupRequest.getAddress());
+        return userRepository.signup(user);
     }
 }

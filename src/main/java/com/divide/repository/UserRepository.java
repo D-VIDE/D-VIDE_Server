@@ -9,5 +9,5 @@ import java.util.concurrent.ExecutionException;
 public interface UserRepository {
     List<User> getUsers() throws ExecutionException, InterruptedException;
 
-    void signup(SignupRequest signupRequest) throws ExecutionException, InterruptedException;
+    String signup(User user) throws ExecutionException, InterruptedException;
 }

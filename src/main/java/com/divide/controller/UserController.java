@@ -7,10 +7,7 @@ import com.divide.entity.User;
 import com.divide.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -28,8 +25,8 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponse> signup(SignupRequest signupRequest) throws ExecutionException, InterruptedException {
-        userService.signup(signupRequest);
-        return ResponseEntity.ok().body(new SignupResponse("success"));
+    public ResponseEntity<SignupResponse> signup(@RequestBody SignupRequest signupRequest) throws ExecutionException, InterruptedException {
+        String userId = userService.signup(signupRequest);
+        return ResponseEntity.ok().body(new SignupResponse("success", userId));
     }
 }

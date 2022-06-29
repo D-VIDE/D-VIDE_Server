@@ -33,10 +33,10 @@ public class FirebaseUserRepository implements UserRepository {
     }
 
     @Override
-    public void signup(SignupRequest signupRequest) throws ExecutionException, InterruptedException {
+    public String signup(User user) throws ExecutionException, InterruptedException {
         // db 가져오기
-//        Firestore db = FirestoreClient.getFirestore();
-        // collection 가져오기
-//        db.collection(COLLECTION_NAME).add(signupRequest);
+        Firestore db = FirestoreClient.getFirestore();
+        // collection에 저장
+        return db.collection(COLLECTION_NAME).add(user).get().getId();
     }
 }
