@@ -1,5 +1,7 @@
 package com.divide.controller;
 
+import com.divide.dto.response.GetUsersResponse;
+import com.divide.dto.response.UsersResponse;
 import com.divide.entity.User;
 import com.divide.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +20,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/users")
-    public ResponseEntity<Object> getUsers() throws ExecutionException, InterruptedException {
-        List<User> list = userService.getUsers();
-        return ResponseEntity.ok().body(list);
+    public ResponseEntity<UsersResponse> getUsers() throws ExecutionException, InterruptedException {
+        List<User> users = userService.getUsers();
+        return ResponseEntity.ok().body(new UsersResponse("success", users));
+    }
     }
 }
