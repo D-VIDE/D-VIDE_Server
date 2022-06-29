@@ -6,11 +6,10 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class UsersResponse extends CommonResponse {
+public class UsersResponse {
     private List<User> users;
 
-    public UsersResponse(String result, List<User> users) {
-        super(result);
+    public UsersResponse(List<User> users) {
         this.users = users;
     }
 }

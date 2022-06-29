@@ -21,12 +21,12 @@ public class UserController {
     @GetMapping("/users")
     public ResponseEntity<UsersResponse> getUsers() throws ExecutionException, InterruptedException {
         List<User> users = userService.getUsers();
-        return ResponseEntity.ok().body(new UsersResponse("success", users));
+        return ResponseEntity.ok().body(new UsersResponse(users));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signup(@RequestBody SignupRequest signupRequest) throws ExecutionException, InterruptedException {
         String userId = userService.signup(signupRequest);
-        return ResponseEntity.ok().body(new SignupResponse("success", userId));
+        return ResponseEntity.ok().body(new SignupResponse(userId));
     }
 }
