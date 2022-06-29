@@ -1,12 +1,14 @@
 package com.divide.controller;
 
-import com.divide.dto.response.GetUsersResponse;
+import com.divide.dto.request.SignupRequest;
 import com.divide.dto.response.UsersResponse;
+import com.divide.dto.response.SignupResponse;
 import com.divide.entity.User;
 import com.divide.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,5 +26,10 @@ public class UserController {
         List<User> users = userService.getUsers();
         return ResponseEntity.ok().body(new UsersResponse("success", users));
     }
+
+    @PostMapping("/signup")
+    public ResponseEntity<SignupResponse> signup(SignupRequest signupRequest) throws ExecutionException, InterruptedException {
+        userService.signup(signupRequest);
+        return ResponseEntity.ok().body(new SignupResponse("success"));
     }
 }

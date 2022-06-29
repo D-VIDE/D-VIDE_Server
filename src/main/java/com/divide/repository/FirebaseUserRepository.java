@@ -1,5 +1,6 @@
 package com.divide.repository;
 
+import com.divide.dto.request.SignupRequest;
 import com.divide.entity.User;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.Firestore;
@@ -29,5 +30,13 @@ public class FirebaseUserRepository implements UserRepository {
             list.add(document.toObject(User.class));
         }
         return list;
+    }
+
+    @Override
+    public void signup(SignupRequest signupRequest) throws ExecutionException, InterruptedException {
+        // db 가져오기
+//        Firestore db = FirestoreClient.getFirestore();
+        // collection 가져오기
+//        db.collection(COLLECTION_NAME).add(signupRequest);
     }
 }
