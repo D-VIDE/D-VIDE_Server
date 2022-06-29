@@ -49,5 +49,16 @@ public class FirebaseUserRepository implements UserRepository {
         return savedId;
     }
 
+    @Override
+    public Optional<User> findByEmail(String email) throws ExecutionException, InterruptedException {
+        // db 가져오기
+        Firestore db = FirestoreClient.getFirestore();
+        // collection 가져오기
+        List<QueryDocumentSnapshot> foundUsers = db.collection(COLLECTION_NAME).whereEqualTo("email", email).get().get().getDocuments();
+        if (foundUsers.isEmpty()) {
+            return Optional.empty();
+        }
+        User user = foundUsers.get(0).toObject(User.class);
+        return Optional.of(user);
     }
 }
