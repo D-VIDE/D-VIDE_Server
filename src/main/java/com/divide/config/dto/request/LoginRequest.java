@@ -1,4 +1,4 @@
-package com.divide.dto.request;
+package com.divide.config.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

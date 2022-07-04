@@ -1,16 +1,15 @@
 package com.divide.service;
 
-import com.divide.dto.request.LoginRequest;
-import com.divide.dto.request.SignupRequest;
-import com.divide.dto.response.LoginResponse;
+import com.divide.config.BaseException;
+import com.divide.config.dto.request.LoginRequest;
+import com.divide.config.dto.request.SignupRequest;
+import com.divide.config.dto.response.LoginResponse;
 import com.divide.entity.User;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public interface UserService {
-    List<User> getUsers() throws ExecutionException, InterruptedException;
-
-    String signup(SignupRequest signupRequest) throws ExecutionException, InterruptedException;
-    LoginResponse login(LoginRequest loginRequest) throws ExecutionException, InterruptedException;
+    List<User> getUsers();
+    void signup(SignupRequest signupRequest) throws BaseException;
+    LoginResponse login(LoginRequest loginRequest);
 }
