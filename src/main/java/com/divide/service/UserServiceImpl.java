@@ -2,9 +2,7 @@ package com.divide.service;
 
 import com.divide.config.BaseException;
 import com.divide.config.BaseResponseStatus;
-import com.divide.config.dto.request.LoginRequest;
 import com.divide.config.dto.request.SignupRequest;
-import com.divide.config.dto.response.LoginResponse;
 import com.divide.entity.User;
 import com.divide.entity.UserRole;
 import com.divide.repository.UserRepository;
@@ -38,11 +36,5 @@ public class UserServiceImpl implements UserService {
                 signupRequest.getNickname(),
                 UserRole.user
         ));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public LoginResponse login(LoginRequest loginRequest) {
-        return null;
     }
 }
