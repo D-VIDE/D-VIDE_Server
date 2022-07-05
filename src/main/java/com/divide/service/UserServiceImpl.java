@@ -8,6 +8,7 @@ import com.divide.entity.User;
 import com.divide.entity.UserRole;
 import com.divide.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.util.Optional;
 @Transactional
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional(readOnly = true)
@@ -33,7 +35,7 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.signup(new User(
                 signupRequest.getEmail(),
-                signupRequest.getPassword(),
+                passwordEncoder.encode(signupRequest.getPassword()),
                 signupRequest.getProfileImgUrl(),
                 signupRequest.getNickname(),
                 UserRole.user
