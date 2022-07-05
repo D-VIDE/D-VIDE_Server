@@ -48,12 +48,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
 
-//                .exceptionHandling()
-//                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-//                .accessDeniedHandler(jwtAccessDeniedHandler)
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler)
+
 
                 // enable h2-console
-//                .and()
+                .and()
                 .headers()
                 .frameOptions()
                 .sameOrigin()
@@ -67,8 +68,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/**/login").permitAll()
                 .antMatchers("/api/**/signup").permitAll()
-                .antMatchers("/api/**/users").permitAll()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/api/**/user/all").permitAll()
+//                .antMatchers("/**").permitAll()
 
                 .anyRequest().authenticated()
 
