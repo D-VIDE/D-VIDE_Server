@@ -42,6 +42,9 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     public GetUserResponse getUser() {
         User user = userService.getMyUser();
-        return null;
+        return new GetUserResponse(
+                user.getId(),
+                user.getNickname()
+        );
     }
 }
