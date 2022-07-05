@@ -1,5 +1,6 @@
 package com.divide.service;
 
+import com.divide.SecurityUtil;
 import com.divide.config.BaseException;
 import com.divide.config.BaseResponseStatus;
 import com.divide.config.dto.request.SignupRequest;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,5 +38,12 @@ public class UserServiceImpl implements UserService {
                 signupRequest.getNickname(),
                 UserRole.user
         ));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User getMyUser() {
+        User user = SecurityUtil.getCurrentEmail().flatMap(userRepository::findByEmail).orElse(null);
+        return user;
     }
 }
