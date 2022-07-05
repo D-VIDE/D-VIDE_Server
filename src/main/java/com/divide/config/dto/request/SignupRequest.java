@@ -1,15 +1,20 @@
-package com.divide.dto.request;
+package com.divide.config.dto.request;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @Getter
 public class SignupRequest {
+    @NotNull @Email
     private String email;
+    @NotNull
     private String password;
+
     private String profileImgUrl;
-    private String name;
+    @NotNull
     private String nickname;
 }
