@@ -34,14 +34,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json;charset=utf-8");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        if (authException instanceof BadCredentialsException) {
+        boolean isFailedToLogin = authException instanceof BadCredentialsException;
+        boolean isEmptyJwt = StringUtils.hasText(jwt) == false;
+        if (isFailedToLogin) {
             objectMapper.writeValue(response.getWriter(), new BaseResponse(BaseResponseStatus.FAILED_TO_LOGIN));
-        } else {
-            if (StringUtils.hasText(jwt) == false) {
+        } else if (isEmptyJwt) {
                 objectMapper.writeValue(response.getWriter(), new BaseResponse(BaseResponseStatus.EMPTY_JWT));
-            } else {
-                objectMapper.writeValue(response.getWriter(), new BaseResponse(BaseResponseStatus.INVALID_JWT));
-            }
+        } else {
+            objectMapper.writeValue(response.getWriter(), new BaseResponse(BaseResponseStatus.INVALID_JWT));
         }
     }
 
