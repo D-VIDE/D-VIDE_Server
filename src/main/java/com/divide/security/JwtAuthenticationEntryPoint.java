@@ -4,6 +4,7 @@ import com.divide.BaseException;
 import com.divide.BaseResponse;
 import com.divide.BaseResponseStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,6 +22,7 @@ import java.io.PrintWriter;
 import static com.divide.security.JwtFilter.AUTHORIZATION_HEADER;
 
 @Component
+@Slf4j
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
@@ -29,7 +31,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          AuthenticationException authException) throws IOException {
         String jwt = resolveToken(request);
         // 유효한 자격증명을 제공하지 않고 접근하려 할때 401
-        System.out.println("request = " + request + ", response = " + response + ", authException = " + authException);
+        log.debug("request = " + request + ", response = " + response + ", authException = " + authException);
         response.setStatus(HttpStatus.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=utf-8");
 
