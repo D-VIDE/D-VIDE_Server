@@ -4,19 +4,22 @@ import com.divide.security.JwtFilter;
 import com.divide.security.TokenProvider;
 import com.divide.BaseResponse;
 import com.divide.auth.dto.request.LoginRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -24,6 +27,8 @@ import javax.validation.Valid;
 public class AuthController {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final AuthService authService;
+
 
     @PostMapping("/auth/login")
     public ResponseEntity<BaseResponse> login(
@@ -44,5 +49,16 @@ public class AuthController {
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
         return new ResponseEntity(new BaseResponse(jwt), httpHeaders, HttpStatus.OK);
+    }
+
+    @GetMapping("/auth/kakao")
+    public void kakaoLogin(
+        @Nullable @PathParam("code") String code
+    ) throws JsonProcessingException {
+        if (code != null) {
+            authService.kakaoLogin(code);
+        }
+
+        return;
     }
 }

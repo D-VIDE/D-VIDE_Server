@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
                 passwordEncoder.encode(signupRequest.getPassword()),
                 signupRequest.getProfileImgUrl(),
                 signupRequest.getNickname(),
-                UserRole.user
+                UserRole.USER
         ));
     }
 
