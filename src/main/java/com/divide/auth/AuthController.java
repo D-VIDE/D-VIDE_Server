@@ -25,7 +25,7 @@ public class AuthController {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<BaseResponse> login(
             @Valid @RequestBody LoginRequest loginRequest
     ) {
