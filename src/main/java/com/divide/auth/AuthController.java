@@ -29,8 +29,9 @@ public class AuthController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final AuthService authService;
 
-    @PostMapping("/login")
-    public ResponseEntity login(
+
+    @PostMapping("/auth/login")
+    public ResponseEntity<BaseResponse> login(
             @Valid @RequestBody LoginRequest loginRequest
     ) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
