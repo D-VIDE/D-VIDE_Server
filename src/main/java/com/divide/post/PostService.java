@@ -25,7 +25,27 @@ public class PostService {
         postRepository.save(post);
         return post.getPostId();
     }
+    /**
+     *전체 게시글 조회
+     */
+    public List<Post> findPosts(){
+        return postRepository.findAll();
+    }
 
+    /**
+     *게시글 id로 조회
+     */
+    public Post findOne(Long postId){
+        return postRepository.findByPostId(postId);
+    }
+
+
+    /**
+     *게시글 title로 조회
+     */
+    public List<Post> findTitle(String title){
+        return postRepository.findByTitle(title);
+    }
 
 
 }
