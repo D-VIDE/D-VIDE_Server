@@ -1,8 +1,10 @@
 package com.divide.post;
 
 import com.divide.post.dto.request.CreatePostRequest;
+import com.divide.post.dto.request.UpdatePostRequest;
 import com.divide.post.dto.response.CreatePostResponse;
 import com.divide.post.dto.response.Result;
+import com.divide.post.dto.response.UpdatePostResponse;
 import com.divide.post.dto.response.postDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +54,19 @@ public class PostController {
                 .map( p -> new postDto(p))
                 .collect(toList());
         return new Result(collect);
+    }
+
+    /**
+     * 게시물 업데이트 API
+     * [Patch] http://localhost:8080/posts/{postId}
+     */
+    @PatchMapping("/posts/{postId}")
+    public UpdatePostResponse updatePost(
+            @PathVariable Long postId,
+            @RequestBody UpdatePostRequest request) {
+        postService.update(postId, request.getTitle(), request.getContent());
+        Post findPost = postService.findOne(postId);
+        return new UpdatePostResponse(findPost.getTitle(), findPost.getContent() ) ;
     }
 
 }

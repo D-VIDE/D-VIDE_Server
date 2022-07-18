@@ -47,5 +47,10 @@ public class PostService {
         return postRepository.findByTitle(title);
     }
 
-
+    @Transactional
+    public void update(Long postId, String title, String content) {
+        Post post = postRepository.findByPostId(postId);
+        post.setTitle(title);
+        post.setContent(content);
+    }
 }
