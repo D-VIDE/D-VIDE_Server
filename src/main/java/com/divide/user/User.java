@@ -1,5 +1,7 @@
 package com.divide.user;
 
+import com.divide.post.Post;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -9,6 +11,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -43,5 +47,9 @@ public class User {
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user") //읽기 전용, 매핑된 거울!
+    private List<Post> posts = new ArrayList<>();
 
 }

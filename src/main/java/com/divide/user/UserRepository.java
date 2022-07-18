@@ -24,4 +24,6 @@ public interface UserRepository {
      * @return user
      */
     Optional<User> findByEmail(String email);
+
+    User findById(Long id);
 }

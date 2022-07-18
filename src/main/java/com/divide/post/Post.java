@@ -24,6 +24,9 @@ public class Post {
     @Id @GeneratedValue
     private Long postId;
 //    private String userId;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_id") //FK
+    private User user;
     private String title;
 //    private String storeName;
     private String content;
@@ -42,4 +45,21 @@ public class Post {
 //    private String postStatus;
 ////    private PostStatus postStatus;
 //    private LocalDateTime createdAt;
+//==연관관계 편의메서드==
+    public void setUser(User user){
+        this.user = user;
+        user.getPosts().add(this);
+    }
+
+    //==생성 메서드==
+    public static Post createPost(User user ){
+        Post post = new Post();
+        post.setUser(user);
+
+        //임시로 제목, 내용 적어놓음
+        post.setTitle("제목이에영");
+        post.setContent("내용입니당");
+
+        return post;
+    }
 }

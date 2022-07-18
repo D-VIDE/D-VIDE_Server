@@ -41,6 +41,18 @@ public class PostController {
 
         return ResponseEntity.ok().body(new CreatePostResponse(newPostId));
     }
+    /**
+     * 게시물 생성 API - Entity 매핑
+     * @param userId
+     * @return
+     */
+    @PostMapping(value = "/post")
+    public ResponseEntity<CreatePostResponse> post(@RequestParam Long userId) {
+
+        Long newPostId = postService.post(userId);
+
+        return ResponseEntity.ok().body(new CreatePostResponse(newPostId));
+    }
 
     /**
      * 게시물 전체 조회 API

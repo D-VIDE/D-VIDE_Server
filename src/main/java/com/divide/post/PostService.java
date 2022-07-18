@@ -53,4 +53,16 @@ public class PostService {
         post.setTitle(title);
         post.setContent(content);
     }
+
+    @Transactional
+    public Long post(Long userId){
+        //엔티티 조회
+        User user = userRepository.findById(userId);
+
+        //주문 생성
+        Post post = Post.createPost(user);
+        postRepository.save(post);
+
+        return post.getPostId();
+    }
 }
