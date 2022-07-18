@@ -1,6 +1,10 @@
 package com.divide.auth;
 
+import com.divide.auth.dto.response.KakaoLoginResponse;
+import com.divide.security.TokenProvider;
+import com.divide.user.User;
 import com.divide.user.UserRepository;
+import com.divide.user.UserRole;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +12,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -17,15 +26,22 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AuthService {
+    private final TokenProvider tokenProvider;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public void kakaoLogin(final String authorizationCode) throws JsonProcessingException {
+    /*
+    TODO: 이미지 서버에 이미지 업로드
+    */
+    public KakaoLoginResponse kakaoLogin(final String authorizationCode, final String callbackUrl) throws JsonProcessingException {
         /* 카카오 토큰 발급 */
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", "f5c8e321f9869cdbc2362fe45c4556a0");
-        params.add("redirect_uri", "http://localhost:8080/api/v1/auth/kakao");
+        params.add("redirect_uri", callbackUrl);
         params.add("code", authorizationCode);
 
         HttpHeaders headers = new HttpHeaders();
@@ -50,7 +66,7 @@ public class AuthService {
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         response = rt.exchange(
-                "https://kapi.kakao.com//v2/user/me",
+                "https://kapi.kakao.com/v2/user/me",
                 HttpMethod.GET,
                 entity,
                 String.class
@@ -59,11 +75,26 @@ public class AuthService {
         json = objectMapper.readValue(response.getBody(), Map.class);
         Map kakao_account = (Map) json.get("kakao_account");
         Map profile = (Map) kakao_account.get("profile");
-        String nickname = (String) profile.get("nickname");
-        String imageUrl = (String) profile.get("thumbnail_image_url");
+
         String email = (String) kakao_account.get("email");
-        System.out.println("nickname = " + nickname);
-        System.out.println("imageUrl = " + imageUrl);
-        System.out.println("email = " + email);
+        String password = "kakao";
+        String imageUrl = (String) profile.get("thumbnail_image_url");
+        String nickname = (String) profile.get("nickname");
+
+        userRepository.signup(new User(email, passwordEncoder.encode(password), imageUrl, nickname, UserRole.USER));
+
+        return new KakaoLoginResponse(email, password);
+    }
+
+    @Transactional(readOnly = true)
+    public String genJwt(final String email, final String password) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(email, password);
+
+        Authentication authentication = authenticationManagerBuilder
+                .getObject()
+                .authenticate(usernamePasswordAuthenticationToken);
+
+        return tokenProvider.createToken(authentication);
     }
 }
