@@ -1,43 +1,36 @@
 package com.divide.post;
 
-import com.divide.post.dto.request.NewPostRequest;
-import com.divide.post.dto.response.NewPostResponse;
-import com.divide.post.Post;
-import com.divide.post.PostService;
+import com.divide.post.dto.request.CreatePostRequest;
+import com.divide.post.dto.response.CreatePostResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
-@Controller
+@RestController
+@RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
 
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
 
-    @PostMapping("/posts/new") //데이터를 form 같은곳에 넣어서 전달할 때 사용
+    /**
+     * 게시물 생성 API
+     * @API [POST] http://localhost:8080/posts
+     * @param request
+     * @return
+     */
+    @PostMapping("/posts")
 //    @ResponseBody //http body부분에 객체를 JSON으로 반환해줌
-    public ResponseEntity<NewPostResponse> createPost(@RequestBody NewPostRequest newPostRequest){
+    public ResponseEntity <CreatePostResponse> createPost(@RequestBody CreatePostRequest request){
         Post post = new Post();
-        post.setTitle(newPostRequest.getTitle());
-        post.setContent(newPostRequest.getContent());
+//        post.setUserId(request.getUserId());
+        post.setTitle(request.getTitle());
+        post.setContent(request.getContent());
 
-        Long result = postService.create(post);
+        Long newPostId = postService.create(post);
 
-        return ResponseEntity.ok().body(new NewPostResponse(result));
+        return ResponseEntity.ok().body(new CreatePostResponse(newPostId));
     }
 
-
-    @GetMapping("posts")
-    public String list(Model model){
-        List<Post> postList = postService.findPosts();
-        model.addAttribute("members", postList);
-        return "members/memberList";
-    }
 }
