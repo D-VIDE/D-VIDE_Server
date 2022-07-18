@@ -1,5 +1,6 @@
 package com.divide.repository;
 
+import com.divide.BaseException;
 import com.divide.user.dto.request.SignupRequest;
 import com.divide.user.UserRepository;
 import com.divide.user.UserService;
@@ -46,8 +47,10 @@ class UserServiceTest {
 
         // when
         userService.signup(signupRequest1);
-
+        
         // then
-        assert(false);
+        org.junit.jupiter.api.Assertions.assertThrows(BaseException.class, () -> {
+            userService.signup(signupRequest2);
+        });
     }
 }

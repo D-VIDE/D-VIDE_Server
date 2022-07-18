@@ -25,7 +25,7 @@ public class UserController {
         return new BaseResponse(res);
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/user/signup")
     public BaseResponse signup(@RequestBody @Valid SignupRequest signupRequest) {
         try {
             userService.signup(signupRequest);
@@ -40,8 +40,12 @@ public class UserController {
      */
     @GetMapping("/user")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
-    public GetUserResponse getUser() {
-        User user = userService.getMyUser();
-        return null;
+    public BaseResponse getUser() {
+        try {
+            User user = userService.getMyUser();
+            return new BaseResponse(new GetUserResponse(user.getId(), user.getNickname()));
+        } catch (BaseException e){
+            return new BaseResponse(e.getStatus());
+        }
     }
 }

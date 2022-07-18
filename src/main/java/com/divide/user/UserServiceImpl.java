@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,14 +35,16 @@ public class UserServiceImpl implements UserService {
                 passwordEncoder.encode(signupRequest.getPassword()),
                 signupRequest.getProfileImgUrl(),
                 signupRequest.getNickname(),
-                UserRole.user
+                UserRole.USER
         ));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public User getMyUser() {
-        User user = SecurityUtil.getCurrentEmail().flatMap(userRepository::findByEmail).orElse(null);
+    public User getMyUser() throws BaseException {
+        User user = SecurityUtil.getCurrentEmail()
+                .flatMap(userRepository::findByEmail)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.REQUEST_ERROR));
         return user;
     }
 }
