@@ -1,6 +1,7 @@
 package com.divide.post;
 
 import com.divide.post.dto.request.CreatePostRequest;
+import com.divide.post.dto.request.CreatePostRequestEntity;
 import com.divide.post.dto.request.UpdatePostRequest;
 import com.divide.post.dto.response.CreatePostResponse;
 import com.divide.post.dto.response.Result;
@@ -8,7 +9,6 @@ import com.divide.post.dto.response.UpdatePostResponse;
 import com.divide.post.dto.response.postDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,9 +47,9 @@ public class PostController {
      * @return
      */
     @PostMapping(value = "/post")
-    public ResponseEntity<CreatePostResponse> post(@RequestParam Long userId) {
+    public ResponseEntity<CreatePostResponse> post(@RequestBody CreatePostRequestEntity request, @RequestParam Long userId ) {
 
-        Long newPostId = postService.post(userId);
+        Long newPostId = postService.post(userId, request.getTitle(), request.getContent(), request.getDeliveryLocation());
 
         return ResponseEntity.ok().body(new CreatePostResponse(newPostId));
     }

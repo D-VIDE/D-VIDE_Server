@@ -54,13 +54,16 @@ public class PostService {
         post.setContent(content);
     }
 
+    /**
+     *게시글 생성: user가 작성한 게시글
+     */
     @Transactional
-    public Long post(Long userId){
+    public Long post(Long userId, String title, String content, Point deliveryLocation ){
         //엔티티 조회
         User user = userRepository.findById(userId);
 
         //주문 생성
-        Post post = Post.createPost(user);
+        Post post = Post.createPost(user, title, content, deliveryLocation );
         postRepository.save(post);
 
         return post.getPostId();
