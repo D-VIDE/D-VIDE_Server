@@ -58,14 +58,22 @@ public class Post {
     }
 
     //==생성 메서드==
-    //User, title, content, deliveryLocation
-    public static Post createPost(User user, String title, String content, Point deliveryLocation ){
+    public static Post createPost(User user, String title, String storeName, String content,
+                                  int targetPrice, int deliveryPrice, int targetUserCount, Category category,
+                                  LocalDateTime targetTime, Point deliveryLocation, PostStatus postStatus ){
         Post post = new Post();
         post.setUser(user);
 
         post.setTitle(title);
+        post.setStoreName(storeName);
         post.setContent(content);
+        post.setTargetPrice(targetPrice);
+        post.setDeliveryPrice(deliveryPrice);
+        post.setTargetUserCount(targetUserCount);
+        post.setCategory(category);
+        post.setTargetTime(targetTime);
         post.setDeliveryLocation(deliveryLocation);
+        post.setPostStatus(postStatus);
 
         return post;
     }

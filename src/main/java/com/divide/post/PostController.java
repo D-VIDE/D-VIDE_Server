@@ -41,6 +41,19 @@ public class PostController {
 
         return ResponseEntity.ok().body(new CreatePostResponse(newPostId));
     }
+//    /**
+//     * 게시물 생성 API - Entity 매핑
+//     * @param userId
+//     * @return
+//     */
+//    @PostMapping(value = "/post")
+//    public ResponseEntity<CreatePostResponse> post(@RequestBody CreatePostRequestEntity request, @RequestParam Long userId ) {
+//
+//        Long newPostId = postService.post(userId, request.getTitle(), request.getContent(), request.getDeliveryLocation());
+//
+//        return ResponseEntity.ok().body(new CreatePostResponse(newPostId));
+//    }
+
     /**
      * 게시물 생성 API - Entity 매핑
      * @param userId
@@ -49,10 +62,13 @@ public class PostController {
     @PostMapping(value = "/post")
     public ResponseEntity<CreatePostResponse> post(@RequestBody CreatePostRequestEntity request, @RequestParam Long userId ) {
 
-        Long newPostId = postService.post(userId, request.getTitle(), request.getContent(), request.getDeliveryLocation());
+        Long newPostId = postService.post(userId, request.getTitle(), request.getStoreName(), request.getContent(),
+                request.getTargetPrice(), request.getDeliveryPrice(), request.getTargetUserCount(), request.getCategory(),
+                request.getTargetTime(), request.getDeliveryLocation(), request.getPostStatus() );
 
         return ResponseEntity.ok().body(new CreatePostResponse(newPostId));
     }
+
 
     /**
      * 게시물 전체 조회 API
