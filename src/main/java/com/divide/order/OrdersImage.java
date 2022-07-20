@@ -14,7 +14,7 @@ public class OrdersImage {
 
     @OneToOne(fetch = FetchType.LAZY)
     @NotNull
-    private Order order;
+    private Orders orders;
 
     @NotNull
     private String url;
