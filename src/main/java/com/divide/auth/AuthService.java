@@ -24,9 +24,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +44,7 @@ public class AuthService {
         Map profile = (Map) kakaoUserMap.get("profile");
 
         String email = (String) kakaoUserMap.get("email");
-        String password = UUID.randomUUID().toString();
+        String password = email + "kakaoLogin";
         String imageUrl = (String) profile.get("thumbnail_image_url");
         String nickname = (String) profile.get("nickname");
 
