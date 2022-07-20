@@ -21,10 +21,12 @@ public class Orders {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     @NotNull
     private User user;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
     @NotNull
     private Post post;
 
