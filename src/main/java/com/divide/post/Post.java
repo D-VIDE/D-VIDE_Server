@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -47,6 +48,7 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private PostStatus postStatus;
 
+    @CreatedDate
     private LocalDateTime createdAt;
 
 //==연관관계 편의메서드==
