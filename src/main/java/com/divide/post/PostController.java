@@ -7,7 +7,12 @@ import com.divide.post.dto.response.CreatePostResponse;
 import com.divide.post.dto.response.Result;
 import com.divide.post.dto.response.UpdatePostResponse;
 import com.divide.post.dto.response.postDto;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +20,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-
+@Api(tags= "Post API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -29,6 +34,7 @@ public class PostController {
      * @param request
      * @return
      */
+    @ApiOperation(value="게시물 생성" , notes="title과 content만으로 게시글을 생성합니다.")
     @PostMapping("/posts")
 //    @ResponseBody //http body부분에 객체를 JSON으로 반환해줌
     public ResponseEntity <CreatePostResponse> createPost(@RequestBody CreatePostRequest request){
