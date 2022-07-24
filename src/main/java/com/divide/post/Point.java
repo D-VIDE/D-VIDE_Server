@@ -1,17 +1,17 @@
 package com.divide.post;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
 
 @Embeddable
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Point {
     private int x;
     private int y;
-
-    protected Point() { //JPA 스펙상 리플렉션, 프록시 기술 적용하기 위함
-    }
 
     public Point(int x, int y) {
         this.x = x;
