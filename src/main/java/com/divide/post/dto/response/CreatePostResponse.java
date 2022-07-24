@@ -1,14 +1,12 @@
 package com.divide.post.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class NewPostResponse {
+@AllArgsConstructor
+public class CreatePostResponse {
     private Long postId;
-
-    public NewPostResponse(Long postId) {
-        this.postId = postId;
-    }
 }

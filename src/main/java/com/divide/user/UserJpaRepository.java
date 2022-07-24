@@ -34,4 +34,10 @@ public class UserJpaRepository implements UserRepository{
             return Optional.empty();
         }
     }
+
+    @Override
+    public User findById(Long id){
+        User user = em.find(User.class, id); //postId는 PK
+        return user;
+    }
 }
