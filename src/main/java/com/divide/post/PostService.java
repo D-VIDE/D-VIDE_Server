@@ -60,7 +60,7 @@ public class PostService {
     @Transactional
     public Long post(Long userId, String title, String storeName, String content,
                      int targetPrice, int deliveryPrice, int targetUserCount, Category category,
-                     LocalDateTime targetTime, Point deliveryLocation, PostStatus postStatus){
+                     LocalDateTime targetTime,/* Point deliveryLocation,*/ PostStatus postStatus){
         //엔티티 조회
         User user = userRepository.findById(userId);
 
@@ -75,7 +75,7 @@ public class PostService {
                 .targetUserCount(targetUserCount)
                 .category(category)
                 .targetTime(targetTime)
-                .deliveryLocation(deliveryLocation)
+//                .deliveryLocation(deliveryLocation)
                 .postStatus(postStatus)
                 .build();
         postRepository.save(post);

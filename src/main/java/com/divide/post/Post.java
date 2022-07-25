@@ -38,8 +38,8 @@ public class Post {
 
     private LocalDateTime targetTime;
 
-    @Embedded
-    private Point deliveryLocation;
+//    @Embedded
+//    private Point deliveryLocation;
 
 ////    private List<String> orders = new ArrayList<>();
 ////    private List<Order> orders = new ArrayList();
@@ -68,7 +68,7 @@ public class Post {
         this.targetUserCount = targetUserCount;
         this.category = category;
         this.targetTime = targetTime;
-        this.deliveryLocation = deliveryLocation;
+//        this.deliveryLocation = deliveryLocation;
         this.postStatus = postStatus;
     }
 

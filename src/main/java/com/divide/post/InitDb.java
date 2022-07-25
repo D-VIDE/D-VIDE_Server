@@ -43,7 +43,7 @@ public class InitDb {
                     .targetUserCount(3)
                     .category(Category.CHINESE_FOOD)
                     .targetTime(LocalDateTime.now().plusHours(1))
-                    .deliveryLocation(deliveryLocation1)
+//                    .deliveryLocation(deliveryLocation1)
                     .postStatus(PostStatus.RECRUIT_FAIL)
                     .build();
 
@@ -58,7 +58,7 @@ public class InitDb {
                     .targetUserCount(4)
                     .category(Category.KOREAN_FOOD)
                     .targetTime(LocalDateTime.now().plusHours(2))
-                    .deliveryLocation(deliveryLocation2)
+//                    .deliveryLocation(deliveryLocation2)
                     .postStatus(PostStatus.RECRUITING)
                     .build();
 
