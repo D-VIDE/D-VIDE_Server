@@ -7,9 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdatePostResponse {
-    private String title;
+    private String title; //TODO: 응답값 변경
     private String content;
-    private String message = "게시글이 업데이트 되었습니다.";
 
     public UpdatePostResponse(String title, String content) {
         this.title = title;

@@ -1,7 +1,6 @@
 package com.divide.post;
 
 import com.divide.post.dto.request.CreatePostRequest;
-import com.divide.post.dto.request.CreatePostRequestEntity;
 import com.divide.post.dto.request.UpdatePostRequest;
 import com.divide.post.dto.response.CreatePostResponse;
 import com.divide.post.dto.response.Result;
@@ -27,50 +26,18 @@ import static java.util.stream.Collectors.toList;
 public class PostController {
     private final PostService postService;
 
-
-    /**
-     * 게시물 생성 API
-     * @API [POST] http://localhost:8080/api/v1/posts
-     * @param request
-     * @return
-     */
-    @ApiOperation(value="게시물 생성" , notes="title과 content만으로 게시글을 생성합니다.")
-    @PostMapping("/posts")
-//    @ResponseBody //http body부분에 객체를 JSON으로 반환해줌
-    public ResponseEntity <CreatePostResponse> createPost(@RequestBody CreatePostRequest request){
-        Post post = new Post();
-//        post.setUserId(request.getUserId());
-        post.setTitle(request.getTitle());
-        post.setContent(request.getContent());
-
-        Long newPostId = postService.create(post);
-
-        return ResponseEntity.ok().body(new CreatePostResponse(newPostId));
-    }
-//    /**
-//     * 게시물 생성 API - Entity 매핑
-//     * @param userId
-//     * @return
-//     */
-//    @PostMapping(value = "/post")
-//    public ResponseEntity<CreatePostResponse> post(@RequestBody CreatePostRequestEntity request, @RequestParam Long userId ) {
-//
-//        Long newPostId = postService.post(userId, request.getTitle(), request.getContent(), request.getDeliveryLocation());
-//
-//        return ResponseEntity.ok().body(new CreatePostResponse(newPostId));
-//    }
-
     /**
      * 게시물 생성 API - Entity 매핑
-     * @param userId
+     * [POST] http://localhost:8080/api/v1/post?userId=1
+     * @param
      * @return
      */
     @PostMapping(value = "/post")
-    public ResponseEntity<CreatePostResponse> post(@RequestBody CreatePostRequestEntity request, @RequestParam Long userId ) {
+    public ResponseEntity<CreatePostResponse> post(@RequestBody CreatePostRequest request, @RequestParam Long userId ) {
 
         Long newPostId = postService.post(userId, request.getTitle(), request.getStoreName(), request.getContent(),
                 request.getTargetPrice(), request.getDeliveryPrice(), request.getTargetUserCount(), request.getCategory(),
-                request.getTargetTime(), request.getDeliveryLocation(), request.getPostStatus() );
+               request.getTargetTime(), request.getDeliveryLocation(), request.getPostStatus() );
 
         return ResponseEntity.ok().body(new CreatePostResponse(newPostId));
     }

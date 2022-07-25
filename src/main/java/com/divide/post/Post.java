@@ -1,11 +1,9 @@
 package com.divide.post;
 
 import com.divide.user.User;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,10 +11,10 @@ import java.time.LocalDateTime;
 import static javax.persistence.FetchType.LAZY;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "POST")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class Post {
 
     @Id @GeneratedValue
@@ -58,23 +56,25 @@ public class Post {
     }
 
     //==생성 메서드==
-    public static Post createPost(User user, String title, String storeName, String content,
-                                  int targetPrice, int deliveryPrice, int targetUserCount, Category category,
-                                  LocalDateTime targetTime, Point deliveryLocation, PostStatus postStatus ){
-        Post post = new Post();
-        post.setUser(user);
 
-        post.setTitle(title);
-        post.setStoreName(storeName);
-        post.setContent(content);
-        post.setTargetPrice(targetPrice);
-        post.setDeliveryPrice(deliveryPrice);
-        post.setTargetUserCount(targetUserCount);
-        post.setCategory(category);
-        post.setTargetTime(targetTime);
-        post.setDeliveryLocation(deliveryLocation);
-        post.setPostStatus(postStatus);
+    @Builder
+    public Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, int targetUserCount, Category category, LocalDateTime targetTime, Point deliveryLocation, PostStatus postStatus) {
+        this.user = user;
+        this.title = title;
+        this.storeName = storeName;
+        this.content = content;
+        this.targetPrice = targetPrice;
+        this.deliveryPrice = deliveryPrice;
+        this.targetUserCount = targetUserCount;
+        this.category = category;
+        this.targetTime = targetTime;
+        this.deliveryLocation = deliveryLocation;
+        this.postStatus = postStatus;
+    }
 
-        return post;
+    //PostService 오류 삭제 하기 위한 임시 update메서드
+    public void updateInfo(String title, String content){
+        this.title = title;
+        this.content = content;
     }
 }

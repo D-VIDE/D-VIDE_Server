@@ -51,8 +51,7 @@ public class PostService {
     @Transactional
     public void update(Long postId, String title, String content) {
         Post post = postRepository.findByPostId(postId);
-        post.setTitle(title);
-        post.setContent(content);
+        post.updateInfo(title, content);
     }
 
     /**
@@ -66,8 +65,19 @@ public class PostService {
         User user = userRepository.findById(userId);
 
         //주문 생성
-        Post post = Post.createPost(user,title, storeName, content, targetPrice, deliveryPrice,
-                targetUserCount, category, targetTime,  deliveryLocation,  postStatus );
+        Post post = Post.builder()
+                .user(user)
+                .title(title)
+                .storeName(storeName)
+                .content(content)
+                .targetPrice(targetPrice)
+                .deliveryPrice(deliveryPrice)
+                .targetUserCount(targetUserCount)
+                .category(category)
+                .targetTime(targetTime)
+                .deliveryLocation(deliveryLocation)
+                .postStatus(postStatus)
+                .build();
         postRepository.save(post);
 
         return post.getPostId();
