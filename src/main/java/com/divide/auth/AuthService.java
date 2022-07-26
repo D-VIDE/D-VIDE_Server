@@ -1,7 +1,5 @@
 package com.divide.auth;
 
-import com.divide.BaseException;
-import com.divide.BaseResponseStatus;
 import com.divide.auth.dto.response.KakaoLoginResponse;
 import com.divide.security.TokenProvider;
 import com.divide.user.User;
@@ -14,9 +12,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,8 +26,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Transactional
 public class AuthService {
-    private final TokenProvider tokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -98,17 +92,5 @@ public class AuthService {
         ObjectMapper objectMapper = new ObjectMapper();
         Map json = objectMapper.readValue(response.getBody(), Map.class);
         return (Map) json.get("kakao_account");
-    }
-
-    @Transactional(readOnly = true)
-    public String genJwt(final String email, final String password) {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(email, password);
-
-        Authentication authentication = authenticationManagerBuilder
-                .getObject()
-                .authenticate(usernamePasswordAuthenticationToken);
-
-        return tokenProvider.createToken(authentication);
     }
 }

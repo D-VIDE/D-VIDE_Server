@@ -1,42 +1,56 @@
 package com.divide.security;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.io.*;
+import io.jsonwebtoken.security.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.security.authentication.*;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.*;
+import org.springframework.security.core.authority.*;
+import org.springframework.security.core.userdetails.*;
+import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.stream.Collectors;
+import java.security.*;
+import java.util.*;
+import java.util.stream.*;
 
 @Service
 @Slf4j
+@Transactional(readOnly = true)
 public class TokenProvider {
     private static final String AUTHORITIES_KEY = "auth";
+
     private final String secret;
+
     private final Long tokenValidTime;
-    private Key key;
+
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+
+    private final Key key;
 
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.token-valid-time-in-seconds}") Long tokenValidTime) {
+            @Value("${jwt.token-valid-time-in-seconds}") Long tokenValidTime,
+            AuthenticationManagerBuilder authenticationManagerBuilder
+    ) {
         this.secret = secret;
         this.tokenValidTime = tokenValidTime * 1000;
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
 
-    @PostConstruct
-    public void postConstruct() {
-        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+    public String createToken(final String email, final String password) {
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(email, password);
+
+        Authentication authentication = authenticationManagerBuilder
+                .getObject()
+                .authenticate(usernamePasswordAuthenticationToken);
+
+        return createToken(authentication);
     }
 
     public String createToken(Authentication authentication) {
@@ -47,7 +61,7 @@ public class TokenProvider {
 
         /* 유효 기간 설정 */
         Long now = (new Date()).getTime();
-        Date expireTime = new Date(now + this.tokenValidTime);
+        Date expireTime = new Date(now + this.tokenValidTime * 1000);
 
         /* jwt 토큰 String 생성 */
         return Jwts.builder()
