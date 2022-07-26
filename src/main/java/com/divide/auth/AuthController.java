@@ -13,6 +13,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.websocket.server.PathParam;
 
 @RestController
@@ -34,13 +35,20 @@ public class AuthController {
         return new ResponseEntity(new BaseResponse(jwt), httpHeaders, HttpStatus.OK);
     }
 
-    @GetMapping("/auth/kakao")
+    @GetMapping("/auth/kakaoTest")
+    public void kakaoTest(
+            @NotNull @RequestParam("code") String code
+    ) {
+        System.out.println("code = " + code);
+    }
+
+    @PostMapping("/auth/kakao")
     public ResponseEntity<BaseResponse> kakaoLogin(
-        @Nullable @PathParam("code") String code
+        @Nullable @RequestBody String code
     ) throws JsonProcessingException {
         if (code == null) return new ResponseEntity(new BaseResponse(BaseResponseStatus.DATABASE_ERROR), HttpStatus.BAD_REQUEST);
 
-        KakaoLoginResponse kakaoLoginResponse = authService.kakaoLogin(code, "http://localhost:8080/api/v1/auth/kakao");
+        KakaoLoginResponse kakaoLoginResponse = authService.kakaoLogin(code, "http://localhost:8080/api/v1/auth/kakaoTest");
         String jwt = tokenProvider.createToken(kakaoLoginResponse.getEmail(), kakaoLoginResponse.getPassword());
 
         HttpHeaders httpHeaders = new HttpHeaders();
