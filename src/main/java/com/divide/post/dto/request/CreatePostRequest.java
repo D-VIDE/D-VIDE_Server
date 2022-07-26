@@ -1,7 +1,6 @@
 package com.divide.post.dto.request;
 
 import com.divide.post.Category;
-import com.divide.post.Point;
 import com.divide.post.PostStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

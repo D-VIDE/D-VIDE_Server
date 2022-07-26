@@ -2,6 +2,7 @@ package com.divide.post;
 
 import com.divide.user.User;
 import lombok.*;
+import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -9,6 +10,9 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 import static javax.persistence.FetchType.LAZY;
+
+import  org.locationtech.jts.geom.Point;
+import org.springframework.stereotype.Component;
 
 @Getter
 @Entity
@@ -37,9 +41,7 @@ public class Post {
     private Category category;
 
     private LocalDateTime targetTime;
-
-//    @Embedded
-//    private Point deliveryLocation;
+    private Geometry deliveryLocation;
 
 ////    private List<String> orders = new ArrayList<>();
 ////    private List<Order> orders = new ArrayList();
@@ -58,7 +60,7 @@ public class Post {
     //==생성 메서드==
 
     @Builder
-    public Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, int targetUserCount, Category category, LocalDateTime targetTime, Point deliveryLocation, PostStatus postStatus) {
+    public Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, int targetUserCount, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus) {
         this.user = user;
         this.title = title;
         this.storeName = storeName;
@@ -68,7 +70,7 @@ public class Post {
         this.targetUserCount = targetUserCount;
         this.category = category;
         this.targetTime = targetTime;
-//        this.deliveryLocation = deliveryLocation;
+        this.deliveryLocation = deliveryLocation;
         this.postStatus = postStatus;
     }
 
