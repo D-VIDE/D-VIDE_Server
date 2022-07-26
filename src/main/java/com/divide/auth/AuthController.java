@@ -1,6 +1,7 @@
 package com.divide.auth;
 
 import com.divide.BaseResponseStatus;
+import com.divide.auth.dto.request.KakaoLoginRequest;
 import com.divide.auth.dto.response.KakaoLoginResponse;
 import com.divide.security.JwtFilter;
 import com.divide.BaseResponse;
@@ -44,11 +45,10 @@ public class AuthController {
 
     @PostMapping("/auth/kakao")
     public ResponseEntity<BaseResponse> kakaoLogin(
-        @Nullable @RequestBody String code
+        @Valid @RequestBody KakaoLoginRequest kakaoLoginRequest
     ) throws JsonProcessingException {
-        if (code == null) return new ResponseEntity(new BaseResponse(BaseResponseStatus.DATABASE_ERROR), HttpStatus.BAD_REQUEST);
 
-        KakaoLoginResponse kakaoLoginResponse = authService.kakaoLogin(code, "http://localhost:8080/api/v1/auth/kakaoTest");
+        KakaoLoginResponse kakaoLoginResponse = authService.kakaoLogin(kakaoLoginRequest.getCode(), "http://localhost:8080/api/v1/auth/kakaoTest");
         String jwt = tokenProvider.createToken(kakaoLoginResponse.getEmail(), kakaoLoginResponse.getPassword());
 
         HttpHeaders httpHeaders = new HttpHeaders();
