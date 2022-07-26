@@ -14,7 +14,7 @@ public class Badge {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private String BadgeName;
+    private BadgeName badgeName;
 
     @NotNull
     private String iconUrl;
