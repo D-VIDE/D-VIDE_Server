@@ -37,7 +37,7 @@ public class PostController {
 
         Long newPostId = postService.post(userId, request.getTitle(), request.getStoreName(), request.getContent(),
                 request.getTargetPrice(), request.getDeliveryPrice(), request.getTargetUserCount(), request.getCategory(),
-               request.getTargetTime(), request.getDeliveryLocation(), request.getPostStatus() );
+               request.getTargetTime(),/* request.getDeliveryLocation(),*/ request.getPostStatus() );
 
         return ResponseEntity.ok().body(new CreatePostResponse(newPostId));
     }

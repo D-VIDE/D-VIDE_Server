@@ -1,12 +1,14 @@
 package com.divide.post.dto.request;
 
 import com.divide.post.Category;
-import com.divide.post.Point;
 import com.divide.post.PostStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Embedded;
 import java.time.LocalDateTime;
 
 
@@ -24,8 +26,11 @@ public class CreatePostRequest {
     private int targetUserCount;
 
     private Category category;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern= "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime targetTime;
-    private Point deliveryLocation;
+
+//    private Point deliveryLocation;
 
     private PostStatus postStatus;
 }
