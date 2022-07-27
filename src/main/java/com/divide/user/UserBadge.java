@@ -1,5 +1,6 @@
 package com.divide.user;
 
+import com.divide.badge.Badge;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,9 +22,9 @@ public class UserBadge {
     @JoinColumn(name = "user_id")
     private User user;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "badge_id")
-//    private Badge badge;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "badge_id")
+    private Badge badge;
 
     @CreatedDate
     private LocalDateTime createdAt;
