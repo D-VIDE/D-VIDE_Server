@@ -1,49 +1,34 @@
 package com.divide.auth;
 
+import com.divide.BaseResponseStatus;
+import com.divide.auth.dto.request.KakaoLoginRequest;
+import com.divide.auth.dto.response.KakaoLoginResponse;
 import com.divide.security.JwtFilter;
-import com.divide.security.TokenProvider;
 import com.divide.BaseResponse;
 import com.divide.auth.dto.request.LoginRequest;
+import com.divide.security.TokenProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.lang.Nullable;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.websocket.server.PathParam;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class AuthController {
-    private final TokenProvider tokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final AuthService authService;
-
+    private final TokenProvider tokenProvider;
 
     @PostMapping("/auth/login")
     public ResponseEntity<BaseResponse> login(
             @Valid @RequestBody LoginRequest loginRequest
     ) {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword());
-
-        Authentication authentication = authenticationManagerBuilder
-                .getObject()
-                .authenticate(usernamePasswordAuthenticationToken);
-
-        String jwt = tokenProvider.createToken(authentication);
+        String jwt = tokenProvider.createToken(loginRequest.getEmail(), loginRequest.getPassword());
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
@@ -51,14 +36,24 @@ public class AuthController {
         return new ResponseEntity(new BaseResponse(jwt), httpHeaders, HttpStatus.OK);
     }
 
-    @GetMapping("/auth/kakao")
-    public void kakaoLogin(
-        @Nullable @PathParam("code") String code
-    ) throws JsonProcessingException {
-        if (code != null) {
-            authService.kakaoLogin(code);
-        }
+    @GetMapping("/auth/kakaoTest")
+    public void kakaoTest(
+            @NotNull @RequestParam("code") String code
+    ) {
+        System.out.println("code = " + code);
+    }
 
-        return;
+    @PostMapping("/auth/kakao")
+    public ResponseEntity<BaseResponse> kakaoLogin(
+        @Valid @RequestBody KakaoLoginRequest kakaoLoginRequest
+    ) throws JsonProcessingException {
+
+        KakaoLoginResponse kakaoLoginResponse = authService.kakaoLogin(kakaoLoginRequest.getCode(), "http://localhost:8080/api/v1/auth/kakaoTest");
+        String jwt = tokenProvider.createToken(kakaoLoginResponse.getEmail(), kakaoLoginResponse.getPassword());
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+
+        return new ResponseEntity(new BaseResponse(jwt), httpHeaders, HttpStatus.OK);
     }
 }
