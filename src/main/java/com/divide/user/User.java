@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -19,13 +20,14 @@ import java.util.List;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class User {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
     @Email @NotNull
     private String email;
     @NotNull
     private String password;
+    @NotNull
     private String profileImgUrl;
     @NotNull
     private String nickname;
@@ -34,8 +36,17 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @NotNull
+    private Integer savedMoney = 0;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
 //    private List<Badge> badges;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user") //읽기 전용, 매핑된 거울!
+    private List<Post> posts = new ArrayList<>();
 
     public User( String email, String password, String profileImgUrl, String nickname, UserRole role) {
         this.email = email;
@@ -44,12 +55,4 @@ public class User {
         this.nickname = nickname;
         this.role = role;
     }
-
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "user") //읽기 전용, 매핑된 거울!
-    private List<Post> posts = new ArrayList<>();
-
 }
