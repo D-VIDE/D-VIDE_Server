@@ -37,12 +37,8 @@ public class PostController {
      */
     @PostMapping(value = "/post")
     public ResponseEntity<CreatePostResponse> post(@RequestBody CreatePostRequest request, @RequestParam Long userId ) throws ParseException {
-        //deliveryLocation point로 변환
-        Point point = (Point) new WKTReader().read(request.getDeliveryLocation());
 
-        Long newPostId = postService.post(userId, request.getTitle(), request.getStoreName(), request.getContent(),
-                request.getTargetPrice(), request.getDeliveryPrice(), request.getTargetUserCount(), request.getCategory(),
-               request.getTargetTime(), point, request.getPostStatus() );
+        Long newPostId = postService.post(userId, request );
 
         return ResponseEntity.ok().body(new CreatePostResponse(newPostId));
     }

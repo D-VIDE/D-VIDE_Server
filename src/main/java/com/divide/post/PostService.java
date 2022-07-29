@@ -1,13 +1,15 @@
 package com.divide.post;
 
+import com.divide.post.dto.request.CreatePostRequest;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -59,25 +61,26 @@ public class PostService {
      *게시글 생성: user가 작성한 게시글
      */
     @Transactional
-    public Long post(Long userId, String title, String storeName, String content,
-                     int targetPrice, int deliveryPrice, int targetUserCount, Category category,
-                     LocalDateTime targetTime, Point deliveryLocation, PostStatus postStatus){
+    public Long post( Long userId, CreatePostRequest request) throws ParseException {
         //엔티티 조회
         User user = userRepository.findById(userId);
+
+        //deliveryLocation: String -> point로 변환
+        Point point = (Point) new WKTReader().read(request.getDeliveryLocation());
 
         //주문 생성
         Post post = Post.builder()
                 .user(user)
-                .title(title)
-                .storeName(storeName)
-                .content(content)
-                .targetPrice(targetPrice)
-                .deliveryPrice(deliveryPrice)
-                .targetUserCount(targetUserCount)
-                .category(category)
-                .targetTime(targetTime)
-                .deliveryLocation(deliveryLocation)
-                .postStatus(postStatus)
+                .title(request.getTitle())
+                .storeName(request.getStoreName())
+                .content(request.getContent())
+                .targetPrice(request.getTargetPrice())
+                .deliveryPrice(request.getDeliveryPrice())
+                .targetUserCount(request.getTargetUserCount())
+                .category(request.getCategory())
+                .targetTime(request.getTargetTime())
+                .deliveryLocation(point)
+                .postStatus(request.getPostStatus())
                 .build();
         postRepository.save(post);
 
