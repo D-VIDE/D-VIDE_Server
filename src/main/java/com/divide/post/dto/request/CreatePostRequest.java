@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.locationtech.jts.geom.Point;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Embedded;
@@ -30,7 +31,7 @@ public class CreatePostRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern= "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime targetTime;
 
-//    private Point deliveryLocation;
+    private String deliveryLocation; //(Point) new WKTReader().read(deliveryLocation);로 변환해야함
 
     private PostStatus postStatus;
 }

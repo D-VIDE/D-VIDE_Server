@@ -12,6 +12,9 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.bcel.classfile.Constant;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,11 +36,13 @@ public class PostController {
      * @return
      */
     @PostMapping(value = "/post")
-    public ResponseEntity<CreatePostResponse> post(@RequestBody CreatePostRequest request, @RequestParam Long userId ) {
+    public ResponseEntity<CreatePostResponse> post(@RequestBody CreatePostRequest request, @RequestParam Long userId ) throws ParseException {
+        //deliveryLocation point로 변환
+        Point point = (Point) new WKTReader().read(request.getDeliveryLocation());
 
         Long newPostId = postService.post(userId, request.getTitle(), request.getStoreName(), request.getContent(),
                 request.getTargetPrice(), request.getDeliveryPrice(), request.getTargetUserCount(), request.getCategory(),
-               request.getTargetTime(),/* request.getDeliveryLocation(),*/ request.getPostStatus() );
+               request.getTargetTime(), point, request.getPostStatus() );
 
         return ResponseEntity.ok().body(new CreatePostResponse(newPostId));
     }
