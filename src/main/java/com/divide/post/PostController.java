@@ -5,16 +5,10 @@ import com.divide.post.dto.request.UpdatePostRequest;
 import com.divide.post.dto.response.CreatePostResponse;
 import com.divide.post.dto.response.Result;
 import com.divide.post.dto.response.UpdatePostResponse;
-import com.divide.post.dto.response.postDto;
+import com.divide.post.dto.response.getPostsResponse;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.bcel.classfile.Constant;
-import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,8 +46,8 @@ public class PostController {
     @GetMapping("/posts")
     public Result posts(){ //json 데이터 확장성을 위해 Result 사용
         List<Post> findPosts = postService.findPosts();
-        List<postDto> collect = findPosts.stream()
-                .map( p -> new postDto(p))
+        List<getPostsResponse> collect = findPosts.stream()
+                .map( p -> new getPostsResponse(p))
                 .collect(toList());
         return new Result(collect);
     }
