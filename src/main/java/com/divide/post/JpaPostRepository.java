@@ -1,5 +1,6 @@
 package com.divide.post;
 
+import com.divide.post.domain.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

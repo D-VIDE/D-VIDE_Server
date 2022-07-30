@@ -1,4 +1,4 @@
-package com.divide.post;
+package com.divide.post.domain;
 
 import lombok.Getter;
 

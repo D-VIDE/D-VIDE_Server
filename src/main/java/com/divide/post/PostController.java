@@ -1,5 +1,6 @@
 package com.divide.post;
 
+import com.divide.post.domain.Post;
 import com.divide.post.dto.request.postPostRequest;
 import com.divide.post.dto.request.UpdatePostRequest;
 import com.divide.post.dto.request.getNearByPostsRequest;

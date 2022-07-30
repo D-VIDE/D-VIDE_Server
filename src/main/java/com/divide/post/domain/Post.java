@@ -1,4 +1,4 @@
-package com.divide.post;
+package com.divide.post.domain;
 
 import com.divide.user.User;
 import lombok.*;
@@ -10,9 +10,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 import static javax.persistence.FetchType.LAZY;
-
-import  org.locationtech.jts.geom.Point;
-import org.springframework.stereotype.Component;
 
 @Getter
 @Entity

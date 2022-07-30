@@ -1,5 +1,9 @@
 package com.divide.post;
 
+import com.divide.post.domain.Direction;
+import com.divide.post.domain.GeometryUtil;
+import com.divide.post.domain.Location;
+import com.divide.post.domain.Post;
 import com.divide.post.dto.request.postPostRequest;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
@@ -14,7 +18,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.List;
 
-import static com.divide.post.PostStatus.RECRUITING;
+import static com.divide.post.domain.PostStatus.RECRUITING;
 
 @Service
 @Transactional(readOnly = true) //JPA를 사용하여 데이터 저장및 변경하기 위해서

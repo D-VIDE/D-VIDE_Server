@@ -1,5 +1,8 @@
 package com.divide.post;
 
+import com.divide.post.domain.Category;
+import com.divide.post.domain.Post;
+import com.divide.post.domain.PostStatus;
 import com.divide.user.User;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.*;
@@ -12,7 +15,6 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 
 
-import java.sql.ResultSet;
 import java.time.LocalDateTime;
 
 import static com.divide.user.UserRole.USER;

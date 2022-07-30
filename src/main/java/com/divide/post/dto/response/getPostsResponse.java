@@ -1,11 +1,9 @@
 package com.divide.post.dto.response;
 
-import com.divide.post.Category;
-import com.divide.post.Post;
+import com.divide.post.domain.Category;
+import com.divide.post.domain.Post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDateTime;
 
