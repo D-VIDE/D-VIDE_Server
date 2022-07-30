@@ -1,5 +1,6 @@
 package com.divide.auth;
 
+import com.divide.auth.dto.KaKaoLoginServiceResult;
 import com.divide.auth.dto.response.KakaoLoginResponse;
 import com.divide.security.TokenProvider;
 import com.divide.user.User;
@@ -21,6 +22,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +34,7 @@ public class AuthService {
     /*
     TODO: 이미지 서버에 이미지 업로드
     */
-    public KakaoLoginResponse kakaoLogin(final String authorizationCode, final String callbackUrl) throws JsonProcessingException {
+    public KaKaoLoginServiceResult kakaoLogin(final String authorizationCode, final String callbackUrl) throws JsonProcessingException {
         String kakaoAccessToken = getKakaoAccessToken(authorizationCode, callbackUrl);
         Map kakaoUserMap = getKakaoUser(kakaoAccessToken);
         Map profile = (Map) kakaoUserMap.get("profile");
@@ -42,11 +44,17 @@ public class AuthService {
         String imageUrl = (String) profile.get("thumbnail_image_url");
         String nickname = (String) profile.get("nickname");
 
+        Long userId;
+        Optional<User> user = userRepository.findByEmail(email);
         if (userRepository.findByEmail(email).isEmpty()) {
-            userRepository.signup(new User(email, passwordEncoder.encode(password), imageUrl, nickname, UserRole.USER));
+            User newUser = new User(email, passwordEncoder.encode(password), imageUrl, nickname, UserRole.USER);
+            userRepository.signup(newUser);
+            userId = newUser.getId();
+        } else {
+            userId = user.get().getId();
         }
 
-        return new KakaoLoginResponse(email, password);
+        return new KaKaoLoginServiceResult(userId, email, password);
     }
 
     private String getKakaoAccessToken(final String authorizationCode, final String callbackUrl) throws JsonProcessingException {

@@ -1,6 +1,6 @@
 package com.divide.auth;
 
-import com.divide.BaseResponseStatus;
+import com.divide.auth.dto.KaKaoLoginServiceResult;
 import com.divide.auth.dto.request.KakaoLoginRequest;
 import com.divide.auth.dto.response.KakaoLoginResponse;
 import com.divide.security.JwtFilter;
@@ -10,12 +10,10 @@ import com.divide.security.TokenProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.websocket.server.PathParam;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -44,16 +42,15 @@ public class AuthController {
     }
 
     @PostMapping("/auth/kakao")
-    public ResponseEntity<BaseResponse> kakaoLogin(
+    public ResponseEntity<KakaoLoginResponse> kakaoLogin(
         @Valid @RequestBody KakaoLoginRequest kakaoLoginRequest
     ) throws JsonProcessingException {
-
-        KakaoLoginResponse kakaoLoginResponse = authService.kakaoLogin(kakaoLoginRequest.getCode(), "http://localhost:8080/api/v1/auth/kakaoTest");
-        String jwt = tokenProvider.createToken(kakaoLoginResponse.getEmail(), kakaoLoginResponse.getPassword());
+        KaKaoLoginServiceResult kaKaoLoginServiceResult = authService.kakaoLogin(kakaoLoginRequest.getCode(), "http://localhost:8080/api/v1/auth/kakaoTest");
+        String jwt = tokenProvider.createToken(kaKaoLoginServiceResult.getEmail(), kaKaoLoginServiceResult.getPassword());
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
-        return new ResponseEntity(new BaseResponse(jwt), httpHeaders, HttpStatus.OK);
+        return ResponseEntity.ok(new KakaoLoginResponse(kaKaoLoginServiceResult.getUserId(), jwt));
     }
 }
