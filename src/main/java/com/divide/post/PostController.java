@@ -1,6 +1,6 @@
 package com.divide.post;
 
-import com.divide.post.dto.request.CreatePostRequest;
+import com.divide.post.dto.request.postPostRequest;
 import com.divide.post.dto.request.UpdatePostRequest;
 import com.divide.post.dto.request.getNearByPostsRequest;
 import com.divide.post.dto.response.*;
@@ -28,11 +28,11 @@ public class PostController {
      * @return
      */
     @PostMapping(value = "/post")
-    public ResponseEntity<CreatePostResponse> post(@RequestBody CreatePostRequest request, @RequestParam Long userId ) throws ParseException {
+    public ResponseEntity<postPostResponse> post(@RequestBody postPostRequest request, @RequestParam Long userId ) throws ParseException {
 
         Long newPostId = postService.post(userId, request );
 
-        return ResponseEntity.ok().body(new CreatePostResponse(newPostId));
+        return ResponseEntity.ok().body(new postPostResponse(newPostId));
     }
 
 

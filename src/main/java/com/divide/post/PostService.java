@@ -1,6 +1,6 @@
 package com.divide.post;
 
-import com.divide.post.dto.request.CreatePostRequest;
+import com.divide.post.dto.request.postPostRequest;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.List;
+
+import static com.divide.post.PostStatus.RECRUITING;
 
 @Service
 @Transactional(readOnly = true) //JPA를 사용하여 데이터 저장및 변경하기 위해서
@@ -63,7 +65,7 @@ public class PostService {
      *게시글 생성: user가 작성한 게시글
      */
     @Transactional
-    public Long post( Long userId, CreatePostRequest request) throws ParseException {
+    public Long post( Long userId, postPostRequest request) throws ParseException {
         //엔티티 조회
         User user = userRepository.findById(userId);
 
@@ -79,11 +81,10 @@ public class PostService {
                 .content(request.getContent())
                 .targetPrice(request.getTargetPrice())
                 .deliveryPrice(request.getDeliveryPrice())
-                .targetUserCount(request.getTargetUserCount())
                 .category(request.getCategory())
                 .targetTime(request.getTargetTime())
                 .deliveryLocation(point)
-                .postStatus(request.getPostStatus())
+                .postStatus(RECRUITING)
                 .build();
         postRepository.save(post);
 
