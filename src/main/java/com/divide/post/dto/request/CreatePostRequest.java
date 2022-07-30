@@ -31,7 +31,9 @@ public class CreatePostRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern= "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime targetTime;
 
-    private String deliveryLocation; //(Point) new WKTReader().read(deliveryLocation);로 변환해야함
+//    private String deliveryLocation; //(Point) new WKTReader().read(deliveryLocation);로 변환해야함
+    private double longitude; //경도: x
+    private double latitude; //위도: y
 
     private PostStatus postStatus;
 }

@@ -2,10 +2,8 @@ package com.divide.post;
 
 import com.divide.post.dto.request.CreatePostRequest;
 import com.divide.post.dto.request.UpdatePostRequest;
-import com.divide.post.dto.response.CreatePostResponse;
-import com.divide.post.dto.response.Result;
-import com.divide.post.dto.response.UpdatePostResponse;
-import com.divide.post.dto.response.getPostsResponse;
+import com.divide.post.dto.request.getNearByPostsRequest;
+import com.divide.post.dto.response.*;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.io.ParseException;
@@ -48,6 +46,21 @@ public class PostController {
         List<Post> findPosts = postService.findPosts();
         List<getPostsResponse> collect = findPosts.stream()
                 .map( p -> new getPostsResponse(p))
+                .collect(toList());
+        return new Result(collect);
+    }
+
+    /**
+     * 게시물 가까운 식당(500m안) 게시글 조회 API
+     *  [GET] http://localhost:8080/api/v1/nearByPosts
+     *
+     */
+    @GetMapping("/nearByPosts")
+    public Result findNearestPosts(@RequestBody getNearByPostsRequest request){ //json 데이터 확장성을 위해 Result 사용
+        List<Post> findPosts = postService.getNearByRestaurants(request.getLongitude(), request.getLatitude(), 0.5);
+
+        List<getNearByPostsResponse> collect = findPosts.stream()
+                .map( p -> new getNearByPostsResponse(p))
                 .collect(toList());
         return new Result(collect);
     }
