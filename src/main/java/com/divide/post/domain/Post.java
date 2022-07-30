@@ -1,4 +1,4 @@
-package com.divide.post;
+package com.divide.post.domain;
 
 import com.divide.user.User;
 import lombok.*;
@@ -10,9 +10,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 import static javax.persistence.FetchType.LAZY;
-
-import  org.locationtech.jts.geom.Point;
-import org.springframework.stereotype.Component;
 
 @Getter
 @Entity
@@ -35,7 +32,6 @@ public class Post {
 ////    private List<PostImage> postImages = new ArrayList();
     private int targetPrice;
     private int deliveryPrice;
-    private int targetUserCount;
 
     @Enumerated(EnumType.STRING)
     private Category category;
@@ -60,14 +56,13 @@ public class Post {
     //==생성 메서드==
 
     @Builder
-    public Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, int targetUserCount, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus) {
+    public Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus) {
         this.user = user;
         this.title = title;
         this.storeName = storeName;
         this.content = content;
         this.targetPrice = targetPrice;
         this.deliveryPrice = deliveryPrice;
-        this.targetUserCount = targetUserCount;
         this.category = category;
         this.targetTime = targetTime;
         this.deliveryLocation = deliveryLocation;

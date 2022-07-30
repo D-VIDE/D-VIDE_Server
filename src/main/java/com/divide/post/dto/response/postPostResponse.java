@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class CreatePostResponse {
+public class postPostResponse {
     private Long postId;
 }

@@ -1,6 +1,6 @@
 package com.divide.order;
 
-import com.divide.post.Post;
+import com.divide.post.domain.Post;
 import com.divide.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

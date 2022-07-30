@@ -1,17 +1,13 @@
 package com.divide.post;
 
-import com.divide.post.dto.request.CreatePostRequest;
+import com.divide.post.domain.Post;
+import com.divide.post.dto.request.postPostRequest;
 import com.divide.post.dto.request.UpdatePostRequest;
-import com.divide.post.dto.response.CreatePostResponse;
-import com.divide.post.dto.response.Result;
-import com.divide.post.dto.response.UpdatePostResponse;
-import com.divide.post.dto.response.postDto;
+import com.divide.post.dto.request.getNearByPostsRequest;
+import com.divide.post.dto.response.*;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.bcel.classfile.Constant;
+import org.locationtech.jts.io.ParseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,13 +29,11 @@ public class PostController {
      * @return
      */
     @PostMapping(value = "/post")
-    public ResponseEntity<CreatePostResponse> post(@RequestBody CreatePostRequest request, @RequestParam Long userId ) {
+    public ResponseEntity<postPostResponse> post(@RequestBody postPostRequest request, @RequestParam Long userId ) throws ParseException {
 
-        Long newPostId = postService.post(userId, request.getTitle(), request.getStoreName(), request.getContent(),
-                request.getTargetPrice(), request.getDeliveryPrice(), request.getTargetUserCount(), request.getCategory(),
-               request.getTargetTime(),/* request.getDeliveryLocation(),*/ request.getPostStatus() );
+        Long newPostId = postService.post(userId, request );
 
-        return ResponseEntity.ok().body(new CreatePostResponse(newPostId));
+        return ResponseEntity.ok().body(new postPostResponse(newPostId));
     }
 
 
@@ -51,8 +45,23 @@ public class PostController {
     @GetMapping("/posts")
     public Result posts(){ //json 데이터 확장성을 위해 Result 사용
         List<Post> findPosts = postService.findPosts();
-        List<postDto> collect = findPosts.stream()
-                .map( p -> new postDto(p))
+        List<getPostsResponse> collect = findPosts.stream()
+                .map( p -> new getPostsResponse(p))
+                .collect(toList());
+        return new Result(collect);
+    }
+
+    /**
+     * 게시물 가까운 식당(500m안) 게시글 조회 API
+     *  [GET] http://localhost:8080/api/v1/nearByPosts
+     *
+     */
+    @GetMapping("/nearByPosts")
+    public Result findNearestPosts(@RequestBody getNearByPostsRequest request){ //json 데이터 확장성을 위해 Result 사용
+        List<Post> findPosts = postService.getNearByRestaurants(request.getLongitude(), request.getLatitude(), 0.5);
+
+        List<getNearByPostsResponse> collect = findPosts.stream()
+                .map( p -> new getNearByPostsResponse(p))
                 .collect(toList());
         return new Result(collect);
     }

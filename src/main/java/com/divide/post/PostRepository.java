@@ -1,5 +1,7 @@
 package com.divide.post;
 
+import com.divide.post.domain.Post;
+
 import java.util.List;
 
 public interface PostRepository {

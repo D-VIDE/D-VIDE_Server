@@ -1,5 +1,8 @@
 package com.divide.post;
 
+import com.divide.post.domain.Category;
+import com.divide.post.domain.Post;
+import com.divide.post.domain.PostStatus;
 import com.divide.user.User;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.*;
@@ -12,7 +15,6 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 
 
-import java.sql.ResultSet;
 import java.time.LocalDateTime;
 
 import static com.divide.user.UserRole.USER;
@@ -49,7 +51,6 @@ public class InitDb {
                     .content("content1")
                     .targetPrice(10000)
                     .deliveryPrice(3000)
-                    .targetUserCount(3)
                     .category(Category.CHINESE_FOOD)
                     .targetTime(LocalDateTime.now().plusHours(1))
                     .deliveryLocation(point1)
@@ -65,7 +66,6 @@ public class InitDb {
                     .content("content2")
                     .targetPrice(20000)
                     .deliveryPrice(4000)
-                    .targetUserCount(4)
                     .category(Category.KOREAN_FOOD)
                     .targetTime(LocalDateTime.now().plusHours(2))
                     .deliveryLocation(point2)
