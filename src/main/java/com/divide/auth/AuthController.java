@@ -3,6 +3,7 @@ package com.divide.auth;
 import com.divide.auth.dto.KaKaoLoginServiceResult;
 import com.divide.auth.dto.request.KakaoLoginRequest;
 import com.divide.auth.dto.response.KakaoLoginResponse;
+import com.divide.auth.dto.response.LoginResponse;
 import com.divide.security.JwtFilter;
 import com.divide.BaseResponse;
 import com.divide.auth.dto.request.LoginRequest;
@@ -23,7 +24,7 @@ public class AuthController {
     private final TokenProvider tokenProvider;
 
     @PostMapping("/auth/login")
-    public ResponseEntity<BaseResponse> login(
+    public ResponseEntity<LoginResponse> login(
             @Valid @RequestBody LoginRequest loginRequest
     ) {
         String jwt = tokenProvider.createToken(loginRequest.getEmail(), loginRequest.getPassword());
@@ -31,7 +32,7 @@ public class AuthController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
-        return new ResponseEntity(new BaseResponse(jwt), httpHeaders, HttpStatus.OK);
+        return ResponseEntity.ok(new LoginResponse(jwt));
     }
 
     @GetMapping("/auth/kakaoTest")
