@@ -25,11 +25,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
-                .map(user -> createUser(email, user))
+                .map(user -> createUser(user))
                 .orElseThrow(() -> new UsernameNotFoundException(email + " 을 데이터베이스에서 찾을 수 없습니다."));
     }
 
-    private org.springframework.security.core.userdetails.User createUser(String email, User user) {
+    private org.springframework.security.core.userdetails.User createUser(User user) {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         grantedAuthorities.add(new SimpleGrantedAuthority(user.getRole().name()));
 
