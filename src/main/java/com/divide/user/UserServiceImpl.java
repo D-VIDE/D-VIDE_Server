@@ -1,6 +1,6 @@
 package com.divide.user;
 
-import com.divide.security.SecurityUtil;
+import com.divide.utils.SecurityUtil;
 import com.divide.BaseException;
 import com.divide.BaseResponseStatus;
 import com.divide.user.dto.request.SignupRequest;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
