@@ -52,6 +52,6 @@ public class AuthController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
-        return ResponseEntity.ok(new KakaoLoginResponse(kaKaoLoginServiceResult.getUserId(), jwt));
+        return ResponseEntity.ok(new KakaoLoginResponse(jwt));
     }
 }

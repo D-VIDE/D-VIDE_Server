@@ -44,17 +44,11 @@ public class AuthService {
         String imageUrl = (String) profile.get("thumbnail_image_url");
         String nickname = (String) profile.get("nickname");
 
-        Long userId;
-        Optional<User> user = userRepository.findByEmail(email);
         if (userRepository.findByEmail(email).isEmpty()) {
-            User newUser = new User(email, passwordEncoder.encode(password), imageUrl, nickname, UserRole.USER);
-            userRepository.signup(newUser);
-            userId = newUser.getId();
-        } else {
-            userId = user.get().getId();
+            userRepository.signup(new User(email, passwordEncoder.encode(password), imageUrl, nickname, UserRole.USER));
         }
 
-        return new KaKaoLoginServiceResult(userId, email, password);
+        return new KaKaoLoginServiceResult(email, password);
     }
 
     private String getKakaoAccessToken(final String authorizationCode, final String callbackUrl) throws JsonProcessingException {

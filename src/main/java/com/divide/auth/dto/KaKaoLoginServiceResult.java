@@ -6,7 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class KaKaoLoginServiceResult {
-    private Long userId;
     private String email;
     private String password;
 }
