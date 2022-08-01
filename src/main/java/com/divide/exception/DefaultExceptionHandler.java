@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -83,7 +84,16 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, errorCode);
     }
 
-
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
+            HttpRequestMethodNotSupportedException e,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+        log.warn("handleHttpRequestMethodNotSupported", e);
+        ErrorCode errorCode = CommonErrorCode.UNDEFINED_REQUEST_METHOD;
+        return handleHttpRequestMethodNotSupported(e, errorCode);
+    }
 
     /**
      * 그 외 모든 Exception을 컨트롤함.
@@ -144,6 +154,11 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<Object> handleExceptionInternal(NoHandlerFoundException e, ErrorCode errorCode) {
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(makeErrorResponse(errorCode));
+    }
+
+    private ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e, ErrorCode errorCode) {
         return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(makeErrorResponse(errorCode));
     }
