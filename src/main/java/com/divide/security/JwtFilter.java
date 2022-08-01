@@ -1,8 +1,5 @@
 package com.divide.security;
 
-import com.divide.BaseException;
-import com.divide.BaseResponseStatus;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
