@@ -10,12 +10,15 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
+@EnableWebMvc
 @Slf4j
 public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -44,7 +47,10 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
      * Valid 어노테이션을 통해서 validation에 실패했을 때 뜨는 Exception을 컨트롤함.
-     * @param e
+     * @param e the exception
+     * @param headers the headers to be written to the response
+     * @param status the selected response status
+     * @param request the current request
      * @return
      */
     @Override
@@ -59,12 +65,33 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * 정의되지 않은 URL로 들어온 경우 발생하는 Exception을 컨트롤함.
+     * @param e the exception
+     * @param headers the headers to be written to the response
+     * @param status the selected response status
+     * @param request the current request
+     * @return
+     */
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(
+            NoHandlerFoundException e,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+        log.warn("handleNoSuchMethodException", e);
+        ErrorCode errorCode = CommonErrorCode.UNDEFINED_REQUEST_URL;
+        return handleExceptionInternal(e, errorCode);
+    }
+
+
+
+    /**
      * 그 외 모든 Exception을 컨트롤함.
      * Stacktrace를 찍어서 debugging
      * @param ex
      * @return
      */
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllException(Exception ex) {
         log.warn("handleAllException", ex);
         ex.printStackTrace();
@@ -114,5 +141,10 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
                 .message(errorCode.getMessage())
                 .errors(validationErrorList)
                 .build();
+    }
+
+    private ResponseEntity<Object> handleExceptionInternal(NoHandlerFoundException e, ErrorCode errorCode) {
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(makeErrorResponse(errorCode));
     }
 }
