@@ -6,24 +6,17 @@ import com.divide.BaseResponseStatus;
 import com.divide.user.dto.request.SignupRequest;
 import com.divide.user.dto.response.GetUserResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class UserController {
     private final UserService userService;
-
-    @GetMapping("/user/all")
-    public BaseResponse getUsers() {
-        List<User> users = userService.getUsers();
-        List<GetUserResponse> res = users.stream().map(user -> new GetUserResponse(user.getId(), user.getNickname())).toList();
-        return new BaseResponse(res);
-    }
 
     @PostMapping("/user/signup")
     public BaseResponse signup(@RequestBody @Valid SignupRequest signupRequest) {
@@ -39,13 +32,17 @@ public class UserController {
      * 현재 자신의 정보
      */
     @GetMapping("/user")
-    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
-    public BaseResponse getUser() {
-        try {
-            User user = userService.getMyUser();
-            return new BaseResponse(new GetUserResponse(user.getId(), user.getNickname()));
-        } catch (BaseException e){
-            return new BaseResponse(e.getStatus());
-        }
+    public GetUserResponse getUser(@AuthenticationPrincipal UserDetails userDetails) {
+        System.out.println("userDetails = " + userDetails);
+
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        return GetUserResponse.builder()
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .badges(null)
+                .followerCount(0)
+                .followingCount(0)
+                .savedPrice(user.getSavedMoney())
+                .build();
     }
 }
