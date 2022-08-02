@@ -1,4 +1,6 @@
-package com.divide.post.domain;
+package com.divide.utils;
+
+import com.divide.post.domain.Location;
 
 /**
  * Haversine Formula

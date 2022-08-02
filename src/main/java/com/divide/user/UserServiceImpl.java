@@ -1,8 +1,8 @@
 package com.divide.user;
 
-import com.divide.security.SecurityUtil;
-import com.divide.BaseException;
-import com.divide.BaseResponseStatus;
+import com.divide.exception.RestApiException;
+import com.divide.exception.code.UserErrorCode;
+import com.divide.utils.SecurityUtil;
 import com.divide.user.dto.request.SignupRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,9 +25,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void signup(SignupRequest signupRequest) throws BaseException {
+    public void signup(SignupRequest signupRequest) {
         if (userRepository.findByEmail(signupRequest.getEmail()).isPresent()) {
-            throw new BaseException(BaseResponseStatus.POST_USERS_EXISTS_EMAIL);
+            throw new RestApiException(UserErrorCode.DUPLICATED_USER);
         }
         userRepository.signup(new User(
                 signupRequest.getEmail(),
@@ -41,10 +40,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public User getMyUser() throws BaseException {
+    public User getMyUser() {
         User user = SecurityUtil.getCurrentEmail()
                 .flatMap(userRepository::findByEmail)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.REQUEST_ERROR));
+                .orElseThrow(() -> new RestApiException(UserErrorCode.DUPLICATED_USER));
         return user;
     }
 }

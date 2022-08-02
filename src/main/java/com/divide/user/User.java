@@ -23,6 +23,7 @@ public class User {
     @Column(name = "user_id")
     private Long id;
     @Email @NotNull
+    @Column(unique = true)
     private String email;
     @NotNull
     private String password;

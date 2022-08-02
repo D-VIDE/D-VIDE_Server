@@ -1,7 +1,7 @@
 package com.divide.post;
 
 import com.divide.post.domain.Direction;
-import com.divide.post.domain.GeometryUtil;
+import com.divide.utils.GeometryUtil;
 import com.divide.post.domain.Location;
 import com.divide.post.domain.Post;
 import com.divide.post.dto.request.postPostRequest;

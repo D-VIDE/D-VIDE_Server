@@ -1,0 +1,14 @@
+spring:
+  config:
+    import: default.yml
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:mysql://divide.kro.kr:3306/divide
+    username: root
+    password: Umcdivide1234
+
+  jpa:
+    hibernate:
+      ddl-auto: update
