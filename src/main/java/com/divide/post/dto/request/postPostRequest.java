@@ -2,16 +2,14 @@ package com.divide.post.dto.request;
 
 import com.divide.post.domain.Category;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 
 @Getter
-@Setter
-@AllArgsConstructor
+@NoArgsConstructor
 public class postPostRequest {
 
     private String title;

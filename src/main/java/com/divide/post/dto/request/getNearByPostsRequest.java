@@ -1,12 +1,10 @@
 package com.divide.post.dto.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
-@AllArgsConstructor
+@NoArgsConstructor
 public class getNearByPostsRequest {
     private double longitude; //경도: x
     private double latitude; //위도: y
