@@ -3,7 +3,6 @@ package com.divide.repository;
 import com.divide.exception.RestApiException;
 import com.divide.user.dto.request.SignupRequest;
 import com.divide.user.UserRepository;
-import com.divide.user.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
