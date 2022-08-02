@@ -2,6 +2,7 @@ package com.divide.review.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.annotation.CreatedDate;
@@ -9,8 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 import java.time.LocalDateTime;
 import java.util.List;
 @Getter
-@Setter
-@AllArgsConstructor
+@NoArgsConstructor
 public class postReviewRequest {
     private double starRating;
     private String content;

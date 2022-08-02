@@ -1,9 +1,9 @@
 package com.divide.auth.dto.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class LoginRequest {
     private String email;
