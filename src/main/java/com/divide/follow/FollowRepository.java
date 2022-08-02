@@ -21,7 +21,7 @@ public class FollowRepository {
         List<Follow> followingList = getFollowingList(user);
 
         return em.createQuery(
-                "select f1.follower " +
+                "select f1 " +
                         "from Follow f1 " +
                         "where f1.follower = :follower and f1.id in :followingList"
         )

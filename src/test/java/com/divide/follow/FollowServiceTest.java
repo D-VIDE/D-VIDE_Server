@@ -37,9 +37,9 @@ class FollowServiceTest {
         followService.save(user1.getEmail(), user3.getId());
 
         // then
-        assertEquals(2, followService.getFollowingList(user1.getEmail()).size());
-        assertEquals(0, followService.getFollowingList(user2.getEmail()).size());
-        assertEquals(0, followService.getFollowingList(user3.getEmail()).size());
+        assertEquals(2, followService.getFollowingList(user1.getEmail()).getFollowList().size());
+        assertEquals(0, followService.getFollowingList(user2.getEmail()).getFollowList().size());
+        assertEquals(0, followService.getFollowingList(user3.getEmail()).getFollowList().size());
     }
 
     @Test
@@ -61,9 +61,9 @@ class FollowServiceTest {
         followService.save(user2.getEmail(), user3.getId());
 
         // then
-        assertEquals(2, followService.getFollowerList(user3.getEmail()).size());
-        assertEquals(1, followService.getFollowerList(user2.getEmail()).size());
-        assertEquals(0, followService.getFollowerList(user1.getEmail()).size());
+        assertEquals(2, followService.getFollowerList(user3.getEmail()).getFollowList().size());
+        assertEquals(1, followService.getFollowerList(user2.getEmail()).getFollowList().size());
+        assertEquals(0, followService.getFollowerList(user1.getEmail()).getFollowList().size());
     }
 
     @Test
@@ -88,8 +88,8 @@ class FollowServiceTest {
         followService.save(user3.getEmail(), user2.getId());
 
         // then
-        assertEquals(2, followService.getFFFList(user3.getEmail()).size());
-        assertEquals(2, followService.getFFFList(user2.getEmail()).size());
-        assertEquals(2, followService.getFFFList(user1.getEmail()).size());
+        assertEquals(2, followService.getFFFList(user3.getEmail()).getFollowList().size());
+        assertEquals(2, followService.getFFFList(user2.getEmail()).getFollowList().size());
+        assertEquals(2, followService.getFFFList(user1.getEmail()).getFollowList().size());
     }
 }

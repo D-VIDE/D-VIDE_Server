@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -24,12 +21,12 @@ public class FollowController {
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam("relation") FollowRelation relation
     ) {
-        List<Follow> followList = new ArrayList<>();
+        GetFollowResponse getFollowResponse = null;
         switch (relation) {
-            case FFF -> followList = followService.getFFFList(userDetails.getUsername());
-            case ONLYME -> followList = followService.getFollowingList(userDetails.getUsername());
-            case ONLYYOU -> followList = followService.getFollowerList(userDetails.getUsername());
+            case FFF -> getFollowResponse = followService.getFFFList(userDetails.getUsername());
+            case FOLLOWING -> getFollowResponse = followService.getFollowingList(userDetails.getUsername());
+            case FOLLOWER -> getFollowResponse = followService.getFollowerList(userDetails.getUsername());
         }
-        return ResponseEntity.ok(new GetFollowResponse(followList));
+        return ResponseEntity.ok(getFollowResponse);
     }
 }

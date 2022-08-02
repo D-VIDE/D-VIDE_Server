@@ -1,5 +1,6 @@
 package com.divide.follow;
 
+import com.divide.follow.dto.request.GetFollowResponse;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -22,16 +23,39 @@ public class FollowService {
         followRepository.save(new Follow(myUser, targetUser));
     }
 
-    public List<Follow> getFFFList(String userEmail) {
-        return followRepository.getFFFList(userRepository.findByEmail(userEmail).orElseThrow());
+    public GetFollowResponse getFFFList(String userEmail) {
+        List<Follow> followList = followRepository.getFFFList(userRepository.findByEmail(userEmail).orElseThrow());
+        return new GetFollowResponse(
+                followList.stream().map(f -> new GetFollowResponse.GetFollowResponseElement(
+                        f.getFollowee().getId(),
+                        f.getFollowee().getProfileImgUrl(),
+                        f.getFollowee().getNickname(),
+                        FollowRelation.FFF.name()
+                )).collect(Collectors.toList())
+        );
     }
 
-    public List<Follow> getFollowingList(String userEmail) {
-        return followRepository.getFollowingList(userRepository.findByEmail(userEmail).orElseThrow());
-
+    public GetFollowResponse getFollowingList(String userEmail) {
+        List<Follow> followList = followRepository.getFollowingList(userRepository.findByEmail(userEmail).orElseThrow());
+        return new GetFollowResponse(
+                followList.stream().map(f -> new GetFollowResponse.GetFollowResponseElement(
+                        f.getFollowee().getId(),
+                        f.getFollowee().getProfileImgUrl(),
+                        f.getFollowee().getNickname(),
+                        FollowRelation.FOLLOWING.name()
+                )).collect(Collectors.toList())
+        );
     }
 
-    public List<Follow> getFollowerList(String userEmail) {
-        return followRepository.getFollowerList(userRepository.findByEmail(userEmail).orElseThrow());
+    public GetFollowResponse getFollowerList(String userEmail) {
+        List<Follow> followList = followRepository.getFollowerList(userRepository.findByEmail(userEmail).orElseThrow());
+        return new GetFollowResponse(
+                followList.stream().map(f -> new GetFollowResponse.GetFollowResponseElement(
+                        f.getFollower().getId(),
+                        f.getFollower().getProfileImgUrl(),
+                        f.getFollower().getNickname(),
+                        FollowRelation.FOLLOWER.name()
+                )).collect(Collectors.toList())
+        );
     }
 }
