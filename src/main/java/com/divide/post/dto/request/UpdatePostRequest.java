@@ -1,12 +1,10 @@
 package com.divide.post.dto.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
-@AllArgsConstructor
+@NoArgsConstructor
 public class UpdatePostRequest {
 //    private String userId;
     //private User user;
