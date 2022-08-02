@@ -42,7 +42,6 @@ public class User {
     @CreatedDate
     private LocalDateTime createdAt;
 
-//    private List<Badge> badges;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user") //읽기 전용, 매핑된 거울!
