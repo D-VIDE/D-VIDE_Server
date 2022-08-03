@@ -3,11 +3,13 @@ package com.divide.exception;
 import com.divide.exception.code.AuthErrorCode;
 import com.divide.exception.code.CommonErrorCode;
 import com.divide.exception.code.ErrorCode;
+import com.divide.exception.code.UserErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -115,6 +117,14 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn("handleBadCredentialsException", e);
 
         ErrorCode errorCode = AuthErrorCode.FAILED_AUTHENTICATION;
+        return handleExceptionInternal(errorCode);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Object> handleUsernameNotFoundException(UsernameNotFoundException e) {
+        log.warn("handleUsernameNotFoundException", e);
+
+        ErrorCode errorCode = UserErrorCode.INVALID_EMAIL;
         return handleExceptionInternal(errorCode);
     }
 

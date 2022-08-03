@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum UserErrorCode implements ErrorCode {
     INACTIVE_USER(HttpStatus.FORBIDDEN, "User is inactive"),
+    INVALID_EMAIL(HttpStatus.FORBIDDEN, "User is not registered"),
     DUPLICATED_USER(HttpStatus.BAD_REQUEST, "User is already signed");
     ;
 
