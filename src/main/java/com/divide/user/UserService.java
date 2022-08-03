@@ -21,16 +21,18 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(""));
     }
 
-    public void signup(SignupRequest signupRequest) {
+    public Long signup(SignupRequest signupRequest) {
         if (userRepository.findByEmail(signupRequest.getEmail()).isPresent()) {
             throw new RestApiException(UserErrorCode.DUPLICATED_USER);
         }
-        userRepository.signup(new User(
+        User newUser = new User(
                 signupRequest.getEmail(),
                 passwordEncoder.encode(signupRequest.getPassword()),
                 signupRequest.getProfileImgUrl(),
                 signupRequest.getNickname(),
                 UserRole.USER
-        ));
+        );
+        userRepository.signup(newUser);
+        return newUser.getId();
     }
 }

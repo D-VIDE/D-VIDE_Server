@@ -1,10 +1,11 @@
 package com.divide.user;
 
-import com.divide.BaseResponse;
-import com.divide.BaseResponseStatus;
 import com.divide.user.dto.request.SignupRequest;
 import com.divide.user.dto.response.GetUserResponse;
+import com.divide.user.dto.response.SignupResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +18,10 @@ import javax.validation.Valid;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/user/signup")
-    public BaseResponse signup(@RequestBody @Valid SignupRequest signupRequest) {
-        userService.signup(signupRequest);
-        return new BaseResponse(BaseResponseStatus.SUCCESS);
+    @PostMapping("/user")
+    public ResponseEntity<SignupResponse> signup(@RequestBody @Valid SignupRequest signupRequest) {
+        Long saveId = userService.signup(signupRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new SignupResponse(saveId));
     }
 
     /**

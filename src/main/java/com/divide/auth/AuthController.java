@@ -5,7 +5,6 @@ import com.divide.auth.dto.request.KakaoLoginRequest;
 import com.divide.auth.dto.response.KakaoLoginResponse;
 import com.divide.auth.dto.response.LoginResponse;
 import com.divide.security.JwtFilter;
-import com.divide.BaseResponse;
 import com.divide.auth.dto.request.LoginRequest;
 import com.divide.security.TokenProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
