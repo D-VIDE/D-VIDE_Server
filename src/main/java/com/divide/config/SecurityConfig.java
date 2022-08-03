@@ -1,10 +1,10 @@
 package com.divide.config;
 
-import com.divide.security.JwtAccessDeniedHandler;
 import com.divide.security.JwtAuthenticationEntryPoint;
 import com.divide.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,8 +22,6 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final CorsFilter corsFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -39,8 +37,6 @@ public class SecurityConfig {
 
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .accessDeniedHandler(jwtAccessDeniedHandler)
-
 
                 // enable h2-console
                 .and()
@@ -56,7 +52,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/**/auth/**").permitAll()
-                .antMatchers("/api/**/user/signup").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/**/user").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()
 //                .antMatchers("/**").permitAll()
 
