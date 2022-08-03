@@ -2,7 +2,7 @@ package com.divide.review;
 
 import com.divide.post.PostRepository;
 import com.divide.post.domain.Post;
-import com.divide.review.dto.request.postReviewRequest;
+import com.divide.review.dto.request.PostReviewRequest;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class ReviewService {
      * 리뷰글 생성
      */
     @Transactional
-    public Long review(Long userId, Long postId, postReviewRequest request ) throws ParseException {
+    public Long review(Long userId, Long postId, PostReviewRequest request ) throws ParseException {
         //엔티티 조회
         User user = userRepository.findById(userId);
         Post post = postRepository.findByPostId(postId);

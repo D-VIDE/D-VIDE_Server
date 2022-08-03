@@ -1,17 +1,11 @@
 package com.divide.review.dto.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.locationtech.jts.geom.Geometry;
-import org.springframework.data.annotation.CreatedDate;
 
-import java.time.LocalDateTime;
-import java.util.List;
 @Getter
 @NoArgsConstructor
-public class postReviewRequest {
+public class PostReviewRequest {
     private double starRating;
     private String content;
     private String storeName;

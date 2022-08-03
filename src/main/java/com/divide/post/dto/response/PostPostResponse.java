@@ -1,4 +1,4 @@
-package com.divide.review.dto.response;
+package com.divide.post.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class postReviewResponse {
-    private Long reviewId;
+public class PostPostResponse {
+    private Long postId;
 }

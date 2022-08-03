@@ -1,9 +1,9 @@
 package com.divide.post;
 
 import com.divide.post.domain.Post;
-import com.divide.post.dto.request.postPostRequest;
+import com.divide.post.dto.request.PostPostRequest;
 import com.divide.post.dto.request.UpdatePostRequest;
-import com.divide.post.dto.request.getNearByPostsRequest;
+import com.divide.post.dto.request.GetNearbyPostsRequest;
 import com.divide.post.dto.response.*;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +29,11 @@ public class PostController {
      * @return
      */
     @PostMapping(value = "/post")
-    public ResponseEntity<postPostResponse> post(@RequestBody postPostRequest request, @RequestParam Long userId ) throws ParseException {
+    public ResponseEntity<PostPostResponse> post(@RequestBody PostPostRequest request, @RequestParam Long userId ) throws ParseException {
 
         Long newPostId = postService.post(userId, request );
 
-        return ResponseEntity.ok().body(new postPostResponse(newPostId));
+        return ResponseEntity.ok().body(new PostPostResponse(newPostId));
     }
 
 
@@ -45,8 +45,8 @@ public class PostController {
     @GetMapping("/posts")
     public Result posts(){ //json 데이터 확장성을 위해 Result 사용
         List<Post> findPosts = postService.findPosts();
-        List<getPostsResponse> collect = findPosts.stream()
-                .map( p -> new getPostsResponse(p))
+        List<GetPostsResponse> collect = findPosts.stream()
+                .map( p -> new GetPostsResponse(p))
                 .collect(toList());
         return new Result(collect);
     }
@@ -57,11 +57,11 @@ public class PostController {
      *
      */
     @GetMapping("/nearByPosts")
-    public Result findNearestPosts(@RequestBody getNearByPostsRequest request){ //json 데이터 확장성을 위해 Result 사용
+    public Result findNearestPosts(@RequestBody GetNearbyPostsRequest request){ //json 데이터 확장성을 위해 Result 사용
         List<Post> findPosts = postService.getNearByRestaurants(request.getLongitude(), request.getLatitude(), 0.5);
 
-        List<getNearByPostsResponse> collect = findPosts.stream()
-                .map( p -> new getNearByPostsResponse(p))
+        List<GetNearbyPostsResponse> collect = findPosts.stream()
+                .map( p -> new GetNearbyPostsResponse(p))
                 .collect(toList());
         return new Result(collect);
     }

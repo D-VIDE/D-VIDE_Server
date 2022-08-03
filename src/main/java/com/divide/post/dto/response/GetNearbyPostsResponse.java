@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-public class getNearByPostsResponse {
+public class GetNearbyPostsResponse {
     private Long postId;
 
     private String profileImgUrl;
@@ -23,7 +23,7 @@ public class getNearByPostsResponse {
     private int targetPrice;
     private Category category;
 
-    public getNearByPostsResponse(Post p) {
+    public GetNearbyPostsResponse(Post p) {
         this.postId = p.getPostId();
         this.nickname = p.getUser().getNickname();
         this.profileImgUrl = p.getUser().getProfileImgUrl();

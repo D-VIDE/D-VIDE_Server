@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-public class getPostsResponse {
+public class GetPostsResponse {
     private Long postId;
 //    -------------user에서 가져옴-------------
     private String profileImgUrl;
@@ -23,7 +23,7 @@ public class getPostsResponse {
 
     private Category category;
 
-    public getPostsResponse(Post p) {
+    public GetPostsResponse(Post p) {
         this.postId = p.getPostId();
         this.title = p.getTitle();
         this.content = p.getContent();
