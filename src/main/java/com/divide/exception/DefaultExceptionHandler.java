@@ -1,11 +1,15 @@
 package com.divide.exception;
 
+import com.divide.exception.code.AuthErrorCode;
 import com.divide.exception.code.CommonErrorCode;
 import com.divide.exception.code.ErrorCode;
+import com.divide.exception.code.UserErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -81,9 +85,17 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
             WebRequest request) {
         log.warn("handleNoSuchMethodException", e);
         ErrorCode errorCode = CommonErrorCode.UNDEFINED_REQUEST_URL;
-        return handleExceptionInternal(e, errorCode);
+        return handleExceptionInternal(errorCode);
     }
 
+    /**
+     * 정의되지 않은 Method로 들어온 경우 발생하는 Exception을 컨트롤함.
+     * @param e the exception
+     * @param headers the headers to be written to the response
+     * @param status the selected response status
+     * @param request the current request
+     * @return
+     */
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
             HttpRequestMethodNotSupportedException e,
@@ -92,7 +104,28 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
             WebRequest request) {
         log.warn("handleHttpRequestMethodNotSupported", e);
         ErrorCode errorCode = CommonErrorCode.UNDEFINED_REQUEST_METHOD;
-        return handleHttpRequestMethodNotSupported(e, errorCode);
+        return handleExceptionInternal(errorCode);
+    }
+
+    /**
+     * 잘못된 id/pw로 로그인 하는 경우 발생하는 Exception을 컨트롤함.
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException e) {
+        log.warn("handleBadCredentialsException", e);
+
+        ErrorCode errorCode = AuthErrorCode.FAILED_AUTHENTICATION;
+        return handleExceptionInternal(errorCode);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Object> handleUsernameNotFoundException(UsernameNotFoundException e) {
+        log.warn("handleUsernameNotFoundException", e);
+
+        ErrorCode errorCode = UserErrorCode.INVALID_EMAIL;
+        return handleExceptionInternal(errorCode);
     }
 
     /**
@@ -151,15 +184,5 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
                 .message(errorCode.getMessage())
                 .errors(validationErrorList)
                 .build();
-    }
-
-    private ResponseEntity<Object> handleExceptionInternal(NoHandlerFoundException e, ErrorCode errorCode) {
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(makeErrorResponse(errorCode));
-    }
-
-    private ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e, ErrorCode errorCode) {
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(makeErrorResponse(errorCode));
     }
 }

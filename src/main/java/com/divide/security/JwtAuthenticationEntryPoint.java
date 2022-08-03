@@ -2,6 +2,10 @@ package com.divide.security;
 
 import com.divide.BaseResponse;
 import com.divide.BaseResponseStatus;
+import com.divide.exception.ErrorResponse;
+import com.divide.exception.code.AuthErrorCode;
+import com.divide.exception.code.CommonErrorCode;
+import com.divide.exception.code.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,23 +29,19 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        String jwt = resolveToken(request);
         // 유효한 자격증명을 제공하지 않고 접근하려 할때 401
-
         log.debug("request = " + request + ", response = " + response + ", authException = " + authException);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setContentType("application/json;charset=utf-8");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        boolean isFailedToLogin = authException instanceof BadCredentialsException;
-        boolean isEmptyJwt = StringUtils.hasText(jwt) == false;
-        if (isFailedToLogin) {
-            objectMapper.writeValue(response.getWriter(), new BaseResponse(BaseResponseStatus.FAILED_TO_LOGIN));
-        } else if (isEmptyJwt) {
-                objectMapper.writeValue(response.getWriter(), new BaseResponse(BaseResponseStatus.EMPTY_JWT));
-        } else {
-            objectMapper.writeValue(response.getWriter(), new BaseResponse(BaseResponseStatus.INVALID_JWT));
-        }
+        ErrorCode errorCode = AuthErrorCode.INVALID_JWT;
+
+        response.setContentType("application/json;charset=utf-8");
+        objectMapper.writeValue(response.getWriter(), ErrorResponse.builder()
+                .code(errorCode.name())
+                .message(errorCode.getMessage())
+                .build()
+        );
+        response.setStatus(errorCode.getHttpStatus().value());
     }
 
     private String resolveToken(HttpServletRequest httpServletRequest) {

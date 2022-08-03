@@ -4,12 +4,10 @@ import com.divide.exception.RestApiException;
 import com.divide.exception.code.UserErrorCode;
 import com.divide.user.dto.request.SignupRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,12 +18,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow();
-    }
-
-    @Transactional(readOnly = true)
-    public List<User> getUsers() {
-        return userRepository.getUsers();
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(""));
     }
 
     public void signup(SignupRequest signupRequest) {

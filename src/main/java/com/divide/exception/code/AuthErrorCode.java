@@ -6,10 +6,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum UserErrorCode implements ErrorCode {
-    INACTIVE_USER(HttpStatus.FORBIDDEN, "User is inactive"),
-    INVALID_EMAIL(HttpStatus.FORBIDDEN, "User is not registered"),
-    DUPLICATED_USER(HttpStatus.BAD_REQUEST, "User is already signed");
+public enum AuthErrorCode implements ErrorCode {
+    INVALID_JWT(HttpStatus.UNAUTHORIZED, "Invalid jwt"),
+    FAILED_AUTHENTICATION(HttpStatus.UNAUTHORIZED, "Failed to authentication"),
     ;
 
     private final HttpStatus httpStatus;
