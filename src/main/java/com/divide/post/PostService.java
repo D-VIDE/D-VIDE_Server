@@ -4,7 +4,7 @@ import com.divide.post.domain.Direction;
 import com.divide.utils.GeometryUtil;
 import com.divide.post.domain.Location;
 import com.divide.post.domain.Post;
-import com.divide.post.dto.request.postPostRequest;
+import com.divide.post.dto.request.PostPostRequest;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -69,7 +69,7 @@ public class PostService {
      *게시글 생성: user가 작성한 게시글
      */
     @Transactional
-    public Long post( Long userId, postPostRequest request) throws ParseException {
+    public Long post( Long userId, PostPostRequest request) throws ParseException {
         //엔티티 조회
         User user = userRepository.findById(userId);
 

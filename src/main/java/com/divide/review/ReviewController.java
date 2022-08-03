@@ -1,8 +1,7 @@
 package com.divide.review;
 
-import com.divide.post.PostService;
-import com.divide.review.dto.request.postReviewRequest;
-import com.divide.review.dto.response.postReviewResponse;
+import com.divide.review.dto.request.PostReviewRequest;
+import com.divide.review.dto.response.PostReviewResponse;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +17,9 @@ public class ReviewController {
      * 리뷰 생성 API - 임시
      */
     @PostMapping(value = "/review")
-    public ResponseEntity<postReviewResponse> review(@RequestBody postReviewRequest request, @RequestParam Long userId, @RequestParam Long postId) throws ParseException {
+    public ResponseEntity<PostReviewResponse> review(@RequestBody PostReviewRequest request, @RequestParam Long userId, @RequestParam Long postId) throws ParseException {
         Long newReviewId = reviewService.review(userId, postId, request);
 
-        return ResponseEntity.ok().body(new postReviewResponse(newReviewId));
+        return ResponseEntity.ok().body(new PostReviewResponse(newReviewId));
     }
 }

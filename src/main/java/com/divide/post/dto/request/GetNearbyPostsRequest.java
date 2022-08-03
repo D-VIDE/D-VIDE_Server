@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class getNearByPostsRequest {
+public class GetNearbyPostsRequest {
     private double longitude; //경도: x
     private double latitude; //위도: y
 }

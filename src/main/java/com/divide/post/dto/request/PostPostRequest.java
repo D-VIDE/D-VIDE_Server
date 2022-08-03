@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class postPostRequest {
+public class PostPostRequest {
 
     private String title;
     private String storeName;
