@@ -1,11 +1,13 @@
 package com.divide.exception;
 
+import com.divide.exception.code.AuthErrorCode;
 import com.divide.exception.code.CommonErrorCode;
 import com.divide.exception.code.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -93,6 +95,14 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn("handleHttpRequestMethodNotSupported", e);
         ErrorCode errorCode = CommonErrorCode.UNDEFINED_REQUEST_METHOD;
         return handleHttpRequestMethodNotSupported(e, errorCode);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException e) {
+        log.warn("handleBadCredentialsException", e);
+
+        ErrorCode errorCode = AuthErrorCode.FAILED_AUTHENTICATION;
+        return handleExceptionInternal(errorCode);
     }
 
     /**
