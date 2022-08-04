@@ -11,6 +11,7 @@ import org.locationtech.jts.io.ParseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -29,7 +30,7 @@ public class PostController {
      * @return
      */
     @PostMapping(value = "/post")
-    public ResponseEntity<PostPostResponse> post(@RequestBody PostPostRequest request, @RequestParam Long userId ) throws ParseException {
+    public ResponseEntity<PostPostResponse> post(@RequestBody @Valid PostPostRequest request, @RequestParam Long userId ) throws ParseException {
 
         Long newPostId = postService.post(userId, request );
 

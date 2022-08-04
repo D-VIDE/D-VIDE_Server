@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 import static javax.persistence.FetchType.LAZY;
@@ -22,26 +23,36 @@ public class Post {
     private Long postId;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id") //FK
+    @NotNull
     private User user;
 
+    @NotEmpty
     private String title;
+    @NotEmpty
     private String storeName;
+    @NotNull
     private String content;
 
 ////    private List<String> postImages = new ArrayList();
 ////    private List<PostImage> postImages = new ArrayList();
+    @PositiveOrZero
     private int targetPrice;
+    @PositiveOrZero
     private int deliveryPrice;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Category category;
 
+    @FutureOrPresent
     private LocalDateTime targetTime;
+    @NotNull
     private Geometry deliveryLocation;
 
 ////    private List<String> orders = new ArrayList<>();
 ////    private List<Order> orders = new ArrayList();
     @Enumerated(EnumType.STRING)
+    @NotNull
     private PostStatus postStatus;
 
     @CreatedDate
