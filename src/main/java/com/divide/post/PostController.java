@@ -55,12 +55,12 @@ public class PostController {
 
     /**
      * 500m이내 게시글 10개 조회 API
-     *  [GET] http://localhost:8080/api/v1/posts/nearby
+     *  [GET] http://localhost:8080/api/v1/posts/nearby?longitude=37.49015482509&latitude=127.030767490
      *
      */
     @GetMapping("/posts/nearby")
-    public Result findNearbyPosts(@RequestBody GetNearbyPostsRequest request){ //json 데이터 확장성을 위해 Result 사용
-        List<Post> findPosts = postService.getNearByRestaurants(request.getLongitude(), request.getLatitude(), 0.5);
+    public Result findNearbyPosts(@RequestParam("longitude") double longitude,  @RequestParam("latitude") double latitude){ //json 데이터 확장성을 위해 Result 사용
+        List<Post> findPosts = postService.getNearByRestaurants(longitude, latitude, 0.5);
 
         List<GetNearbyPostsResponse> collect = findPosts.stream()
                 .map( p -> new GetNearbyPostsResponse(p))
@@ -70,13 +70,13 @@ public class PostController {
 
     /**
      * 카테고리별 500m이내 게시글 10개 조회 API
-     *  [GET] http://localhost:8080/api/v1/posts/nearby/temp?category=KOREAN_FOOD
+     *  [GET] http://localhost:8080/api/v1/posts/nearby/"KOREAN_FOOD"?longitude=37.49015482509&latitude=127.030767490
      *  category 종류: STREET_FOOD, KOREAN_FOOD, JAPANESE_FOOD, CHINESE_FOOD, DESSERT, WESTERN_FOOD
      *
      */
-    @GetMapping("/posts/nearby/temp")
-    public Result findNearbyCategoryPosts(@RequestBody GetNearbyPostsRequest request, @RequestParam("category") String category){
-        List<Post> findPosts = postService.getNearbyCategoryRestaurants(request.getLongitude(), request.getLatitude(), 0.5, category);
+    @GetMapping("/posts/nearby/{category}")
+    public Result findNearbyCategoryPosts( @RequestParam("longitude") double longitude,  @RequestParam("latitude") double latitude, @PathVariable String category){
+        List<Post> findPosts = postService.getNearbyCategoryRestaurants(longitude, latitude, 0.5, category);
 
         List<GetNearbyPostsResponse> collect = findPosts.stream()
                 .map( p -> new GetNearbyPostsResponse(p))
