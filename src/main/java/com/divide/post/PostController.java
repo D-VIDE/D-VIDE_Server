@@ -1,5 +1,6 @@
 package com.divide.post;
 
+import com.divide.post.domain.Category;
 import com.divide.post.domain.Post;
 import com.divide.post.dto.request.PostPostRequest;
 import com.divide.post.dto.request.UpdatePostRequest;
@@ -53,13 +54,29 @@ public class PostController {
     }
 
     /**
-     * 게시물 가까운 식당(500m안) 게시글 조회 API
-     *  [GET] http://localhost:8080/api/v1/nearByPosts
+     * 500m이내 게시글 10개 조회 API
+     *  [GET] http://localhost:8080/api/v1/posts/nearby?longitude=37.49015482509&latitude=127.030767490
      *
      */
-    @GetMapping("/nearByPosts")
-    public Result findNearestPosts(@RequestBody GetNearbyPostsRequest request){ //json 데이터 확장성을 위해 Result 사용
-        List<Post> findPosts = postService.getNearByRestaurants(request.getLongitude(), request.getLatitude(), 0.5);
+    @GetMapping("/posts/nearby")
+    public Result findNearbyPosts(@RequestParam("longitude") double longitude,  @RequestParam("latitude") double latitude){ //json 데이터 확장성을 위해 Result 사용
+        List<Post> findPosts = postService.getNearByRestaurants(longitude, latitude, 0.5);
+
+        List<GetNearbyPostsResponse> collect = findPosts.stream()
+                .map( p -> new GetNearbyPostsResponse(p))
+                .collect(toList());
+        return new Result(collect);
+    }
+
+    /**
+     * 카테고리별 500m이내 게시글 10개 조회 API
+     *  [GET] http://localhost:8080/api/v1/posts/nearby/"KOREAN_FOOD"?longitude=37.49015482509&latitude=127.030767490
+     *  category 종류: STREET_FOOD, KOREAN_FOOD, JAPANESE_FOOD, CHINESE_FOOD, DESSERT, WESTERN_FOOD
+     *
+     */
+    @GetMapping("/posts/nearby/{category}")
+    public Result findNearbyCategoryPosts( @RequestParam("longitude") double longitude,  @RequestParam("latitude") double latitude, @PathVariable String category){
+        List<Post> findPosts = postService.getNearbyCategoryRestaurants(longitude, latitude, 0.5, category);
 
         List<GetNearbyPostsResponse> collect = findPosts.stream()
                 .map( p -> new GetNearbyPostsResponse(p))
