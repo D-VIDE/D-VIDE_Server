@@ -1,5 +1,6 @@
 package com.divide.post;
 
+import com.divide.post.domain.Category;
 import com.divide.post.domain.Direction;
 import com.divide.utils.GeometryUtil;
 import com.divide.post.domain.Location;
@@ -103,6 +104,30 @@ public class PostService {
      *
      */
     public List<Post> getNearByRestaurants(Double latitude, Double longitude, Double distance) {
+        String pointFormat = getPointFormat(latitude, longitude, distance);
+        Query query = em.createNativeQuery("SELECT * FROM post AS p WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + pointFormat + ", p.delivery_location)", Post.class)
+                .setMaxResults(10);
+        List<Post> postLists = query.getResultList();
+        return postLists;
+    }
+
+    /**
+     * 게시글 카테고리 & 거리기반 조회
+     * @param longitude : 기준좌표 x
+     * @param latitude  : 기준좌표 y
+     * @param distance  : 기준 좌표 x,y로 부터 distanceKM 떨어진 모든 범위
+     * @param category  : 사용자가 선택한 카테고리
+     *
+     */
+    public List<Post> getNearbyCategoryRestaurants(Double latitude, Double longitude, Double distance, String category) {
+        String pointFormat = getPointFormat(latitude, longitude, distance);
+        Query query = em.createNativeQuery("SELECT * FROM post AS p WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + pointFormat + ", p.delivery_location) AND p.category = "+ category, Post.class)
+                .setMaxResults(10);
+        List<Post> postLists = query.getResultList();
+        return postLists;
+    }
+
+    private String getPointFormat(Double latitude, Double longitude, Double distance) {
         //일정 거리 범위 내에있는 좌표들을 비교하기 위해서 MBR이 필요
         //MBR을 구하기 위해 북동쪽, 남서쪽 좌표 구하기
         Location northEast = GeometryUtil
@@ -118,10 +143,7 @@ public class PostService {
 
         //기준 좌표 x,y로 부터 distanceKM 떨어진 모든 범위의 delivery_location 데이터를 조회하는 쿼리
         String pointFormat = String.format("'LINESTRING(%f %f, %f %f)')", x1, y1, x2, y2);
-        Query query = em.createNativeQuery("SELECT * FROM post AS p WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + pointFormat + ", p.delivery_location)", Post.class)
-                .setMaxResults(10);
-        List<Post> postLists = query.getResultList();
-        return postLists;
+        return pointFormat;
     }
 
 }
