@@ -53,12 +53,12 @@ public class PostController {
     }
 
     /**
-     * 게시물 가까운 식당(500m안) 게시글 조회 API
-     *  [GET] http://localhost:8080/api/v1/nearByPosts
+     * 500m이내 게시글 10개 조회 API
+     *  [GET] http://localhost:8080/api/v1/posts/nearby
      *
      */
-    @GetMapping("/nearByPosts")
-    public Result findNearestPosts(@RequestBody GetNearbyPostsRequest request){ //json 데이터 확장성을 위해 Result 사용
+    @GetMapping("/posts/nearby")
+    public Result findNearbyPosts(@RequestBody GetNearbyPostsRequest request){ //json 데이터 확장성을 위해 Result 사용
         List<Post> findPosts = postService.getNearByRestaurants(request.getLongitude(), request.getLatitude(), 0.5);
 
         List<GetNearbyPostsResponse> collect = findPosts.stream()
