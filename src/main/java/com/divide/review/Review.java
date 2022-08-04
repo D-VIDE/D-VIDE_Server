@@ -40,8 +40,8 @@ public class Review {
     @PositiveOrZero
     @NotNull
     private Double starRating;
-    @NotNull
-    private Geometry storeLocation;
+//    @NotNull
+//    private Geometry storeLocation; //게시글 위치로 함
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -50,12 +50,11 @@ public class Review {
     private String content;
 
     @Builder
-    public Review(Long reviewId, User user, Post post, Double starRating, Geometry storeLocation, LocalDateTime createdAt, String content) {
+    public Review(Long reviewId, User user, Post post, Double starRating, LocalDateTime createdAt, String content) {
         this.reviewId = reviewId;
         this.user = user;
         this.post = post;
         this.starRating = starRating;
-        this.storeLocation = storeLocation;
         this.createdAt = createdAt;
         this.content = content;
     }
