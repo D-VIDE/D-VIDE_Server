@@ -37,9 +37,10 @@ public class Review {
     @NotNull
     private Post post;
 
-    @NotEmpty
+    @PositiveOrZero
+    @NotNull
     private Double starRating;
-    @NotEmpty
+    @NotNull
     private Geometry storeLocation;
 
     @CreatedDate
