@@ -11,6 +11,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import java.time.LocalDateTime;
 
@@ -28,18 +29,23 @@ public class Review {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id") //FK
+    @NotNull
     private User user;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "post_id") //FK
+    @NotNull
     private Post post;
 
+    @NotEmpty
     private Double starRating;
+    @NotEmpty
     private Geometry storeLocation;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @NotNull
     private String content;
 
     @Builder
