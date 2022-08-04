@@ -1,5 +1,7 @@
 package com.divide.follow;
 
+import com.divide.exception.RestApiException;
+import com.divide.exception.code.CommonErrorCode;
 import com.divide.follow.dto.request.GetFollowResponse;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
@@ -20,6 +22,9 @@ public class FollowService {
 
     public Long save(String myUserEmail, Long targetId) {
         User myUser = userRepository.findByEmail(myUserEmail).orElseThrow(() -> new UsernameNotFoundException(""));
+        /* 자기 자신일 경우 */
+        if (myUser.getId() == targetId) throw new RestApiException(CommonErrorCode.INVALID_REQUEST);
+
         User targetUser = userRepository.findById(targetId);
         Follow newFollow = new Follow(myUser, targetUser);
         followRepository.save(newFollow);

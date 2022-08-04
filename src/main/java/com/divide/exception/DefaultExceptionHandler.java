@@ -5,6 +5,7 @@ import com.divide.exception.code.CommonErrorCode;
 import com.divide.exception.code.ErrorCode;
 import com.divide.exception.code.UserErrorCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -120,11 +121,28 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(errorCode);
     }
 
+    /**
+     * 삭제된 유저의 jwt로 조회 하는 등 jwt에 있는 email로 유저 조회가 안 되는 경우 발생하는 Exception을 컨트롤함.
+     * @param e
+     * @return
+     */
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Object> handleUsernameNotFoundException(UsernameNotFoundException e) {
         log.warn("handleUsernameNotFoundException", e);
 
         ErrorCode errorCode = UserErrorCode.INVALID_EMAIL;
+        return handleExceptionInternal(errorCode);
+    }
+
+    /**
+     * DB Constraints 위반 시 발생하는 Exception을 컨트롤함.
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+        log.warn("handleDataIntegrityViolationException", e);
+        ErrorCode errorCode = CommonErrorCode.INVALID_REQUEST;
         return handleExceptionInternal(errorCode);
     }
 
