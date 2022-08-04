@@ -4,6 +4,7 @@ import com.divide.follow.dto.request.GetFollowResponse;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +18,12 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
 
-    public void save(String myUserEmail, Long targetId) {
-        User myUser = userRepository.findByEmail(myUserEmail).orElseThrow();
+    public Long save(String myUserEmail, Long targetId) {
+        User myUser = userRepository.findByEmail(myUserEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         User targetUser = userRepository.findById(targetId);
-        followRepository.save(new Follow(myUser, targetUser));
+        Follow newFollow = new Follow(myUser, targetUser);
+        followRepository.save(newFollow);
+        return newFollow.getId();
     }
 
     public GetFollowResponse getFFFList(String userEmail) {

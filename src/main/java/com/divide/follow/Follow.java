@@ -10,6 +10,9 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Entity
 @NoArgsConstructor
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"follower_id", "followee_id"})
+})
 public class Follow {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "follow_id")

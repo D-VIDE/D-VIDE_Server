@@ -1,14 +1,13 @@
 package com.divide.follow;
 
 import com.divide.follow.dto.request.GetFollowResponse;
+import com.divide.follow.dto.request.PostFollowRequest;
+import com.divide.follow.dto.response.PostFollowResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,5 +27,14 @@ public class FollowController {
             case FOLLOWER -> getFollowResponse = followService.getFollowerList(userDetails.getUsername());
         }
         return ResponseEntity.ok(getFollowResponse);
+    }
+
+    @PostMapping("follow")
+    public ResponseEntity<PostFollowResponse> postFollow(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody PostFollowRequest postFollowRequest
+    ) {
+        Long saveId = followService.save(userDetails.getUsername(), postFollowRequest.getUserId());
+        return ResponseEntity.status(201).body(new PostFollowResponse(saveId));
     }
 }

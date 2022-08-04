@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,9 +35,10 @@ public class InitDb {
     @RequiredArgsConstructor
     static class InitService {
         private final EntityManager em;
+        private final PasswordEncoder passwordEncoder;
         public void dbInit1() throws ParseException {
             //String email, String password, String profileImgUrl, String nickname, UserRole role
-            User user1 = new User("email@gmail.com", "password1", "profileImgUrl1", "nickname1", USER );
+            User user1 = new User("email@gmail.com", passwordEncoder.encode("password1"), "profileImgUrl1", "nickname1", USER );
             em.persist(user1);
 
             //deliveryLocation
