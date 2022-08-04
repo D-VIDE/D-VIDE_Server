@@ -18,15 +18,15 @@ public class FollowRepository {
     }
 
     public List<Follow> getFFFList(User user) {
-        List<Follow> followingList = getFollowingList(user);
+        List<Follow> followerList = getFollowerList(user);
 
         return em.createQuery(
                 "select f1 " +
                         "from Follow f1 " +
-                        "where f1.follower = :follower and f1.id in :followingList"
+                        "where f1.follower = :follower and f1.followee in :followerList"
         )
                 .setParameter("follower", user)
-                .setParameter("followingList", followingList.stream().map(Follow::getId).collect(Collectors.toList()))
+                .setParameter("followerList", followerList.stream().map(f -> f.getFollower()).toList())
                 .getResultList();
     }
 
