@@ -30,6 +30,11 @@ dependencies {
 
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-common:2.36.1'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-filestorage:2.36.1'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-core:2.36.1'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage-generated:2.36.1'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage-extensions:2.36.1'
 
 	runtimeOnly 'mysql:mysql-connector-java'
 

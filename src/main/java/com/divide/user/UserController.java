@@ -29,12 +29,11 @@ public class UserController {
      */
     @GetMapping("/user")
     public GetUserResponse getUser(@AuthenticationPrincipal UserDetails userDetails) {
-        System.out.println("userDetails = " + userDetails);
-
         User user = userService.getUserByEmail(userDetails.getUsername());
         return GetUserResponse.builder()
                 .email(user.getEmail())
                 .nickname(user.getNickname())
+                .profileImgUrl(user.getProfileImgUrl())
                 .badges(null)
                 .followerCount(0)
                 .followingCount(0)

@@ -1,11 +1,10 @@
 package com.divide.auth;
 
 import com.divide.auth.dto.KaKaoLoginServiceResult;
-import com.divide.auth.dto.response.KakaoLoginResponse;
-import com.divide.security.TokenProvider;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
 import com.divide.user.UserRole;
+import com.divide.utils.OCIUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -13,16 +12,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
-import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,9 +30,6 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    /*
-    TODO: 이미지 서버에 이미지 업로드
-    */
     public KaKaoLoginServiceResult kakaoLogin(final String authorizationCode, final String callbackUrl) throws JsonProcessingException {
         String kakaoAccessToken = getKakaoAccessToken(authorizationCode, callbackUrl);
         Map kakaoUserMap = getKakaoUser(kakaoAccessToken);
@@ -41,11 +37,11 @@ public class AuthService {
 
         String email = (String) kakaoUserMap.get("email");
         String password = email + "kakaoLogin";
-        String imageUrl = (String) profile.get("thumbnail_image_url");
+        String profileImgUrl = saveProfileImgFromUrl((String) profile.get("thumbnail_image_url"));
         String nickname = (String) profile.get("nickname");
 
         if (userRepository.findByEmail(email).isEmpty()) {
-            userRepository.signup(new User(email, passwordEncoder.encode(password), imageUrl, nickname, UserRole.USER));
+            userRepository.signup(new User(email, passwordEncoder.encode(password), profileImgUrl, nickname, UserRole.USER));
         }
 
         return new KaKaoLoginServiceResult(email, password);
@@ -94,5 +90,12 @@ public class AuthService {
         ObjectMapper objectMapper = new ObjectMapper();
         Map json = objectMapper.readValue(response.getBody(), Map.class);
         return (Map) json.get("kakao_account");
+    }
+
+    private String saveProfileImgFromUrl(final String kakaoProfileImgUrl) {
+        String sourceFileExtension = StringUtils.getFilenameExtension(kakaoProfileImgUrl).toLowerCase();
+
+        String destinationFileName = UUID.randomUUID() + "." + sourceFileExtension;
+        return OCIUtil.uploadProfileImgFromUrl(kakaoProfileImgUrl, destinationFileName);
     }
 }
