@@ -1,25 +1,32 @@
-package com.divide.post;
+package com.divide;
 
+import com.divide.exception.RestApiException;
+import com.divide.exception.code.FileIOErrorCode;
 import com.divide.post.domain.Category;
 import com.divide.post.domain.Post;
 import com.divide.post.domain.PostStatus;
 import com.divide.user.User;
+import com.divide.user.UserService;
+import com.divide.user.dto.request.SignupRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 
 
+import java.io.*;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
-
-import static com.divide.user.UserRole.USER;
 
 @Component
 @RequiredArgsConstructor
@@ -35,10 +42,25 @@ public class InitDb {
     @RequiredArgsConstructor
     static class InitService {
         private final EntityManager em;
-        private final PasswordEncoder passwordEncoder;
+        private final UserService userService;
+
+        private MultipartFile getMultipartFile() {
+            File file = new File("src/main/resources/static/sample.jpg");
+            try {
+                FileItem fileItem = new DiskFileItem("mainFile", Files.probeContentType(file.toPath()), false, file.getName(), (int)file.length(), file.getParentFile());
+                InputStream is = new FileInputStream(file);
+                OutputStream os = fileItem.getOutputStream();
+                IOUtils.copy(is, os);
+                return new CommonsMultipartFile(fileItem);
+            } catch (IOException e) {
+                throw new RestApiException(FileIOErrorCode.FILE_IO_ERROR);
+            }
+        }
+
         public void dbInit1() throws ParseException {
             //String email, String password, String profileImgUrl, String nickname, UserRole role
-            User user1 = new User("email@gmail.com", passwordEncoder.encode("password1"), "profileImgUrl1", "nickname1", USER );
+            userService.signup(new SignupRequest("email@gmail.com", "password1", getMultipartFile(), "nickname1"));
+            User user1 = userService.getUserByEmail("email@gmail.com");
             em.persist(user1);
 
             //deliveryLocation
