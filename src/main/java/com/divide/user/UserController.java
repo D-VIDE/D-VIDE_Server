@@ -10,8 +10,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -19,7 +17,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/user")
-    public ResponseEntity<SignupResponse> signup(@RequestBody @Valid SignupRequest signupRequest) {
+    public ResponseEntity<SignupResponse> signup(@ModelAttribute SignupRequest signupRequest) {
         Long saveId = userService.signup(signupRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(new SignupResponse(saveId));
     }

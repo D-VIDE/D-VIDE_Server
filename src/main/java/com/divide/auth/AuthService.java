@@ -37,10 +37,10 @@ public class AuthService {
 
         String email = (String) kakaoUserMap.get("email");
         String password = email + "kakaoLogin";
-        String profileImgUrl = saveProfileImgFromUrl((String) profile.get("thumbnail_image_url"));
-        String nickname = (String) profile.get("nickname");
 
         if (userRepository.findByEmail(email).isEmpty()) {
+            String profileImgUrl = saveProfileImgFromUrl(email, (String) profile.get("thumbnail_image_url"));
+            String nickname = (String) profile.get("nickname");
             userRepository.signup(new User(email, passwordEncoder.encode(password), profileImgUrl, nickname, UserRole.USER));
         }
 
@@ -92,10 +92,8 @@ public class AuthService {
         return (Map) json.get("kakao_account");
     }
 
-    private String saveProfileImgFromUrl(final String kakaoProfileImgUrl) {
+    private String saveProfileImgFromUrl(String email, String kakaoProfileImgUrl) {
         String sourceFileExtension = StringUtils.getFilenameExtension(kakaoProfileImgUrl).toLowerCase();
-
-        String destinationFileName = UUID.randomUUID() + "." + sourceFileExtension;
-        return OCIUtil.uploadProfileImgFromUrl(kakaoProfileImgUrl, destinationFileName);
+        return OCIUtil.uploadProfileImgFromUrl(kakaoProfileImgUrl, email + "/" + UUID.randomUUID() + "." + sourceFileExtension);
     }
 }
