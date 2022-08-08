@@ -67,7 +67,7 @@ public class OciTest {
         final String bucketName = "DivideBucket";
         final String objectName = "tech.jpg";
         final String contentType = "image/jpeg";
-        final File body = new File("src/main/resources/static/tech.jpg");
+        final File body = new File("src/main/resources/static/sample.jpg");
 
         PutObjectRequest request =
                 PutObjectRequest.builder()
