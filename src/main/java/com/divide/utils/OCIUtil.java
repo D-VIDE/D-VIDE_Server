@@ -24,10 +24,10 @@ import java.net.URL;
 import java.util.function.Supplier;
 
 public class OCIUtil {
-    private static final String CONFIGURATION_FILE_PATH = "config/ociConfig";
-    private static final String PROFILE = "DEFAULT";
-    private static final Region REGION = Region.AP_CHUNCHEON_1;
-    private static final String BUCKET_NAME = "DivideBucket";
+    public static final String CONFIGURATION_FILE_PATH = "config/ociConfig";
+    public static final String PROFILE = "DEFAULT";
+    public static final Region REGION = Region.AP_CHUNCHEON_1;
+    public static final String BUCKET_NAME = "DivideBucket";
     private static final String CLOUD_URL = "https://objectstorage.%s.oraclecloud.com/n/%s/b/%s/o/%s";
 
     public enum FolderName {
@@ -66,29 +66,14 @@ public class OCIUtil {
     }
 
     static private String upload(InputStream is, Long fileSize, FolderName foldername, String filename) {
-        ConfigFileReader.ConfigFile config;
-        try {
-            ClassPathResource classPathResource = new ClassPathResource(CONFIGURATION_FILE_PATH);
-            InputStream configIs = classPathResource.getInputStream();
-            config = ConfigFileReader.parse(configIs, PROFILE);
-        } catch (IOException e) {
-            throw new RestApiException(FileIOErrorCode.OCI_ERROR);
-        }
+        ConfigFileReader.ConfigFile config = loadConfig();
 
         ObjectStorage client = createClient(config);
 
-        UploadConfiguration uploadConfiguration =
-                UploadConfiguration.builder()
-                        .allowMultipartUploads(true)
-                        .allowParallelUploads(true)
-                        .build();
-
-        UploadManager uploadManager = new UploadManager(client, uploadConfiguration);
         GetNamespaceResponse namespaceResponse = client.getNamespace(GetNamespaceRequest.builder().build());
-        String namespaceName = namespaceResponse.getValue();
-
-        final String bucketName = BUCKET_NAME;
+        final String namespaceName = namespaceResponse.getValue();
         final String objectName = foldername + "/" + filename;
+        final String bucketName = BUCKET_NAME;
         PutObjectRequest request =
                 PutObjectRequest.builder()
                         .bucketName(bucketName)
@@ -96,6 +81,12 @@ public class OCIUtil {
                         .objectName(objectName)
                         .build();
 
+        UploadConfiguration uploadConfiguration =
+                UploadConfiguration.builder()
+                        .allowMultipartUploads(true)
+                        .allowParallelUploads(true)
+                        .build();
+        UploadManager uploadManager = new UploadManager(client, uploadConfiguration);
         UploadManager.UploadRequest uploadDetails =
                 UploadManager.UploadRequest.builder(is, fileSize).allowOverwrite(true).build(request);
 
@@ -113,6 +104,16 @@ public class OCIUtil {
                 BUCKET_NAME,
                 objectName
         );
+    }
+
+    private static ConfigFileReader.ConfigFile loadConfig() {
+        try {
+            ClassPathResource classPathResource = new ClassPathResource(CONFIGURATION_FILE_PATH);
+            InputStream configIs = classPathResource.getInputStream();
+            return ConfigFileReader.parse(configIs, PROFILE);
+        } catch (IOException e) {
+            throw new RestApiException(FileIOErrorCode.OCI_ERROR);
+        }
     }
 
     private static ObjectStorage createClient(ConfigFileReader.ConfigFile config) {
