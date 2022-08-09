@@ -8,8 +8,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,16 +31,22 @@ class FollowServiceTest {
 
     @BeforeEach
     @Transactional
-    void setUp() {
-        userService.signup(new SignupRequest("email1@gmail.com", "password1", "url1", "nick1"));
-        userService.signup(new SignupRequest("email2@gmail.com", "password2", "url2", "nick2"));
-        userService.signup(new SignupRequest("email3@gmail.com", "password3", "url3", "nick3"));
-        userService.signup(new SignupRequest("email4@gmail.com", "password4", "url4", "nick4"));
-        userService.signup(new SignupRequest("email5@gmail.com", "password5", "url5", "nick5"));
-        userService.signup(new SignupRequest("email6@gmail.com", "password6", "url6", "nick6"));
-        userService.signup(new SignupRequest("email7@gmail.com", "password7", "url7", "nick7"));
-        userService.signup(new SignupRequest("email8@gmail.com", "password8", "url8", "nick8"));
-        userService.signup(new SignupRequest("email9@gmail.com", "password9", "url9", "nick9"));
+    void setUp() throws IOException {
+        MockMultipartFile mockMultipartFile = getMockMultipartFile("profile", "jpg", "src/main/resources/static/sample.jpg");
+        userService.signup(new SignupRequest("email1@gmail.com", "password1", mockMultipartFile, "nick1"));
+        userService.signup(new SignupRequest("email2@gmail.com", "password2", mockMultipartFile, "nick2"));
+        userService.signup(new SignupRequest("email3@gmail.com", "password3", mockMultipartFile, "nick3"));
+        userService.signup(new SignupRequest("email4@gmail.com", "password4", mockMultipartFile, "nick4"));
+        userService.signup(new SignupRequest("email5@gmail.com", "password5", mockMultipartFile, "nick5"));
+        userService.signup(new SignupRequest("email6@gmail.com", "password6", mockMultipartFile, "nick6"));
+        userService.signup(new SignupRequest("email7@gmail.com", "password7", mockMultipartFile, "nick7"));
+        userService.signup(new SignupRequest("email8@gmail.com", "password8", mockMultipartFile, "nick8"));
+        userService.signup(new SignupRequest("email9@gmail.com", "password9", mockMultipartFile, "nick9"));
+    }
+
+    private MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(path);
+        return new MockMultipartFile(fileName, fileName + "." + contentType, contentType, fileInputStream);
     }
 
     @Test
