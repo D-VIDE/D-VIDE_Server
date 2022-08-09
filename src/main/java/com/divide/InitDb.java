@@ -15,6 +15,8 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,14 +46,26 @@ public class InitDb {
         private final EntityManager em;
         private final UserService userService;
 
-        private MultipartFile getMultipartFile() {
-            File file = new File("src/main/resources/static/sample.jpg");
+        private MultipartFile getSampleMultipartFile() {
             try {
-                FileItem fileItem = new DiskFileItem("mainFile", Files.probeContentType(file.toPath()), false, file.getName(), (int)file.length(), file.getParentFile());
-                InputStream is = new FileInputStream(file);
+                ClassPathResource classPathResource = new ClassPathResource("static/sample.jpg");
+                InputStream is = classPathResource.getInputStream();
+                File tempFile = File.createTempFile(String.valueOf(is.hashCode()), ".tmp");
+                tempFile.deleteOnExit();
+
+                FileItem fileItem = new DiskFileItem(
+                        "mainFile",
+                        Files.probeContentType(tempFile.toPath()),
+                        false,
+                        "sample.tmp",
+                        is.available(),
+                        tempFile.getParentFile()
+                );
+
                 OutputStream os = fileItem.getOutputStream();
                 IOUtils.copy(is, os);
-                return new CommonsMultipartFile(fileItem);
+                CommonsMultipartFile commonsMultipartFile = new CommonsMultipartFile(fileItem);
+                return commonsMultipartFile;
             } catch (IOException e) {
                 throw new RestApiException(FileIOErrorCode.FILE_IO_ERROR);
             }
@@ -59,9 +73,8 @@ public class InitDb {
 
         public void dbInit1() throws ParseException {
             //String email, String password, String profileImgUrl, String nickname, UserRole role
-            userService.signup(new SignupRequest("email@gmail.com", "password1", getMultipartFile(), "nickname1"));
+            userService.signup(new SignupRequest("email@gmail.com", "password1", getSampleMultipartFile(), "nickname1"));
             User user1 = userService.getUserByEmail("email@gmail.com");
-            em.persist(user1);
 
             //deliveryLocation
             double latitude = 127.030767490957;

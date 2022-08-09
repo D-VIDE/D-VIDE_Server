@@ -5,7 +5,7 @@ import com.divide.exception.code.FileIOErrorCode;
 import com.oracle.bmc.ConfigFileReader;
 import com.oracle.bmc.Region;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
-import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.ObjectStorage;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
@@ -13,18 +13,22 @@ import com.oracle.bmc.objectstorage.requests.PutObjectRequest;
 import com.oracle.bmc.objectstorage.responses.GetNamespaceResponse;
 import com.oracle.bmc.objectstorage.transfer.UploadConfiguration;
 import com.oracle.bmc.objectstorage.transfer.UploadManager;
+import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
+import java.util.function.Supplier;
 
 public class OCIUtil {
-    private static final String CONFIGURATION_FILE_PATH = "src/main/resources/config/ociConfig";
+    private static final String CONFIGURATION_FILE_PATH = "config/ociConfig";
     private static final String PROFILE = "DEFAULT";
     private static final Region REGION = Region.AP_CHUNCHEON_1;
     private static final String BUCKET_NAME = "DivideBucket";
+    private static final String CLOUD_URL = "https://objectstorage.%s.oraclecloud.com/n/%s/b/%s/o/%s";
 
     public enum FolderName {
         PROFILE, POST, ORDER
@@ -64,14 +68,14 @@ public class OCIUtil {
     static private String upload(InputStream is, Long fileSize, FolderName foldername, String filename) {
         ConfigFileReader.ConfigFile config;
         try {
-            config = ConfigFileReader.parse(CONFIGURATION_FILE_PATH, PROFILE);
+            ClassPathResource classPathResource = new ClassPathResource(CONFIGURATION_FILE_PATH);
+            InputStream configIs = classPathResource.getInputStream();
+            config = ConfigFileReader.parse(configIs, PROFILE);
         } catch (IOException e) {
             throw new RestApiException(FileIOErrorCode.OCI_ERROR);
         }
 
-        AuthenticationDetailsProvider provider = new ConfigFileAuthenticationDetailsProvider(config);
-        ObjectStorage client = new ObjectStorageClient(provider);
-        client.setRegion(REGION);
+        ObjectStorage client = createClient(config);
 
         UploadConfiguration uploadConfiguration =
                 UploadConfiguration.builder()
@@ -103,11 +107,44 @@ public class OCIUtil {
             throw new RestApiException(FileIOErrorCode.OCI_ERROR);
         }
 
-        return String.format("https://objectstorage.%s.oraclecloud.com/n/%s/b/%s/o/%s",
+        return String.format(CLOUD_URL,
                 REGION.getRegionId(),
                 namespaceName,
                 BUCKET_NAME,
                 objectName
         );
+    }
+
+    private static ObjectStorage createClient(ConfigFileReader.ConfigFile config) {
+        String keyFile = config.get("key_file");
+        JarPrivateKeySupplier jarPrivateKeySupplier = new JarPrivateKeySupplier(keyFile);
+
+        AuthenticationDetailsProvider provider = SimpleAuthenticationDetailsProvider.builder()
+                .userId(config.get("user"))
+                .fingerprint(config.get("fingerprint"))
+                .tenantId(config.get("tenancy"))
+                .region(REGION)
+                .privateKeySupplier(jarPrivateKeySupplier)
+                .build();
+
+        ObjectStorage client = new ObjectStorageClient(provider);
+        client.setRegion(REGION);
+        return client;
+    }
+
+    @RequiredArgsConstructor
+    static private class JarPrivateKeySupplier implements Supplier<InputStream> {
+        private final String configPath;
+
+        @Override
+        public InputStream get() {
+            ClassPathResource classPathResource = new ClassPathResource(configPath);
+            try {
+                InputStream is = classPathResource.getInputStream();
+                return is;
+            } catch (IOException e) {
+                throw new RestApiException(FileIOErrorCode.FILE_IO_ERROR);
+            }
+        }
     }
 }
