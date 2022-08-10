@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.util.List;
 
 import static com.divide.post.domain.PostStatus.RECRUITING;
@@ -101,30 +100,13 @@ public class PostService {
      * @param longitude : 기준좌표 x
      * @param latitude  : 기준좌표 y
      * @param distance  : 기준 좌표 x,y로 부터 distanceKM 떨어진 모든 범위
-     *
-     */
-    public List<Post> getNearByRestaurants(Double latitude, Double longitude, Double distance) {
-        String pointFormat = getPointFormat(latitude, longitude, distance);
-        Query query = em.createNativeQuery("SELECT * FROM post AS p WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + pointFormat + ", p.delivery_location)", Post.class)
-                .setMaxResults(10);
-        List<Post> postLists = query.getResultList();
-        return postLists;
-    }
-
-    /**
-     * 게시글 카테고리 & 거리기반 조회
-     * @param longitude : 기준좌표 x
-     * @param latitude  : 기준좌표 y
-     * @param distance  : 기준 좌표 x,y로 부터 distanceKM 떨어진 모든 범위
      * @param category  : 사용자가 선택한 카테고리
      *
      */
-    public List<Post> getNearbyCategoryRestaurants(Double latitude, Double longitude, Double distance, String category) {
+    public List<Post> getNearByRestaurants(Integer first, Double latitude, Double longitude, Double distance, Category category) {
         String pointFormat = getPointFormat(latitude, longitude, distance);
-        Query query = em.createNativeQuery("SELECT * FROM post AS p WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + pointFormat + ", p.delivery_location) AND p.category = "+ category, Post.class)
-                .setMaxResults(10);
-        List<Post> postLists = query.getResultList();
-        return postLists;
+        if (category == null) return postRepository.findNearByRestaurantsAll(first, pointFormat);
+        else return postRepository.findNearByRestaurantsByCategory(first, pointFormat, category);
     }
 
     private String getPointFormat(Double latitude, Double longitude, Double distance) {
@@ -135,14 +117,14 @@ public class PostService {
         Location southWest = GeometryUtil
                 .calculate(latitude, longitude, distance, Direction.SOUTHWEST.getBearing());
         // 기준 좌표의 북동쪽으로 nKM에 위치한 좌표 : x1, y1
-        double x1 = northEast.getLatitude();
-        double y1 = northEast.getLongitude();
+        double x1 = northEast.getLongitude();
+        double y1 = northEast.getLatitude();
         // 기준 좌표의 남서쪽으로 nKM에 위치한 좌표 : x2, y2
-        double x2 = southWest.getLatitude();
-        double y2 = southWest.getLongitude();
+        double x2 = southWest.getLongitude();
+        double y2 = southWest.getLatitude();
 
         //기준 좌표 x,y로 부터 distanceKM 떨어진 모든 범위의 delivery_location 데이터를 조회하는 쿼리
-        String pointFormat = String.format("'LINESTRING(%f %f, %f %f)')", x1, y1, x2, y2);
+        String pointFormat = String.format("LINESTRING(%f %f, %f %f)", x1, y1, x2, y2);
         return pointFormat;
     }
 

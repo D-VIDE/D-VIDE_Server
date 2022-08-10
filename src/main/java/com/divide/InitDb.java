@@ -77,8 +77,8 @@ public class InitDb {
             User user1 = userService.getUserByEmail("email@gmail.com");
 
             //deliveryLocation
-            double latitude = 127.030767490957;
-            double longitude = 37.4901548250937;
+            double longitude = 127.030767490957;
+            double latitude = 37.4901548250937;
             String pointWKT = String.format("POINT(%s %s)", longitude, latitude);
             Point point1 = (Point) new WKTReader().read(pointWKT);
 
@@ -95,7 +95,7 @@ public class InitDb {
                     .postStatus(PostStatus.RECRUIT_FAIL)
                     .build();
 
-            Point point2 = (Point) new WKTReader().read("POINT(37.4895303786052 127.030436319555)");
+            Point point2 = (Point) new WKTReader().read("POINT(127.030436319555 37.4895303786052)");
 
             Post post2 = Post.builder()
                     .user(user1)
@@ -110,7 +110,7 @@ public class InitDb {
                     .postStatus(PostStatus.RECRUITING)
                     .build();
 
-            Point point3 = (Point) new WKTReader().read("POINT(37.4895773750866 127.03067318021)");
+            Point point3 = (Point) new WKTReader().read("POINT(127.03067318021 37.4895773750866)");
 
             Post post3 = Post.builder()
                     .user(user1)
@@ -125,7 +125,7 @@ public class InitDb {
                     .postStatus(PostStatus.RECRUITING)
                     .build();
 
-            Point point4 = (Point) new WKTReader().read("POINT(37.4895303786052 127.030436319555)");
+            Point point4 = (Point) new WKTReader().read("POINT(127.030436319555 37.4895303786052)");
 
             Post post4 = Post.builder()
                     .user(user1)
@@ -140,7 +140,7 @@ public class InitDb {
                     .postStatus(PostStatus.RECRUITING)
                     .build();
 
-            Point point5 = (Point) new WKTReader().read("POINT(37.4895773750866 127.030673180212)");
+            Point point5 = (Point) new WKTReader().read("POINT(127.030673180212 37.4895773750866)");
 
             Post post5 = Post.builder()
                     .user(user1)
@@ -155,7 +155,7 @@ public class InitDb {
                     .postStatus(PostStatus.RECRUITING)
                     .build();
 
-            Point point6 = (Point) new WKTReader().read("POINT(37.4895773750866 127.030673180212)");
+            Point point6 = (Point) new WKTReader().read("POINT(127.030673180212 37.4895773750866)");
 
             Post post6 = Post.builder()
                     .user(user1)
@@ -170,7 +170,7 @@ public class InitDb {
                     .postStatus(PostStatus.RECRUITING)
                     .build();
 
-            Point point7 = (Point) new WKTReader().read("POINT(37.4895773750866 127.03067318021)");
+            Point point7 = (Point) new WKTReader().read("POINT(127.03067318021 37.4895773750866)");
 
             Post post7 = Post.builder()
                     .user(user1)
@@ -185,7 +185,7 @@ public class InitDb {
                     .postStatus(PostStatus.RECRUITING)
                     .build();
 
-            Point point8 = (Point) new WKTReader().read("POINT(37.4901548250937 127.030767490957)");
+            Point point8 = (Point) new WKTReader().read("POINT(127.030767490957 37.4901548250937)");
 
             Post post8 = Post.builder()
                     .user(user1)
@@ -200,7 +200,7 @@ public class InitDb {
                     .postStatus(PostStatus.RECRUITING)
                     .build();
 
-            Point point9 = (Point) new WKTReader().read("POINT(37.4901548250937 127.030767490957)");
+            Point point9 = (Point) new WKTReader().read("POINT(127.030767490957 37.4901548250937)");
 
             Post post9 = Post.builder()
                     .user(user1)
@@ -215,7 +215,7 @@ public class InitDb {
                     .postStatus(PostStatus.RECRUITING)
                     .build();
 
-            Point point10 = (Point) new WKTReader().read("POINT(37.4901548250937 127.030767490957)");
+            Point point10 = (Point) new WKTReader().read("POINT(127.030767490957 37.4901548250937)");
 
             Post post10 = Post.builder()
                     .user(user1)
@@ -230,7 +230,7 @@ public class InitDb {
                     .postStatus(PostStatus.RECRUITING)
                     .build();
 
-            Point point11 = (Point) new WKTReader().read("POINT(85.4901548250937 17.03076749095)");
+            Point point11 = (Point) new WKTReader().read("POINT(17.03076749095 85.4901548250937)");
 
             Post post11 = Post.builder()
                     .user(user1)
@@ -245,7 +245,7 @@ public class InitDb {
                     .postStatus(PostStatus.RECRUITING)
                     .build();
 
-            Point point12 = (Point) new WKTReader().read("POINT(97.4895303786052 27.030436355)");
+            Point point12 = (Point) new WKTReader().read("POINT(27.030436355 97.4895303786052)");
 
             Post post12 = Post.builder()
                     .user(user1)
@@ -260,7 +260,7 @@ public class InitDb {
                     .postStatus(PostStatus.RECRUITING)
                     .build();
 
-            Point point13 = (Point) new WKTReader().read("POINT(14.4812233750866 12.03067318021)");
+            Point point13 = (Point) new WKTReader().read("POINT(12.03067318021 14.4812233750866)");
 
             Post post13 = Post.builder()
                     .user(user1)
@@ -275,7 +275,7 @@ public class InitDb {
                     .postStatus(PostStatus.RECRUITING)
                     .build();
 
-            Point point14 = (Point) new WKTReader().read("POINT(7.4895773340866 72.030673180212)");
+            Point point14 = (Point) new WKTReader().read("POINT(72.030673180212 7.4895773340866)");
 
             Post post14 = Post.builder()
                     .user(user1)

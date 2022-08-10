@@ -33,39 +33,9 @@ public class PostController {
     @PostMapping(value = "/post")
     public ResponseEntity<PostPostResponse> post(@RequestBody @Valid PostPostRequest request, @RequestParam Long userId ) throws ParseException {
 
-        Long newPostId = postService.post(userId, request );
+        Long newPostId = postService.post(userId, request);
 
         return ResponseEntity.ok().body(new PostPostResponse(newPostId));
-    }
-
-
-    /**
-     * 게시물 전체 조회 API
-     * [GET] http://localhost:8080/api/v1/posts
-     * @return
-     */
-    @GetMapping("/posts")
-    public Result posts(){ //json 데이터 확장성을 위해 Result 사용
-        List<Post> findPosts = postService.findPosts();
-        List<GetPostsResponse> collect = findPosts.stream()
-                .map( p -> new GetPostsResponse(p))
-                .collect(toList());
-        return new Result(collect);
-    }
-
-    /**
-     * 500m이내 게시글 10개 조회 API
-     *  [GET] http://localhost:8080/api/v1/posts/nearby?longitude=37.49015482509&latitude=127.030767490
-     *
-     */
-    @GetMapping("/posts/nearby")
-    public Result findNearbyPosts(@RequestParam("longitude") double longitude,  @RequestParam("latitude") double latitude){ //json 데이터 확장성을 위해 Result 사용
-        List<Post> findPosts = postService.getNearByRestaurants(longitude, latitude, 0.5);
-
-        List<GetNearbyPostsResponse> collect = findPosts.stream()
-                .map( p -> new GetNearbyPostsResponse(p))
-                .collect(toList());
-        return new Result(collect);
     }
 
     /**
@@ -74,9 +44,14 @@ public class PostController {
      *  category 종류: STREET_FOOD, KOREAN_FOOD, JAPANESE_FOOD, CHINESE_FOOD, DESSERT, WESTERN_FOOD
      *
      */
-    @GetMapping("/posts/nearby/{category}")
-    public Result findNearbyCategoryPosts( @RequestParam("longitude") double longitude,  @RequestParam("latitude") double latitude, @PathVariable String category){
-        List<Post> findPosts = postService.getNearbyCategoryRestaurants(longitude, latitude, 0.5, category);
+    @GetMapping("/posts")
+    public Result findNearbyCategoryPosts(
+            @RequestParam("latitude") Double latitude,
+            @RequestParam("longitude") Double longitude,
+            @RequestParam(value = "category", required = false) Category category,
+            @RequestParam(value = "first", required = false, defaultValue = "0") Integer first){
+        System.out.println("latitude = " + latitude + ", longitude = " + longitude + ", category = " + category);
+        List<Post> findPosts = postService.getNearByRestaurants(first, latitude, longitude, 2.5, category);
 
         List<GetNearbyPostsResponse> collect = findPosts.stream()
                 .map( p -> new GetNearbyPostsResponse(p))
