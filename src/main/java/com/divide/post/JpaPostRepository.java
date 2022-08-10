@@ -1,10 +1,12 @@
 package com.divide.post;
 
+import com.divide.post.domain.Category;
 import com.divide.post.domain.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 
 @Repository
@@ -30,6 +32,25 @@ public class JpaPostRepository implements PostRepository{
                 .setParameter("title", title)
                 .getResultList();
         return result;
+    }
+
+    @Override
+    public List<Post> findNearByRestaurantsAll(int first, String pointFormat) {
+        return em.createNativeQuery("SELECT * FROM post AS p WHERE MBRContains(ST_LINESTRINGFROMTEXT(:pointFormat), p.delivery_location)", Post.class)
+                .setParameter("pointFormat", pointFormat)
+                .setMaxResults(10)
+                .setFirstResult(first)
+                .getResultList();
+    }
+
+    @Override
+    public List<Post> findNearByRestaurantsByCategory(int first, String pointFormat, Category category) {
+        return em.createNativeQuery("SELECT * FROM post AS p WHERE MBRContains(ST_LINESTRINGFROMTEXT(:pointFormat), p.delivery_location) AND p.category = :category", Post.class)
+                .setParameter("pointFormat", pointFormat)
+                .setParameter("category", category.toString())
+                .setMaxResults(10)
+                .setFirstResult(first)
+                .getResultList();
     }
 
     @Override
