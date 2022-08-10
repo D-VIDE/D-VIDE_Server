@@ -117,14 +117,14 @@ public class PostService {
         Location southWest = GeometryUtil
                 .calculate(latitude, longitude, distance, Direction.SOUTHWEST.getBearing());
         // 기준 좌표의 북동쪽으로 nKM에 위치한 좌표 : x1, y1
-        double x1 = northEast.getLatitude();
-        double y1 = northEast.getLongitude();
+        double x1 = northEast.getLongitude();
+        double y1 = northEast.getLatitude();
         // 기준 좌표의 남서쪽으로 nKM에 위치한 좌표 : x2, y2
-        double x2 = southWest.getLatitude();
-        double y2 = southWest.getLongitude();
+        double x2 = southWest.getLongitude();
+        double y2 = southWest.getLatitude();
 
         //기준 좌표 x,y로 부터 distanceKM 떨어진 모든 범위의 delivery_location 데이터를 조회하는 쿼리
-        String pointFormat = String.format("'LINESTRING(%f %f, %f %f)')", x1, y1, x2, y2);
+        String pointFormat = String.format("LINESTRING(%f %f, %f %f)", x1, y1, x2, y2);
         return pointFormat;
     }
 
