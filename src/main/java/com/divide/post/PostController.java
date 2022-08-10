@@ -4,7 +4,6 @@ import com.divide.post.domain.Category;
 import com.divide.post.domain.Post;
 import com.divide.post.dto.request.PostPostRequest;
 import com.divide.post.dto.request.UpdatePostRequest;
-import com.divide.post.dto.request.GetNearbyPostsRequest;
 import com.divide.post.dto.response.*;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +30,9 @@ public class PostController {
      * @return
      */
     @PostMapping(value = "/post")
-    public ResponseEntity<PostPostResponse> post(@RequestBody @Valid PostPostRequest request, @RequestParam Long userId ) throws ParseException {
+    public ResponseEntity<PostPostResponse> createPost(@RequestBody @Valid PostPostRequest request, @RequestParam Long userId ) throws ParseException {
 
-        Long newPostId = postService.post(userId, request);
+        Long newPostId = postService.createPost(userId, request);
 
         return ResponseEntity.ok().body(new PostPostResponse(newPostId));
     }
@@ -45,16 +44,16 @@ public class PostController {
      *
      */
     @GetMapping("/posts")
-    public Result findNearbyCategoryPosts(
+    public Result findCategoryPosts(
             @RequestParam("latitude") Double latitude,
             @RequestParam("longitude") Double longitude,
             @RequestParam(value = "category", required = false) Category category,
             @RequestParam(value = "first", required = false, defaultValue = "0") Integer first){
         System.out.println("latitude = " + latitude + ", longitude = " + longitude + ", category = " + category);
-        List<Post> findPosts = postService.getNearByRestaurants(first, latitude, longitude, 2.5, category);
+        List<Post> findPosts = postService.findPostsAll(first, latitude, longitude, 2.5, category);
 
-        List<GetNearbyPostsResponse> collect = findPosts.stream()
-                .map( p -> new GetNearbyPostsResponse(p))
+        List<GetPostsResponse> collect = findPosts.stream()
+                .map( p -> new GetPostsResponse(p))
                 .collect(toList());
         return new Result(collect);
     }

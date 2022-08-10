@@ -69,7 +69,7 @@ public class PostService {
      *게시글 생성: user가 작성한 게시글
      */
     @Transactional
-    public Long post( Long userId, PostPostRequest request) throws ParseException {
+    public Long createPost(Long userId, PostPostRequest request) throws ParseException {
         //엔티티 조회
         User user = userRepository.findById(userId);
 
@@ -103,10 +103,10 @@ public class PostService {
      * @param category  : 사용자가 선택한 카테고리
      *
      */
-    public List<Post> getNearByRestaurants(Integer first, Double latitude, Double longitude, Double distance, Category category) {
+    public List<Post> findPostsAll(Integer first, Double latitude, Double longitude, Double distance, Category category) {
         String pointFormat = getPointFormat(latitude, longitude, distance);
-        if (category == null) return postRepository.findNearByRestaurantsAll(first, pointFormat);
-        else return postRepository.findNearByRestaurantsByCategory(first, pointFormat, category);
+        if (category == null) return postRepository.findPostsAll(first, pointFormat);
+        else return postRepository.findPostsByCategory(first, pointFormat, category);
     }
 
     private String getPointFormat(Double latitude, Double longitude, Double distance) {
