@@ -103,7 +103,7 @@ public class PostService {
      * @param category  : 사용자가 선택한 카테고리
      *
      */
-    public List<Post> getNearByRestaurants(Double latitude, Double longitude, Double distance, Category category, int first) {
+    public List<Post> getNearByRestaurants(Integer first, Double latitude, Double longitude, Double distance, Category category) {
         String pointFormat = getPointFormat(latitude, longitude, distance);
         if (category == null) return postRepository.findNearByRestaurantsAll(first, pointFormat);
         else return postRepository.findNearByRestaurantsByCategory(first, pointFormat, category);

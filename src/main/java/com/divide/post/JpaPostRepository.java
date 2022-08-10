@@ -35,7 +35,7 @@ public class JpaPostRepository implements PostRepository{
     }
 
     @Override
-    public List<Post> findNearByRestaurantsAll(int first, String pointFormat) {
+    public List<Post> findNearByRestaurantsAll(Integer first, String pointFormat) {
         return em.createNativeQuery("SELECT * FROM post AS p WHERE MBRContains(ST_LINESTRINGFROMTEXT(:pointFormat), p.delivery_location)", Post.class)
                 .setParameter("pointFormat", pointFormat)
                 .setMaxResults(10)
@@ -44,7 +44,7 @@ public class JpaPostRepository implements PostRepository{
     }
 
     @Override
-    public List<Post> findNearByRestaurantsByCategory(int first, String pointFormat, Category category) {
+    public List<Post> findNearByRestaurantsByCategory(Integer first, String pointFormat, Category category) {
         return em.createNativeQuery("SELECT * FROM post AS p WHERE MBRContains(ST_LINESTRINGFROMTEXT(:pointFormat), p.delivery_location) AND p.category = :category", Post.class)
                 .setParameter("pointFormat", pointFormat)
                 .setParameter("category", category.toString())

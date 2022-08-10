@@ -45,9 +45,13 @@ public class PostController {
      *
      */
     @GetMapping("/posts")
-    public Result findNearbyCategoryPosts(@RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude, @RequestParam(value = "category", required = false) Category category){
+    public Result findNearbyCategoryPosts(
+            @RequestParam("latitude") Double latitude,
+            @RequestParam("longitude") Double longitude,
+            @RequestParam(value = "category", required = false) Category category,
+            @RequestParam(value = "first", required = false, defaultValue = "0") Integer first){
         System.out.println("latitude = " + latitude + ", longitude = " + longitude + ", category = " + category);
-        List<Post> findPosts = postService.getNearByRestaurants(latitude, longitude, 2.5, category, 0);
+        List<Post> findPosts = postService.getNearByRestaurants(first, latitude, longitude, 2.5, category);
 
         List<GetNearbyPostsResponse> collect = findPosts.stream()
                 .map( p -> new GetNearbyPostsResponse(p))
