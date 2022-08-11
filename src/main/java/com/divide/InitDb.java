@@ -88,6 +88,8 @@ public class InitDb {
             //게시글 이미지 2개 생성
             PostImage[] postImages = new PostImage[2];
             MultipartFile sampleMultipleFile = getSampleMultipartFile();
+            String postImageUrl1 = OCIUtil.uploadFile(sampleMultipleFile, OCIUtil.FolderName.POST,  "sampleName" + "/" + UUID.randomUUID() + "." + "jpg");
+            String postImageUrl2 = OCIUtil.uploadFile(sampleMultipleFile, OCIUtil.FolderName.POST,  "sampleName1" + "/" + UUID.randomUUID() + "." + "jpg");
 
             for (int i = 0; i < 30; ++i) {
                 double longitude = 127.030767490957 + random.nextDouble() / 100;
@@ -96,11 +98,6 @@ public class InitDb {
                 Point point = (Point) new WKTReader().read(pointWKT);
                 //게시글 이미지
 
-                String sampleName1 = "게시글이미지"+(2*i);
-                String sampleName2 = "게시글이미지"+(2*i+1);
-                String extension = StringUtils.getFilenameExtension(getSampleMultipartFile().getOriginalFilename()).toLowerCase();
-                String postImageUrl1 = OCIUtil.uploadFile(sampleMultipleFile, OCIUtil.FolderName.POST,  sampleName1 + "/" + UUID.randomUUID() + "." + extension);
-                String postImageUrl2 = OCIUtil.uploadFile(sampleMultipleFile, OCIUtil.FolderName.POST,  sampleName2 + "/" + UUID.randomUUID() + "." + extension);
                 postImages[0]=PostImage.create(postImageUrl1);
                 postImages[1]=PostImage.create(postImageUrl2);
 
