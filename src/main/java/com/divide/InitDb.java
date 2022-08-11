@@ -9,6 +9,7 @@ import com.divide.post.domain.PostStatus;
 import com.divide.user.User;
 import com.divide.user.UserService;
 import com.divide.user.dto.request.SignupRequest;
+import com.divide.utils.OCIUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -19,6 +20,7 @@ import org.locationtech.jts.io.WKTReader;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.util.Random;
@@ -30,6 +32,7 @@ import javax.persistence.EntityManager;
 import java.io.*;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -71,7 +74,6 @@ public class InitDb {
                 throw new RestApiException(FileIOErrorCode.FILE_IO_ERROR);
             }
         }
-
         public void dbInit1() throws ParseException {
             //String email, String password, String profileImgUrl, String nickname, UserRole role
             userService.signup(new SignupRequest("email@gmail.com", "password1", getSampleMultipartFile(), "nickname1"));
@@ -83,14 +85,26 @@ public class InitDb {
             Category[] categories = Category.values();
             PostStatus[] postStatuses = PostStatus.values();
 
+            //게시글 이미지 2개 생성
+            PostImage[] postImages = new PostImage[2];
+            MultipartFile sampleMultipleFile = getSampleMultipartFile();
+
             for (int i = 0; i < 30; ++i) {
                 double longitude = 127.030767490957 + random.nextDouble() / 100;
                 double latitude = 37.4901548250937 + random.nextDouble() / 100;
                 String pointWKT = String.format("POINT(%s %s)", longitude, latitude);
                 Point point = (Point) new WKTReader().read(pointWKT);
+                //게시글 이미지
+
+                String sampleName1 = "게시글이미지"+(2*i);
+                String sampleName2 = "게시글이미지"+(2*i+1);
+                String extension = StringUtils.getFilenameExtension(getSampleMultipartFile().getOriginalFilename()).toLowerCase();
+                String postImageUrl1 = OCIUtil.uploadFile(sampleMultipleFile, OCIUtil.FolderName.POST,  sampleName1 + "/" + UUID.randomUUID() + "." + extension);
+                String postImageUrl2 = OCIUtil.uploadFile(sampleMultipleFile, OCIUtil.FolderName.POST,  sampleName2 + "/" + UUID.randomUUID() + "." + extension);
+                postImages[0]=PostImage.create(postImageUrl1);
+                postImages[1]=PostImage.create(postImageUrl2);
+
                 Post post = Post.builder()
-                PostImage postImage1 = PostImage.create("postImageUrl"+(2*i));
-                PostImage postImage2 = PostImage.create("postImageUrl"+(2*i+1));
                         .user(user1)
                         .title("title" + i)
                         .storeName("storeName" + i)
@@ -101,7 +115,7 @@ public class InitDb {
                         .targetTime(LocalDateTime.now().plusHours(1))
                         .deliveryLocation(point)
                         .postStatus(postStatuses[random.nextInt(postStatuses.length)])
-                        .postImages(new PostImage[]{postImage1, postImage2})
+                        .postImages(postImages)
                         .build();
                 em.persist(post);
             }
