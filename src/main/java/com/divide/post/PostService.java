@@ -1,22 +1,23 @@
 package com.divide.post;
 
-import com.divide.post.domain.Category;
-import com.divide.post.domain.Direction;
+import com.divide.post.domain.*;
 import com.divide.utils.GeometryUtil;
-import com.divide.post.domain.Location;
-import com.divide.post.domain.Post;
 import com.divide.post.dto.request.PostPostRequest;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
+import com.divide.utils.OCIUtil;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.UUID;
 
 import static com.divide.post.domain.PostStatus.RECRUITING;
 
@@ -69,13 +70,18 @@ public class PostService {
      *게시글 생성: user가 작성한 게시글
      */
     @Transactional
-    public Long createPost(Long userId, PostPostRequest request) throws ParseException {
+    public Long createPost(Long userId, PostPostRequest request, MultipartFile postImage) throws ParseException {
         //엔티티 조회
         User user = userRepository.findById(userId);
 
         //deliveryLocation: String -> point로 변환
         String pointWKT = String.format("POINT(%s %s)", request.getLongitude(), request.getLatitude());
         Point point = (Point) new WKTReader().read(pointWKT);
+
+        //게시글 이미지 url 생성
+        String storeName = request.getStoreName(); //filename에 뭘 해야할지 몰라서 임시로 넣음
+        String extension = StringUtils.getFilenameExtension(postImage.getOriginalFilename()).toLowerCase();
+        String postImageUrl = OCIUtil.uploadFile(postImage, OCIUtil.FolderName.POST,  storeName + "/" + UUID.randomUUID() + "." + extension);
 
         //주문 생성
         Post post = Post.builder()
@@ -89,6 +95,7 @@ public class PostService {
                 .targetTime(request.getTargetTime())
                 .deliveryLocation(point)
                 .postStatus(RECRUITING)
+                .postImageUrl(postImageUrl)
                 .build();
         postRepository.save(post);
 

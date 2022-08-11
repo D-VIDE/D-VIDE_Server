@@ -4,6 +4,7 @@ import com.divide.exception.RestApiException;
 import com.divide.exception.code.FileIOErrorCode;
 import com.divide.post.domain.Category;
 import com.divide.post.domain.Post;
+import com.divide.post.domain.PostImage;
 import com.divide.post.domain.PostStatus;
 import com.divide.user.User;
 import com.divide.user.UserService;
@@ -93,217 +94,218 @@ public class InitDb {
                     .targetTime(LocalDateTime.now().plusHours(1))
                     .deliveryLocation(point1)
                     .postStatus(PostStatus.RECRUIT_FAIL)
+                    .postImageUrl("postImageUrl1")
                     .build();
 
-            Point point2 = (Point) new WKTReader().read("POINT(127.030436319555 37.4895303786052)");
-
-            Post post2 = Post.builder()
-                    .user(user1)
-                    .title("title2")
-                    .storeName("storeName2")
-                    .content("content2")
-                    .targetPrice(20000)
-                    .deliveryPrice(4000)
-                    .category(Category.KOREAN_FOOD)
-                    .targetTime(LocalDateTime.now().plusHours(2))
-                    .deliveryLocation(point2)
-                    .postStatus(PostStatus.RECRUITING)
-                    .build();
-
-            Point point3 = (Point) new WKTReader().read("POINT(127.03067318021 37.4895773750866)");
-
-            Post post3 = Post.builder()
-                    .user(user1)
-                    .title("title3")
-                    .storeName("storeName3")
-                    .content("content3")
-                    .targetPrice(30000)
-                    .deliveryPrice(2000)
-                    .category(Category.JAPANESE_FOOD)
-                    .targetTime(LocalDateTime.now().plusHours(1))
-                    .deliveryLocation(point3)
-                    .postStatus(PostStatus.RECRUITING)
-                    .build();
-
-            Point point4 = (Point) new WKTReader().read("POINT(127.030436319555 37.4895303786052)");
-
-            Post post4 = Post.builder()
-                    .user(user1)
-                    .title("title4")
-                    .storeName("storeName4")
-                    .content("content4")
-                    .targetPrice(60000)
-                    .deliveryPrice(3000)
-                    .category(Category.KOREAN_FOOD)
-                    .targetTime(LocalDateTime.now().plusHours(1))
-                    .deliveryLocation(point4)
-                    .postStatus(PostStatus.RECRUITING)
-                    .build();
-
-            Point point5 = (Point) new WKTReader().read("POINT(127.030673180212 37.4895773750866)");
-
-            Post post5 = Post.builder()
-                    .user(user1)
-                    .title("title5")
-                    .storeName("storeName5")
-                    .content("content5")
-                    .targetPrice(50000)
-                    .deliveryPrice(5000)
-                    .category(Category.DESSERT)
-                    .targetTime(LocalDateTime.now().plusHours(3))
-                    .deliveryLocation(point5)
-                    .postStatus(PostStatus.RECRUITING)
-                    .build();
-
-            Point point6 = (Point) new WKTReader().read("POINT(127.030673180212 37.4895773750866)");
-
-            Post post6 = Post.builder()
-                    .user(user1)
-                    .title("title6")
-                    .storeName("storeName6")
-                    .content("content6")
-                    .targetPrice(60000)
-                    .deliveryPrice(42000)
-                    .category(Category.KOREAN_FOOD)
-                    .targetTime(LocalDateTime.now().plusHours(6))
-                    .deliveryLocation(point6)
-                    .postStatus(PostStatus.RECRUITING)
-                    .build();
-
-            Point point7 = (Point) new WKTReader().read("POINT(127.03067318021 37.4895773750866)");
-
-            Post post7 = Post.builder()
-                    .user(user1)
-                    .title("title7")
-                    .storeName("storeName7")
-                    .content("content7")
-                    .targetPrice(70000)
-                    .deliveryPrice(2000)
-                    .category(Category.JAPANESE_FOOD)
-                    .targetTime(LocalDateTime.now().plusHours(1))
-                    .deliveryLocation(point7)
-                    .postStatus(PostStatus.RECRUITING)
-                    .build();
-
-            Point point8 = (Point) new WKTReader().read("POINT(127.030767490957 37.4901548250937)");
-
-            Post post8 = Post.builder()
-                    .user(user1)
-                    .title("title8")
-                    .storeName("storeName8")
-                    .content("content8")
-                    .targetPrice(30000)
-                    .deliveryPrice(4000)
-                    .category(Category.KOREAN_FOOD)
-                    .targetTime(LocalDateTime.now().plusHours(1))
-                    .deliveryLocation(point8)
-                    .postStatus(PostStatus.RECRUITING)
-                    .build();
-
-            Point point9 = (Point) new WKTReader().read("POINT(127.030767490957 37.4901548250937)");
-
-            Post post9 = Post.builder()
-                    .user(user1)
-                    .title("title9")
-                    .storeName("storeName9")
-                    .content("content9")
-                    .targetPrice(55000)
-                    .deliveryPrice(25000)
-                    .category(Category.DESSERT)
-                    .targetTime(LocalDateTime.now().plusHours(3))
-                    .deliveryLocation(point9)
-                    .postStatus(PostStatus.RECRUITING)
-                    .build();
-
-            Point point10 = (Point) new WKTReader().read("POINT(127.030767490957 37.4901548250937)");
-
-            Post post10 = Post.builder()
-                    .user(user1)
-                    .title("title10")
-                    .storeName("storeName10")
-                    .content("content10")
-                    .targetPrice(55000)
-                    .deliveryPrice(25000)
-                    .category(Category.DESSERT)
-                    .targetTime(LocalDateTime.now().plusHours(3))
-                    .deliveryLocation(point10)
-                    .postStatus(PostStatus.RECRUITING)
-                    .build();
-
-            Point point11 = (Point) new WKTReader().read("POINT(17.03076749095 85.4901548250937)");
-
-            Post post11 = Post.builder()
-                    .user(user1)
-                    .title("title11")
-                    .storeName("storeName11")
-                    .content("content11")
-                    .targetPrice(50000)
-                    .deliveryPrice(5000)
-                    .category(Category.DESSERT)
-                    .targetTime(LocalDateTime.now().plusHours(3))
-                    .deliveryLocation(point11)
-                    .postStatus(PostStatus.RECRUITING)
-                    .build();
-
-            Point point12 = (Point) new WKTReader().read("POINT(27.030436355 97.4895303786052)");
-
-            Post post12 = Post.builder()
-                    .user(user1)
-                    .title("title12")
-                    .storeName("storeName12")
-                    .content("content12")
-                    .targetPrice(60000)
-                    .deliveryPrice(42000)
-                    .category(Category.KOREAN_FOOD)
-                    .targetTime(LocalDateTime.now().plusHours(2))
-                    .deliveryLocation(point12)
-                    .postStatus(PostStatus.RECRUITING)
-                    .build();
-
-            Point point13 = (Point) new WKTReader().read("POINT(12.03067318021 14.4812233750866)");
-
-            Post post13 = Post.builder()
-                    .user(user1)
-                    .title("title13")
-                    .storeName("storeName13")
-                    .content("content13")
-                    .targetPrice(70000)
-                    .deliveryPrice(2000)
-                    .category(Category.JAPANESE_FOOD)
-                    .targetTime(LocalDateTime.now().plusHours(1))
-                    .deliveryLocation(point13)
-                    .postStatus(PostStatus.RECRUITING)
-                    .build();
-
-            Point point14 = (Point) new WKTReader().read("POINT(72.030673180212 7.4895773340866)");
-
-            Post post14 = Post.builder()
-                    .user(user1)
-                    .title("title14")
-                    .storeName("storeName14")
-                    .content("content14")
-                    .targetPrice(30000)
-                    .deliveryPrice(4000)
-                    .category(Category.KOREAN_FOOD)
-                    .targetTime(LocalDateTime.now().plusHours(1))
-                    .deliveryLocation(point14)
-                    .postStatus(PostStatus.RECRUITING)
-                    .build();
-
+//            Point point2 = (Point) new WKTReader().read("POINT(127.030436319555 37.4895303786052)");
+//
+//            Post post2 = Post.builder()
+//                    .user(user1)
+//                    .title("title2")
+//                    .storeName("storeName2")
+//                    .content("content2")
+//                    .targetPrice(20000)
+//                    .deliveryPrice(4000)
+//                    .category(Category.KOREAN_FOOD)
+//                    .targetTime(LocalDateTime.now().plusHours(2))
+//                    .deliveryLocation(point2)
+//                    .postStatus(PostStatus.RECRUITING)
+//                    .build();
+//
+//            Point point3 = (Point) new WKTReader().read("POINT(127.03067318021 37.4895773750866)");
+//
+//            Post post3 = Post.builder()
+//                    .user(user1)
+//                    .title("title3")
+//                    .storeName("storeName3")
+//                    .content("content3")
+//                    .targetPrice(30000)
+//                    .deliveryPrice(2000)
+//                    .category(Category.JAPANESE_FOOD)
+//                    .targetTime(LocalDateTime.now().plusHours(1))
+//                    .deliveryLocation(point3)
+//                    .postStatus(PostStatus.RECRUITING)
+//                    .build();
+//
+//            Point point4 = (Point) new WKTReader().read("POINT(127.030436319555 37.4895303786052)");
+//
+//            Post post4 = Post.builder()
+//                    .user(user1)
+//                    .title("title4")
+//                    .storeName("storeName4")
+//                    .content("content4")
+//                    .targetPrice(60000)
+//                    .deliveryPrice(3000)
+//                    .category(Category.KOREAN_FOOD)
+//                    .targetTime(LocalDateTime.now().plusHours(1))
+//                    .deliveryLocation(point4)
+//                    .postStatus(PostStatus.RECRUITING)
+//                    .build();
+//
+//            Point point5 = (Point) new WKTReader().read("POINT(127.030673180212 37.4895773750866)");
+//
+//            Post post5 = Post.builder()
+//                    .user(user1)
+//                    .title("title5")
+//                    .storeName("storeName5")
+//                    .content("content5")
+//                    .targetPrice(50000)
+//                    .deliveryPrice(5000)
+//                    .category(Category.DESSERT)
+//                    .targetTime(LocalDateTime.now().plusHours(3))
+//                    .deliveryLocation(point5)
+//                    .postStatus(PostStatus.RECRUITING)
+//                    .build();
+//
+//            Point point6 = (Point) new WKTReader().read("POINT(127.030673180212 37.4895773750866)");
+//
+//            Post post6 = Post.builder()
+//                    .user(user1)
+//                    .title("title6")
+//                    .storeName("storeName6")
+//                    .content("content6")
+//                    .targetPrice(60000)
+//                    .deliveryPrice(42000)
+//                    .category(Category.KOREAN_FOOD)
+//                    .targetTime(LocalDateTime.now().plusHours(6))
+//                    .deliveryLocation(point6)
+//                    .postStatus(PostStatus.RECRUITING)
+//                    .build();
+//
+//            Point point7 = (Point) new WKTReader().read("POINT(127.03067318021 37.4895773750866)");
+//
+//            Post post7 = Post.builder()
+//                    .user(user1)
+//                    .title("title7")
+//                    .storeName("storeName7")
+//                    .content("content7")
+//                    .targetPrice(70000)
+//                    .deliveryPrice(2000)
+//                    .category(Category.JAPANESE_FOOD)
+//                    .targetTime(LocalDateTime.now().plusHours(1))
+//                    .deliveryLocation(point7)
+//                    .postStatus(PostStatus.RECRUITING)
+//                    .build();
+//
+//            Point point8 = (Point) new WKTReader().read("POINT(127.030767490957 37.4901548250937)");
+//
+//            Post post8 = Post.builder()
+//                    .user(user1)
+//                    .title("title8")
+//                    .storeName("storeName8")
+//                    .content("content8")
+//                    .targetPrice(30000)
+//                    .deliveryPrice(4000)
+//                    .category(Category.KOREAN_FOOD)
+//                    .targetTime(LocalDateTime.now().plusHours(1))
+//                    .deliveryLocation(point8)
+//                    .postStatus(PostStatus.RECRUITING)
+//                    .build();
+//
+//            Point point9 = (Point) new WKTReader().read("POINT(127.030767490957 37.4901548250937)");
+//
+//            Post post9 = Post.builder()
+//                    .user(user1)
+//                    .title("title9")
+//                    .storeName("storeName9")
+//                    .content("content9")
+//                    .targetPrice(55000)
+//                    .deliveryPrice(25000)
+//                    .category(Category.DESSERT)
+//                    .targetTime(LocalDateTime.now().plusHours(3))
+//                    .deliveryLocation(point9)
+//                    .postStatus(PostStatus.RECRUITING)
+//                    .build();
+//
+//            Point point10 = (Point) new WKTReader().read("POINT(127.030767490957 37.4901548250937)");
+//
+//            Post post10 = Post.builder()
+//                    .user(user1)
+//                    .title("title10")
+//                    .storeName("storeName10")
+//                    .content("content10")
+//                    .targetPrice(55000)
+//                    .deliveryPrice(25000)
+//                    .category(Category.DESSERT)
+//                    .targetTime(LocalDateTime.now().plusHours(3))
+//                    .deliveryLocation(point10)
+//                    .postStatus(PostStatus.RECRUITING)
+//                    .build();
+//
+//            Point point11 = (Point) new WKTReader().read("POINT(17.03076749095 85.4901548250937)");
+//
+//            Post post11 = Post.builder()
+//                    .user(user1)
+//                    .title("title11")
+//                    .storeName("storeName11")
+//                    .content("content11")
+//                    .targetPrice(50000)
+//                    .deliveryPrice(5000)
+//                    .category(Category.DESSERT)
+//                    .targetTime(LocalDateTime.now().plusHours(3))
+//                    .deliveryLocation(point11)
+//                    .postStatus(PostStatus.RECRUITING)
+//                    .build();
+//
+//            Point point12 = (Point) new WKTReader().read("POINT(27.030436355 97.4895303786052)");
+//
+//            Post post12 = Post.builder()
+//                    .user(user1)
+//                    .title("title12")
+//                    .storeName("storeName12")
+//                    .content("content12")
+//                    .targetPrice(60000)
+//                    .deliveryPrice(42000)
+//                    .category(Category.KOREAN_FOOD)
+//                    .targetTime(LocalDateTime.now().plusHours(2))
+//                    .deliveryLocation(point12)
+//                    .postStatus(PostStatus.RECRUITING)
+//                    .build();
+//
+//            Point point13 = (Point) new WKTReader().read("POINT(12.03067318021 14.4812233750866)");
+//
+//            Post post13 = Post.builder()
+//                    .user(user1)
+//                    .title("title13")
+//                    .storeName("storeName13")
+//                    .content("content13")
+//                    .targetPrice(70000)
+//                    .deliveryPrice(2000)
+//                    .category(Category.JAPANESE_FOOD)
+//                    .targetTime(LocalDateTime.now().plusHours(1))
+//                    .deliveryLocation(point13)
+//                    .postStatus(PostStatus.RECRUITING)
+//                    .build();
+//
+//            Point point14 = (Point) new WKTReader().read("POINT(72.030673180212 7.4895773340866)");
+//
+//            Post post14 = Post.builder()
+//                    .user(user1)
+//                    .title("title14")
+//                    .storeName("storeName14")
+//                    .content("content14")
+//                    .targetPrice(30000)
+//                    .deliveryPrice(4000)
+//                    .category(Category.KOREAN_FOOD)
+//                    .targetTime(LocalDateTime.now().plusHours(1))
+//                    .deliveryLocation(point14)
+//                    .postStatus(PostStatus.RECRUITING)
+//                    .build();
+//
             em.persist(post1);
-            em.persist(post2);
-            em.persist(post3);
-            em.persist(post4);
-            em.persist(post5);
-            em.persist(post6);
-            em.persist(post7);
-            em.persist(post8);
-            em.persist(post9);
-            em.persist(post10);
-            em.persist(post11);
-            em.persist(post12);
-            em.persist(post13);
-            em.persist(post14);
+//            em.persist(post2);
+//            em.persist(post3);
+//            em.persist(post4);
+//            em.persist(post5);
+//            em.persist(post6);
+//            em.persist(post7);
+//            em.persist(post8);
+//            em.persist(post9);
+//            em.persist(post10);
+//            em.persist(post11);
+//            em.persist(post12);
+//            em.persist(post13);
+//            em.persist(post14);
 
         }
     }

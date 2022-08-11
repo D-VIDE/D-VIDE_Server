@@ -33,8 +33,6 @@ public class Post {
     @NotNull
     private String content;
 
-////    private List<String> postImages = new ArrayList();
-////    private List<PostImage> postImages = new ArrayList();
     @PositiveOrZero
     private int targetPrice;
     @PositiveOrZero
@@ -54,6 +52,8 @@ public class Post {
     @Enumerated(EnumType.STRING)
     @NotNull
     private PostStatus postStatus;
+    @NotNull
+    private String postImageUrl;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -67,7 +67,7 @@ public class Post {
     //==생성 메서드==
 
     @Builder
-    public Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus) {
+    public Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus, String postImageUrl /*PostImage... postImages*/) {
         this.user = user;
         this.title = title;
         this.storeName = storeName;
@@ -78,7 +78,9 @@ public class Post {
         this.targetTime = targetTime;
         this.deliveryLocation = deliveryLocation;
         this.postStatus = postStatus;
+        this.postImageUrl = postImageUrl;
     }
+
 
     //PostService 오류 삭제 하기 위한 임시 update메서드
     public void updateInfo(String title, String content){

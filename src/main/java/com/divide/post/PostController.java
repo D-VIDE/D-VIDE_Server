@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -30,9 +31,9 @@ public class PostController {
      * @return
      */
     @PostMapping(value = "/post")
-    public ResponseEntity<PostPostResponse> createPost(@RequestBody @Valid PostPostRequest request, @RequestParam Long userId ) throws ParseException {
+    public ResponseEntity<PostPostResponse> createPost(@RequestPart @Valid PostPostRequest request, @RequestPart MultipartFile postImage , @RequestParam Long userId) throws ParseException {
 
-        Long newPostId = postService.createPost(userId, request);
+        Long newPostId = postService.createPost(userId, request, postImage);
 
         return ResponseEntity.ok().body(new PostPostResponse(newPostId));
     }
