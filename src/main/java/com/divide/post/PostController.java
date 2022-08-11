@@ -1,9 +1,9 @@
 package com.divide.post;
 
-import com.divide.post.domain.Category;
 import com.divide.post.domain.Post;
 import com.divide.post.dto.request.PostPostRequest;
 import com.divide.post.dto.request.UpdatePostRequest;
+import com.divide.post.dto.request.GetPostsRequest;
 import com.divide.post.dto.response.*;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -48,14 +48,9 @@ public class PostController {
      *
      */
     @GetMapping("/posts")
-    public Result findCategoryPosts(
-            @RequestParam("latitude") Double latitude,
-            @RequestParam("longitude") Double longitude,
-            @RequestParam(value = "category", required = false) Category category,
-            @RequestParam(value = "first", required = false, defaultValue = "0") Integer first){
-        System.out.println("latitude = " + latitude + ", longitude = " + longitude + ", category = " + category);
-        List<Post> findPosts = postService.findPostsAll(first, latitude, longitude, 2.5, category);
 
+    public Result getPosts(@Valid GetPostsRequest getPostsRequest){
+        List<Post> findPosts = postService.findPostsAll(getPostsRequest.getFirst(), getPostsRequest.getLatitude(), getPostsRequest.getLongitude(), 0.5, getPostsRequest.getCategory());
         List<GetPostsResponse> collect = findPosts.stream()
                 .map( p -> new GetPostsResponse(p))
                 .collect(toList());
