@@ -20,6 +20,7 @@ public class GetPostsResponse {
 
     private LocalDateTime targetTime;
     private String title;
+    private String content;
     private int targetPrice;
     private Category category;
 
@@ -31,6 +32,7 @@ public class GetPostsResponse {
         this.latitude = p.getDeliveryLocation().getCoordinate().getY();
         this.targetTime = p.getTargetTime();
         this.title = p.getTitle();
+        this.content = p.getContent();
         this.targetPrice = p.getTargetPrice();
         this.category = p.getCategory();
     }
