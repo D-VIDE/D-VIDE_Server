@@ -9,6 +9,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -52,8 +54,13 @@ public class Post {
     @Enumerated(EnumType.STRING)
     @NotNull
     private PostStatus postStatus;
+
+    @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = CascadeType.ALL)
     @NotNull
-    private String postImageUrl;
+    private List<PostImage> postImages = new ArrayList();
+
+//    @NotNull
+//    private String postImageUrl;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -63,11 +70,29 @@ public class Post {
         this.user = user;
         user.getPosts().add(this);
     }
+    public void addPostImage(PostImage postImage){
+        this.postImages.add(postImage);
+        postImage.setPost(this);
+    }
 
     //==생성 메서드==
 
+//    @Builder
+//    public Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus, String postImageUrl /*PostImage... postImages*/) {
+//        this.user = user;
+//        this.title = title;
+//        this.storeName = storeName;
+//        this.content = content;
+//        this.targetPrice = targetPrice;
+//        this.deliveryPrice = deliveryPrice;
+//        this.category = category;
+//        this.targetTime = targetTime;
+//        this.deliveryLocation = deliveryLocation;
+//        this.postStatus = postStatus;
+//        this.postImageUrl = postImageUrl;
+//    }
     @Builder
-    public Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus, String postImageUrl /*PostImage... postImages*/) {
+    public Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus, PostImage... postImages) {
         this.user = user;
         this.title = title;
         this.storeName = storeName;
@@ -78,7 +103,9 @@ public class Post {
         this.targetTime = targetTime;
         this.deliveryLocation = deliveryLocation;
         this.postStatus = postStatus;
-        this.postImageUrl = postImageUrl;
+        for(PostImage postImage: postImages){
+            this.addPostImage(postImage);
+        }
     }
 
 

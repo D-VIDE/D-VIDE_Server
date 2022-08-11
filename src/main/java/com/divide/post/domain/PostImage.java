@@ -28,9 +28,9 @@ public class PostImage {
     private String postImageUrl;
 
     //==생성메서드==
-    public static PostImage createPostImage(){
+    public static PostImage create(String postImageUrl){
         PostImage postImage = new PostImage();
-        postImage.setPostImageUrl("postImageUrl-sample");
+        postImage.setPostImageUrl(postImageUrl);
         return postImage;
     }
 

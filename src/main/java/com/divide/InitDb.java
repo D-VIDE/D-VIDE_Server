@@ -83,6 +83,12 @@ public class InitDb {
             String pointWKT = String.format("POINT(%s %s)", longitude, latitude);
             Point point1 = (Point) new WKTReader().read(pointWKT);
 
+            //postImage 생성
+            PostImage postImage1 = PostImage.create("postImageUrl1");
+            PostImage postImage2 = PostImage.create("postImageUrl2");
+            PostImage postImage3 = PostImage.create("postImageUrl3");
+            PostImage postImage4 = PostImage.create("postImageUrl4");
+
             Post post1 = Post.builder()
                     .user(user1)
                     .title("title1")
@@ -94,23 +100,24 @@ public class InitDb {
                     .targetTime(LocalDateTime.now().plusHours(1))
                     .deliveryLocation(point1)
                     .postStatus(PostStatus.RECRUIT_FAIL)
-                    .postImageUrl("postImageUrl1")
+                    .postImages(new PostImage[]{postImage4})
                     .build();
 
-//            Point point2 = (Point) new WKTReader().read("POINT(127.030436319555 37.4895303786052)");
-//
-//            Post post2 = Post.builder()
-//                    .user(user1)
-//                    .title("title2")
-//                    .storeName("storeName2")
-//                    .content("content2")
-//                    .targetPrice(20000)
-//                    .deliveryPrice(4000)
-//                    .category(Category.KOREAN_FOOD)
-//                    .targetTime(LocalDateTime.now().plusHours(2))
-//                    .deliveryLocation(point2)
-//                    .postStatus(PostStatus.RECRUITING)
-//                    .build();
+            Point point2 = (Point) new WKTReader().read("POINT(127.030436319555 37.4895303786052)");
+
+            Post post2 = Post.builder()
+                    .user(user1)
+                    .title("title2")
+                    .storeName("storeName2")
+                    .content("content2")
+                    .targetPrice(20000)
+                    .deliveryPrice(4000)
+                    .category(Category.KOREAN_FOOD)
+                    .targetTime(LocalDateTime.now().plusHours(2))
+                    .deliveryLocation(point2)
+                    .postStatus(PostStatus.RECRUITING)
+                    .postImages(new PostImage[]{postImage1, postImage2, postImage3})
+                    .build();
 //
 //            Point point3 = (Point) new WKTReader().read("POINT(127.03067318021 37.4895773750866)");
 //
@@ -293,7 +300,7 @@ public class InitDb {
 //                    .build();
 //
             em.persist(post1);
-//            em.persist(post2);
+            em.persist(post2);
 //            em.persist(post3);
 //            em.persist(post4);
 //            em.persist(post5);

@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -70,7 +71,7 @@ public class PostService {
      *게시글 생성: user가 작성한 게시글
      */
     @Transactional
-    public Long createPost(Long userId, PostPostRequest request, MultipartFile postImage) throws ParseException {
+    public Long createPost(Long userId, PostPostRequest request, MultipartFile... postImagesFiles) throws ParseException {
         //엔티티 조회
         User user = userRepository.findById(userId);
 
@@ -78,11 +79,16 @@ public class PostService {
         String pointWKT = String.format("POINT(%s %s)", request.getLongitude(), request.getLatitude());
         Point point = (Point) new WKTReader().read(pointWKT);
 
-        //게시글 이미지 url 생성
-        String storeName = request.getStoreName(); //filename에 뭘 해야할지 몰라서 임시로 넣음
-        String extension = StringUtils.getFilenameExtension(postImage.getOriginalFilename()).toLowerCase();
-        String postImageUrl = OCIUtil.uploadFile(postImage, OCIUtil.FolderName.POST,  storeName + "/" + UUID.randomUUID() + "." + extension);
+        //게시글 이미지 생성
+        PostImage[] postImages = new PostImage[postImagesFiles.length];
+        int i =0;
+        for(MultipartFile postImagefile: postImagesFiles){
+            String storeName = request.getStoreName(); //filename에 뭘 해야할지 몰라서 임시로 넣음
+            String extension = StringUtils.getFilenameExtension(postImagefile.getOriginalFilename()).toLowerCase();
+            String postImageUrl = OCIUtil.uploadFile(postImagefile, OCIUtil.FolderName.POST,  storeName + "/" + UUID.randomUUID() + "." + extension);
 
+            postImages[i++]=PostImage.create(postImageUrl);
+        }
         //주문 생성
         Post post = Post.builder()
                 .user(user)
@@ -95,7 +101,7 @@ public class PostService {
                 .targetTime(request.getTargetTime())
                 .deliveryLocation(point)
                 .postStatus(RECRUITING)
-                .postImageUrl(postImageUrl)
+                .postImages(postImages)
                 .build();
         postRepository.save(post);
 
