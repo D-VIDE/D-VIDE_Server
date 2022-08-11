@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,7 +25,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-@EnableWebMvc
 @Slf4j
 public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -52,7 +52,7 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * Valid 어노테이션을 통해서 validation에 실패했을 때 뜨는 Exception을 컨트롤함.
+     * RequestBody에 Valid 어노테이션을 통해서 validation에 실패했을 때 뜨는 Exception을 컨트롤함.
      * @param e the exception
      * @param headers the headers to be written to the response
      * @param status the selected response status
@@ -65,7 +65,24 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
             HttpHeaders headers,
             HttpStatus status,
             WebRequest request) {
-        log.warn("handleMethodArgumentNotValid", e);
+        return handleBindException(e, headers, status, request);
+    }
+
+    /**
+     * RequestParam에 Valid 어노테이션을 통해서 validation에 실패했을 때 뜨는 Exception을 컨트롤함.
+     * @param e the exception
+     * @param headers the headers to be written to the response
+     * @param status the selected response status
+     * @param request the current request
+     * @return
+     */
+    @Override
+    public ResponseEntity<Object> handleBindException(
+            BindException e,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+        log.warn("handleBindException", e);
         ErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
         return handleExceptionInternal(e, errorCode);
     }
@@ -185,12 +202,12 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
     }
 
-    private ResponseEntity<Object> handleExceptionInternal(MethodArgumentNotValidException e, ErrorCode errorCode) {
+    private ResponseEntity<Object> handleExceptionInternal(BindException e, ErrorCode errorCode) {
         return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(makeErrorResponse(e, errorCode));
     }
 
-    private ErrorResponse makeErrorResponse(MethodArgumentNotValidException e, ErrorCode errorCode) {
+    private ErrorResponse makeErrorResponse(BindException e, ErrorCode errorCode) {
         List<ErrorResponse.ValidationError> validationErrorList = e.getBindingResult()
                 .getFieldErrors()
                 .stream()
