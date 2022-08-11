@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -24,15 +25,18 @@ public class PostController {
     private final PostService postService;
 
     /**
-     * 게시물 생성 API - Entity 매핑
+     * 게시물 생성 API
      * [POST] http://localhost:8080/api/v1/post?userId=1
-     * @param
+     * @param request
+     * @param userId
+     * @param postImageFiles : 업로드할 파일 리스트
      * @return
+     * @throws ParseException
      */
     @PostMapping(value = "/post")
-    public ResponseEntity<PostPostResponse> post(@RequestBody @Valid PostPostRequest request, @RequestParam Long userId ) throws ParseException {
+    public ResponseEntity<PostPostResponse> createPost(@RequestPart @Valid PostPostRequest request , @RequestParam Long userId, @RequestPart MultipartFile... postImageFiles) throws ParseException {
 
-        Long newPostId = postService.post(userId, request);
+        Long newPostId = postService.createPost(userId, request, postImageFiles);
 
         return ResponseEntity.ok().body(new PostPostResponse(newPostId));
     }
@@ -44,11 +48,11 @@ public class PostController {
      *
      */
     @GetMapping("/posts")
-    public Result getPosts(@Valid GetPostsRequest getPostsRequest){
-        List<Post> findPosts = postService.getNearByRestaurants(getPostsRequest.getFirst(), getPostsRequest.getLatitude(), getPostsRequest.getLongitude(), 0.5, getPostsRequest.getCategory());
 
-        List<GetNearbyPostsResponse> collect = findPosts.stream()
-                .map( p -> new GetNearbyPostsResponse(p))
+    public Result getPosts(@Valid GetPostsRequest getPostsRequest){
+        List<Post> findPosts = postService.findPostsAll(getPostsRequest.getFirst(), getPostsRequest.getLatitude(), getPostsRequest.getLongitude(), 0.5, getPostsRequest.getCategory());
+        List<GetPostsResponse> collect = findPosts.stream()
+                .map( p -> new GetPostsResponse(p))
                 .collect(toList());
         return new Result(collect);
     }

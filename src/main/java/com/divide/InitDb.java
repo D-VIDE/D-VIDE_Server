@@ -4,6 +4,7 @@ import com.divide.exception.RestApiException;
 import com.divide.exception.code.FileIOErrorCode;
 import com.divide.post.domain.Category;
 import com.divide.post.domain.Post;
+import com.divide.post.domain.PostImage;
 import com.divide.post.domain.PostStatus;
 import com.divide.user.User;
 import com.divide.user.UserService;
@@ -88,6 +89,8 @@ public class InitDb {
                 String pointWKT = String.format("POINT(%s %s)", longitude, latitude);
                 Point point = (Point) new WKTReader().read(pointWKT);
                 Post post = Post.builder()
+                PostImage postImage1 = PostImage.create("postImageUrl"+(2*i));
+                PostImage postImage2 = PostImage.create("postImageUrl"+(2*i+1));
                         .user(user1)
                         .title("title" + i)
                         .storeName("storeName" + i)
@@ -98,6 +101,7 @@ public class InitDb {
                         .targetTime(LocalDateTime.now().plusHours(1))
                         .deliveryLocation(point)
                         .postStatus(postStatuses[random.nextInt(postStatuses.length)])
+                        .postImages(new PostImage[]{postImage1, postImage2})
                         .build();
                 em.persist(post);
             }
