@@ -43,4 +43,11 @@ public class Order {
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    public Order(User user, Post post, Integer orderPrice) {
+        this.user = user;
+        this.post = post;
+        this.orderPrice = orderPrice;
+        this.orderStatus = OrderStatus.ACTIVE;
+    }
 }
