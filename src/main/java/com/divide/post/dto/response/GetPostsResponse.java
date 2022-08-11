@@ -11,27 +11,29 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class GetPostsResponse {
     private Long postId;
-//    -------------user에서 가져옴-------------
+
     private String profileImgUrl;
     private String nickname;
-//    --------------------------------------
+
+    private double longitude;
+    private double latitude;
+
+    private LocalDateTime targetTime;
     private String title;
     private String content;
-
-//    private Point deliveryLocation; //오류난다 왤까
-    private LocalDateTime targetTime;
-
+    private int targetPrice;
     private Category category;
 
     public GetPostsResponse(Post p) {
         this.postId = p.getPostId();
-        this.title = p.getTitle();
-        this.content = p.getContent();
         this.nickname = p.getUser().getNickname();
         this.profileImgUrl = p.getUser().getProfileImgUrl();
-
-//        this.deliveryLocation = (Point) p.getDeliveryLocation(); //광광 오류 없애줘요
+        this.longitude = p.getDeliveryLocation().getCoordinate().getX();
+        this.latitude = p.getDeliveryLocation().getCoordinate().getY();
         this.targetTime = p.getTargetTime();
+        this.title = p.getTitle();
+        this.content = p.getContent();
+        this.targetPrice = p.getTargetPrice();
         this.category = p.getCategory();
     }
 }
