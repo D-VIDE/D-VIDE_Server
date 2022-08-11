@@ -57,7 +57,7 @@ public class InitDb {
                         "mainFile",
                         Files.probeContentType(tempFile.toPath()),
                         false,
-                        "sample.tmp",
+                        "sample.jpg",
                         is.available(),
                         tempFile.getParentFile()
                 );
