@@ -1,5 +1,7 @@
 package com.divide.order;
 
+import com.divide.common.CommonPostResponse;
+import com.divide.common.CommonUserResponse;
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.PostErrorCode;
 import com.divide.order.dto.response.GetOrdersResponse;
@@ -35,21 +37,25 @@ public class OrderService {
         return orders.stream().map(order -> {
             Post post = order.getPost();
             return new GetOrdersResponse(
-                    new GetOrdersResponse.User(
+                    new CommonUserResponse(
                             post.getUser().getId(),
                             post.getUser().getNickname(),
                             post.getUser().getProfileImgUrl()
                     ),
-                    new GetOrdersResponse.Post(
+                    new CommonPostResponse(
+                            post.getPostId(),
                             post.getDeliveryLocation().getCoordinate().getX(),
                             post.getDeliveryLocation().getCoordinate().getY(),
-                            post.getPostId(),
                             post.getTitle(),
                             post.getTargetTime(),
                             post.getTargetPrice(),
                             post.getOrderedPrice(),
                             post.getPostStatus(),
                             post.getPostImages().get(0).getPostImageUrl()
+                    ),
+                    new GetOrdersResponse.OrderResponse(
+                            order.getOrderPrice(),
+                            order.getCreatedAt()
                     )
             );
         }).collect(Collectors.toList());
@@ -66,7 +72,7 @@ public class OrderService {
 
         Order order = new Order(user, post, orderPrice);
         orderRepository.save(order);
-        images.stream().forEach(multipartFile -> {
+        images.forEach(multipartFile -> {
             String url = OCIUtil.uploadFile(multipartFile, OCIUtil.FolderName.ORDER, order.getId() + "/" + UUID.randomUUID());
             OrderImage orderImage = new OrderImage(order, url);
             orderRepository.save(orderImage);
