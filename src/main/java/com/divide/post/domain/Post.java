@@ -1,5 +1,6 @@
 package com.divide.post.domain;
 
+import com.divide.order.Order;
 import com.divide.user.User;
 import lombok.*;
 import org.locationtech.jts.geom.Geometry;
@@ -96,5 +97,9 @@ public class Post {
     public void updateInfo(String title, String content){
         this.title = title;
         this.content = content;
+    }
+
+    public void addOrder(Order order) {
+        this.orderedPrice += order.getOrderPrice();
     }
 }

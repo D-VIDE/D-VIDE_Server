@@ -49,5 +49,6 @@ public class Order {
         this.post = post;
         this.orderPrice = orderPrice;
         this.orderStatus = OrderStatus.ACTIVE;
+        post.addOrder(this);
     }
 }

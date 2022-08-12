@@ -32,7 +32,11 @@ public class OrderService {
         return orders.stream().map(order -> {
             Post post = order.getPost();
             return new GetOrdersResponse(
-                   new GetOrdersResponse.Poster(user.getId(), user.getNickname(), user.getProfileImgUrl()),
+                   new GetOrdersResponse.Poster(
+                           post.getUser().getId(),
+                           post.getUser().getNickname(),
+                           post.getUser().getProfileImgUrl()
+                   ),
                     post.getDeliveryLocation().getCoordinate().getX(),
                     post.getDeliveryLocation().getCoordinate().getY(),
                     post.getPostId(),
