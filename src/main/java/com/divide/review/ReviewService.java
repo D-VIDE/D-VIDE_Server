@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,9 +34,9 @@ public class ReviewService {
      * 리뷰글 생성
      */
     @Transactional
-    public Long review(Long userId, Long postId, PostReviewRequest request ) throws ParseException {
+    public Long review( Long postId, String userEmail, PostReviewRequest request ) throws ParseException {
         //엔티티 조회
-        User user = userRepository.findById(userId);
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         Post post = postRepository.findByPostId(postId);
 
         //storeLocation: double -> point로 변환
