@@ -22,7 +22,8 @@ import static javax.persistence.FetchType.LAZY;
 @EntityListeners(AuditingEntityListener.class)
 public class Post {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long postId;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id") //FK
@@ -64,11 +65,12 @@ public class Post {
     private LocalDateTime createdAt;
 
     //==연관관계 편의메서드==
-    public void setUser(User user){
+    public void setUser(User user) {
         this.user = user;
         user.getPosts().add(this);
     }
-    public void addPostImage(PostImage postImage){
+
+    public void addPostImage(PostImage postImage) {
         this.postImages.add(postImage);
         postImage.setPost(this);
     }
@@ -87,19 +89,37 @@ public class Post {
         this.targetTime = targetTime;
         this.deliveryLocation = deliveryLocation;
         this.postStatus = postStatus;
-        for(PostImage postImage: postImages){
+        for (PostImage postImage : postImages) {
             this.addPostImage(postImage);
         }
     }
 
 
     //PostService 오류 삭제 하기 위한 임시 update메서드
-    public void updateInfo(String title, String content){
+    public void updateInfo(String title, String content) {
         this.title = title;
         this.content = content;
     }
 
     public void addOrder(Order order) {
         this.orderedPrice += order.getOrderPrice();
+    }
+
+    public PostStatus checkStatus() {
+        /**
+         * 시간이 지나기 전일 때 => 항상 RECRUITING
+         * 시간이 지났을 때 => 돈이 모였으면? RECRUIT_SUCCESS
+         *                  돈이 안 모였으면? RECRUIT_FAIL
+         */
+        LocalDateTime now = LocalDateTime.now();
+        Boolean timeOver = targetTime.isBefore(now);
+        Boolean moneyOver = targetPrice < orderedPrice;
+        if (!timeOver) {
+            return PostStatus.RECRUITING;
+        } else if (moneyOver) {
+            return PostStatus.RECRUIT_SUCCESS;
+        } else {
+            return PostStatus.RECRUIT_FAIL;
+        }
     }
 }

@@ -1,8 +1,11 @@
 package com.divide.order;
 
+import com.divide.exception.RestApiException;
+import com.divide.exception.code.PostErrorCode;
 import com.divide.order.dto.response.GetOrdersResponse;
 import com.divide.post.PostRepository;
 import com.divide.post.domain.Post;
+import com.divide.post.domain.PostStatus;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
 import com.divide.utils.OCIUtil;
@@ -56,6 +59,10 @@ public class OrderService {
     public Long saveOrder(String userEmail, Long postId, Integer orderPrice, List<MultipartFile> images) {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         Post post = postRepository.findByPostId(postId);
+
+        if (post.checkStatus() != PostStatus.RECRUITING) {
+            throw new RestApiException(PostErrorCode.POST_NOT_RECRUITING);
+        }
 
         Order order = new Order(user, post, orderPrice);
         orderRepository.save(order);
