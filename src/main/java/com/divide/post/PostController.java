@@ -9,6 +9,8 @@ import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,17 +28,16 @@ public class PostController {
 
     /**
      * 게시물 생성 API
-     * [POST] http://localhost:8080/api/v1/post?userId=1
+     * [POST] http://localhost:8080/api/v1/post
      * @param request
-     * @param userId
      * @param postImageFiles : 업로드할 파일 리스트
      * @return
      * @throws ParseException
      */
     @PostMapping(value = "/post")
-    public ResponseEntity<PostPostResponse> createPost(@RequestPart @Valid PostPostRequest request , @RequestParam Long userId, @RequestPart MultipartFile... postImageFiles) throws ParseException {
+    public ResponseEntity<PostPostResponse> createPost(@AuthenticationPrincipal UserDetails userDetails, @RequestPart @Valid PostPostRequest request , @RequestPart MultipartFile... postImageFiles) throws ParseException {
 
-        Long newPostId = postService.createPost(userId, request, postImageFiles);
+        Long newPostId = postService.createPost(userDetails.getUsername(), request, postImageFiles);
 
         return ResponseEntity.ok().body(new PostPostResponse(newPostId));
     }
