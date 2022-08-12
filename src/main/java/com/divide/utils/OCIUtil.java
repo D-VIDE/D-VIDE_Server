@@ -31,7 +31,7 @@ public class OCIUtil {
     private static final String CLOUD_URL = "https://objectstorage.%s.oraclecloud.com/n/%s/b/%s/o/%s";
 
     public enum FolderName {
-        PROFILE, POST, ORDER
+        PROFILE, POST, ORDER, REVIEW
     }
 
     static public String uploadFile(MultipartFile multipartFile, FolderName foldername, String filename) {

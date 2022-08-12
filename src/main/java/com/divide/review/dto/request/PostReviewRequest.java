@@ -19,7 +19,6 @@ public class PostReviewRequest {
 
     @NotEmpty
     private String storeName;
-//    private List<String> reveiwImages;
 
     @NotNull
     private double longitude;

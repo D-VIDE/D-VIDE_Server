@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,11 +23,17 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     /**
-     * 리뷰 생성 API - 임시
+     * 리뷰 생성 API
+     * [POST] http://localhost:8080/api/v1/review/?postId=4
+     * @param postId : 리뷰가 생성되는 게시글
+     * @param request : 게시글 생성시 필요한 request
+     * @param reviewImageFiles : 리뷰 이미지 파일들
+     * @return
+     * @throws ParseException
      */
     @PostMapping(value = "/review")
-    public ResponseEntity<PostReviewResponse> review( @RequestParam Long postId, @AuthenticationPrincipal UserDetails userDetails, @RequestBody PostReviewRequest request ) throws ParseException {
-        Long newReviewId = reviewService.review( postId, userDetails.getUsername(), request);
+    public ResponseEntity<PostReviewResponse> review( @RequestParam Long postId, @AuthenticationPrincipal UserDetails userDetails, @RequestPart PostReviewRequest request, @RequestPart List<MultipartFile> reviewImageFiles) throws ParseException {
+        Long newReviewId = reviewService.createReview( postId, userDetails.getUsername(), request, reviewImageFiles);
 
         return ResponseEntity.ok().body(new PostReviewResponse(newReviewId));
     }

@@ -8,17 +8,23 @@ import com.divide.review.dto.request.PostReviewRequest;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
 import com.divide.utils.GeometryUtil;
+import com.divide.utils.OCIUtil;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.MultiLineString;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,7 +40,7 @@ public class ReviewService {
      * 리뷰글 생성
      */
     @Transactional
-    public Long review( Long postId, String userEmail, PostReviewRequest request ) throws ParseException {
+    public Long createReview(Long postId, String userEmail, PostReviewRequest request, List<MultipartFile> reviewImageFiles) throws ParseException {
         //엔티티 조회
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         Post post = postRepository.findByPostId(postId);
@@ -43,12 +49,22 @@ public class ReviewService {
         String pointWKT = String.format("POINT(%s %s)", request.getLongitude(), request.getLatitude());
         Point point = (Point) new WKTReader().read(pointWKT);
 
+        //리뷰 이미지 생성
+        List<ReviewImage> reviewImages= new ArrayList<ReviewImage>();
+        for(MultipartFile reviewImageFile: reviewImageFiles){
+            String storeName = request.getStoreName();
+            String extension = StringUtils.getFilenameExtension(reviewImageFile.getOriginalFilename()).toLowerCase();
+            String reviewImageUrl = OCIUtil.uploadFile(reviewImageFile, OCIUtil.FolderName.REVIEW, storeName + "/" + UUID.randomUUID() + "." + extension);
+            reviewImages.add(ReviewImage.create(reviewImageUrl));
+        }
+
         //리뷰 생성
         Review review = Review.builder()
                 .user(user)
                 .post(post)
                 .starRating(request.getStarRating())
                 .content(request.getContent())
+                .reviewImages(reviewImages)
                 .build();
 
         reviewRepository.save(review);
