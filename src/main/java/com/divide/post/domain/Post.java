@@ -40,6 +40,9 @@ public class Post {
     @PositiveOrZero
     private int deliveryPrice;
 
+    @PositiveOrZero
+    private int orderedPrice;
+
     @Enumerated(EnumType.STRING)
     @NotNull
     private Category category;
@@ -48,9 +51,6 @@ public class Post {
     private LocalDateTime targetTime;
     @NotNull
     private Geometry deliveryLocation;
-
-////    private List<String> orders = new ArrayList<>();
-////    private List<Order> orders = new ArrayList();
     @Enumerated(EnumType.STRING)
     @NotNull
     private PostStatus postStatus;
@@ -59,13 +59,10 @@ public class Post {
     @NotNull
     private List<PostImage> postImages = new ArrayList();
 
-//    @NotNull
-//    private String postImageUrl;
-
     @CreatedDate
     private LocalDateTime createdAt;
 
-//==연관관계 편의메서드==
+    //==연관관계 편의메서드==
     public void setUser(User user){
         this.user = user;
         user.getPosts().add(this);
@@ -77,20 +74,6 @@ public class Post {
 
     //==생성 메서드==
 
-//    @Builder
-//    public Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus, String postImageUrl /*PostImage... postImages*/) {
-//        this.user = user;
-//        this.title = title;
-//        this.storeName = storeName;
-//        this.content = content;
-//        this.targetPrice = targetPrice;
-//        this.deliveryPrice = deliveryPrice;
-//        this.category = category;
-//        this.targetTime = targetTime;
-//        this.deliveryLocation = deliveryLocation;
-//        this.postStatus = postStatus;
-//        this.postImageUrl = postImageUrl;
-//    }
     @Builder
     public Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus, PostImage... postImages) {
         this.user = user;

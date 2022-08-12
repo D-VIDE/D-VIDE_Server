@@ -13,7 +13,10 @@ public class OrderRepository {
     private final EntityManager em;
 
     public List<Order> findOrders(User user, Integer first) {
-        return em.createQuery("select o from Order as o where o.user = :user order by o.createdAt")
+        return em.createQuery("select o from Order as o " +
+                        "join fetch o.user " +
+                        "join fetch o.post " +
+                        "where o.user = :user order by o.createdAt")
                 .setParameter("user", user)
                 .setFirstResult(first)
                 .setMaxResults(10)
