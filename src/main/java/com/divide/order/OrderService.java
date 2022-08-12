@@ -32,21 +32,23 @@ public class OrderService {
         return orders.stream().map(order -> {
             Post post = order.getPost();
             return new GetOrdersResponse(
-                   new GetOrdersResponse.Poster(
-                           post.getUser().getId(),
-                           post.getUser().getNickname(),
-                           post.getUser().getProfileImgUrl()
-                   ),
-                    post.getDeliveryLocation().getCoordinate().getX(),
-                    post.getDeliveryLocation().getCoordinate().getY(),
-                    post.getPostId(),
-                    post.getTitle(),
-                    post.getTargetTime(),
-                    post.getTargetPrice(),
-                    post.getOrderedPrice(),
-                    post.getPostStatus(),
-                    post.getPostImages().get(0).getPostImageUrl()
-                    );
+                    new GetOrdersResponse.User(
+                            post.getUser().getId(),
+                            post.getUser().getNickname(),
+                            post.getUser().getProfileImgUrl()
+                    ),
+                    new GetOrdersResponse.Post(
+                            post.getDeliveryLocation().getCoordinate().getX(),
+                            post.getDeliveryLocation().getCoordinate().getY(),
+                            post.getPostId(),
+                            post.getTitle(),
+                            post.getTargetTime(),
+                            post.getTargetPrice(),
+                            post.getOrderedPrice(),
+                            post.getPostStatus(),
+                            post.getPostImages().get(0).getPostImageUrl()
+                    )
+            );
         }).collect(Collectors.toList());
     }
 

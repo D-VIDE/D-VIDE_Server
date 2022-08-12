@@ -9,22 +9,27 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class GetOrdersResponse {
-
     @Getter
     @AllArgsConstructor
-    public static class Poster{
+    public static class User {
         private Long id;
         private String nickname;
         private String profileImgUrl;
     }
-    private Poster poster;
-    private Double longitude;
-    private Double latitude;
-    private Long postId;
-    private String title;
-    private LocalDateTime targetTime;
-    private Integer targetPrice;
-    private Integer orderedPrice;
-    private PostStatus status;
-    private String postImgUrl;
+    @Getter
+    @AllArgsConstructor
+    public static class Post {
+        private Double longitude;
+        private Double latitude;
+        private Long postId;
+        private String title;
+        private LocalDateTime targetTime;
+        private Integer targetPrice;
+        private Integer orderedPrice;
+        private PostStatus status;
+        private String postImgUrl;
+    }
+
+    private User user;
+    private Post post;
 }
