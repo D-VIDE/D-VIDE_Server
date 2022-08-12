@@ -21,7 +21,7 @@ public class OrderRepository {
         return em.createQuery("select o from Order as o " +
                         "join fetch o.user " +
                         "join fetch o.post " +
-                        "where o.user = :user order by o.createdAt")
+                        "where o.user = :user order by o.createdAt desc")
                 .setParameter("user", user)
                 .setFirstResult(first)
                 .setMaxResults(10)
