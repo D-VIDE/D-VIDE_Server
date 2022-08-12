@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -71,9 +72,9 @@ public class PostService {
      *게시글 생성: user가 작성한 게시글
      */
     @Transactional
-    public Long createPost(Long userId, PostPostRequest request, MultipartFile... postImagesFiles) throws ParseException {
+    public Long createPost(String userEmail, PostPostRequest request, MultipartFile... postImagesFiles) throws ParseException {
         //엔티티 조회
-        User user = userRepository.findById(userId);
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
 
         //deliveryLocation: String -> point로 변환
         String pointWKT = String.format("POINT(%s %s)", request.getLongitude(), request.getLatitude());
