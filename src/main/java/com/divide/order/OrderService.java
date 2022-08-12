@@ -62,7 +62,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Long saveOrder(String userEmail, Long postId, Integer orderPrice, List<MultipartFile> images) {
+    public Long saveOrder(String userEmail, Long postId, Integer orderPrice) {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         Post post = postRepository.findByPostId(postId);
 
@@ -72,11 +72,15 @@ public class OrderService {
 
         Order order = new Order(user, post, orderPrice);
         orderRepository.save(order);
-        images.forEach(multipartFile -> {
-            String url = OCIUtil.uploadFile(multipartFile, OCIUtil.FolderName.ORDER, order.getId() + "/" + UUID.randomUUID());
-            OrderImage orderImage = new OrderImage(order, url);
-            orderRepository.save(orderImage);
-        });
+
         return order.getId();
+    }
+
+    @Transactional
+    public Long saveOrderImage(Long orderId, String orderImgUrl) {
+        Order order = orderRepository.findById(orderId).orElseThrow();
+        OrderImage orderImage = new OrderImage(order, orderImgUrl);
+        orderRepository.save(orderImage);
+        return orderImage.getId();
     }
 }
