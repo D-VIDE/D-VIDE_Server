@@ -1,5 +1,6 @@
 package com.divide.post.domain;
 
+import com.divide.order.Order;
 import com.divide.user.User;
 import lombok.*;
 import org.locationtech.jts.geom.Geometry;
@@ -21,7 +22,8 @@ import static javax.persistence.FetchType.LAZY;
 @EntityListeners(AuditingEntityListener.class)
 public class Post {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long postId;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id") //FK
@@ -40,6 +42,9 @@ public class Post {
     @PositiveOrZero
     private int deliveryPrice;
 
+    @PositiveOrZero
+    private int orderedPrice;
+
     @Enumerated(EnumType.STRING)
     @NotNull
     private Category category;
@@ -48,9 +53,6 @@ public class Post {
     private LocalDateTime targetTime;
     @NotNull
     private Geometry deliveryLocation;
-
-////    private List<String> orders = new ArrayList<>();
-////    private List<Order> orders = new ArrayList();
     @Enumerated(EnumType.STRING)
     @NotNull
     private PostStatus postStatus;
@@ -59,38 +61,22 @@ public class Post {
     @NotNull
     private List<PostImage> postImages = new ArrayList();
 
-//    @NotNull
-//    private String postImageUrl;
-
     @CreatedDate
     private LocalDateTime createdAt;
 
-//==연관관계 편의메서드==
-    public void setUser(User user){
+    //==연관관계 편의메서드==
+    public void setUser(User user) {
         this.user = user;
         user.getPosts().add(this);
     }
-    public void addPostImage(PostImage postImage){
+
+    public void addPostImage(PostImage postImage) {
         this.postImages.add(postImage);
         postImage.setPost(this);
     }
 
     //==생성 메서드==
 
-//    @Builder
-//    public Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus, String postImageUrl /*PostImage... postImages*/) {
-//        this.user = user;
-//        this.title = title;
-//        this.storeName = storeName;
-//        this.content = content;
-//        this.targetPrice = targetPrice;
-//        this.deliveryPrice = deliveryPrice;
-//        this.category = category;
-//        this.targetTime = targetTime;
-//        this.deliveryLocation = deliveryLocation;
-//        this.postStatus = postStatus;
-//        this.postImageUrl = postImageUrl;
-//    }
     @Builder
     public Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus, PostImage... postImages) {
         this.user = user;
@@ -103,15 +89,37 @@ public class Post {
         this.targetTime = targetTime;
         this.deliveryLocation = deliveryLocation;
         this.postStatus = postStatus;
-        for(PostImage postImage: postImages){
+        for (PostImage postImage : postImages) {
             this.addPostImage(postImage);
         }
     }
 
 
     //PostService 오류 삭제 하기 위한 임시 update메서드
-    public void updateInfo(String title, String content){
+    public void updateInfo(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void addOrder(Order order) {
+        this.orderedPrice += order.getOrderPrice();
+    }
+
+    public PostStatus checkStatus() {
+        /**
+         * 시간이 지나기 전일 때 => 항상 RECRUITING
+         * 시간이 지났을 때 => 돈이 모였으면? RECRUIT_SUCCESS
+         *                  돈이 안 모였으면? RECRUIT_FAIL
+         */
+        LocalDateTime now = LocalDateTime.now();
+        Boolean timeOver = targetTime.isBefore(now);
+        Boolean moneyOver = targetPrice < orderedPrice;
+        if (!timeOver) {
+            return PostStatus.RECRUITING;
+        } else if (moneyOver) {
+            return PostStatus.RECRUIT_SUCCESS;
+        } else {
+            return PostStatus.RECRUIT_FAIL;
+        }
     }
 }

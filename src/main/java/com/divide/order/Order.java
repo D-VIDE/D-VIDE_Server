@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor
-public class Orders {
+@Table(name = "orders")
+public class Order {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "orders_id")
     private Long id;
@@ -42,4 +43,12 @@ public class Orders {
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    public Order(User user, Post post, Integer orderPrice) {
+        this.user = user;
+        this.post = post;
+        this.orderPrice = orderPrice;
+        this.orderStatus = OrderStatus.ACTIVE;
+        post.addOrder(this);
+    }
 }

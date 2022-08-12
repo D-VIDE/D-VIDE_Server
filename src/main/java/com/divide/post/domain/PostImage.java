@@ -1,11 +1,9 @@
 package com.divide.post.domain;
 
-import com.divide.order.Orders;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.parameters.P;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
