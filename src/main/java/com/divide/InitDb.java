@@ -122,7 +122,7 @@ public class InitDb {
                         .targetPrice(random.nextInt(18000, 100001))
                         .deliveryPrice(random.nextInt(1000, 5001))
                         .category(categories[random.nextInt(categories.length)])
-                        .targetTime(LocalDateTime.now().plusHours(1))
+                        .targetTime(LocalDateTime.now().plusMinutes(random.nextInt(30000)))
                         .deliveryLocation(point)
                         .postStatus(postStatuses[random.nextInt(postStatuses.length)])
                         .postImages(postImages)
@@ -130,6 +130,8 @@ public class InitDb {
                 postService.create(post);
 
                 Long orderId = orderService.saveOrder(userList.get(random.nextInt(USER_COUNT)).getEmail(), post.getPostId(), random.nextInt(3000, 100001));
+                orderService.saveOrderImage(orderId, orderImgUrl);
+                orderId = orderService.saveOrder(userList.get(random.nextInt(USER_COUNT)).getEmail(), post.getPostId(), random.nextInt(3000, 100001));
                 orderService.saveOrderImage(orderId, orderImgUrl);
             }
         }
