@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +26,7 @@ public class OrderController {
     @GetMapping("/v1/orders")
     public ResponseEntity<Result<List<GetOrdersResponse>>> getOrders(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody @Valid GetOrdersRequest getOrdersRequest
+            @ModelAttribute GetOrdersRequest getOrdersRequest
     ) {
         List<GetOrdersResponse> orders = orderService.findOrders(userDetails.getUsername(), getOrdersRequest.getFirst());
         return ResponseEntity.ok(new Result<>(orders));
