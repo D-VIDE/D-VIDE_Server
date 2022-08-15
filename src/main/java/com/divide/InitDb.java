@@ -94,11 +94,11 @@ public class InitDb {
             }
 
 
-            Category[] categories = Category.values();
-            PostStatus[] postStatuses = PostStatus.values();
+            List<Category> categories = List.of(Category.values());
+            List<PostStatus> postStatuses = List.of(PostStatus.values());
 
             //게시글 이미지 2개 생성
-            PostImage[] postImages = new PostImage[2];
+            List<String> postImgUrls = new ArrayList<>();
             MultipartFile sampleMultipartFile = getSampleMultipartFile();
             String postImageUrl1 = OCIUtil.uploadFile(sampleMultipartFile, OCIUtil.FolderName.POST,  "sample" + "/" + UUID.randomUUID() + ".jpg");
             String postImageUrl2 = OCIUtil.uploadFile(sampleMultipartFile, OCIUtil.FolderName.POST,  "sample" + "/" + UUID.randomUUID() + ".jpg");
@@ -110,9 +110,8 @@ public class InitDb {
                 String pointWKT = String.format("POINT(%s %s)", longitude, latitude);
                 Point point = (Point) new WKTReader().read(pointWKT);
                 //게시글 이미지
-
-                postImages[0]=PostImage.create(postImageUrl1);
-                postImages[1]=PostImage.create(postImageUrl2);
+                postImgUrls.add(postImageUrl1);
+                postImgUrls.add(postImageUrl2);
 
                 Post post = Post.builder()
                         .user(userList.get(0))
@@ -121,11 +120,11 @@ public class InitDb {
                         .content("content" + i)
                         .targetPrice(random.nextInt(18000, 100001))
                         .deliveryPrice(random.nextInt(1000, 5001))
-                        .category(categories[random.nextInt(categories.length)])
+                        .category(categories.get(random.nextInt(categories.size())))
                         .targetTime(LocalDateTime.now().plusMinutes(random.nextInt(30000)))
                         .deliveryLocation(point)
-                        .postStatus(postStatuses[random.nextInt(postStatuses.length)])
-                        .postImages(postImages)
+                        .postStatus(postStatuses.get(random.nextInt(postStatuses.size())))
+                        .postImgUrls(postImgUrls)
                         .build();
                 postService.create(post);
 

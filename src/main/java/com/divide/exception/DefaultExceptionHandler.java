@@ -12,16 +12,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -49,6 +54,26 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn("handleIllegalArgument", e);
         ErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
         return handleExceptionInternal(errorCode, e.getMessage());
+    }
+
+    /**
+     * RequestPart에 Validation에 실패할 경우 뜨는 Exception을 컨트롤함.
+     * @param e the exception
+     * @param headers the headers to be written to the response
+     * @param status the selected response status
+     * @param request the current request
+     * @return
+     */
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestPart(
+            MissingServletRequestPartException e,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+        log.warn("handleMissingServletRequestPart", e);
+        System.out.println("e.getRequestPartName() = " + e.getRequestPartName());
+        ErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
+        return handleExceptionInternal(e, errorCode);
     }
 
     /**
@@ -123,6 +148,18 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn("handleHttpRequestMethodNotSupported", e);
         ErrorCode errorCode = CommonErrorCode.UNDEFINED_REQUEST_METHOD;
         return handleExceptionInternal(errorCode);
+    }
+
+    /**
+     * Validated 어노테이션으로 발생하는 Exception을 컨트롤함.
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e) {
+        log.warn("handleConstraintViolationException", e);
+        ErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
+        return handleExceptionInternal(e, errorCode);
     }
 
     /**
@@ -203,17 +240,39 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<Object> handleExceptionInternal(BindException e, ErrorCode errorCode) {
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(makeErrorResponse(e, errorCode));
-    }
-
-    private ErrorResponse makeErrorResponse(BindException e, ErrorCode errorCode) {
         List<ErrorResponse.ValidationError> validationErrorList = e.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(ErrorResponse.ValidationError::of)
                 .collect(Collectors.toList());
 
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(makeErrorResponse(errorCode, validationErrorList));
+    }
+
+    private ResponseEntity<Object> handleExceptionInternal(MissingServletRequestPartException e, ErrorCode errorCode) {
+        String invalidPartName = e.getRequestPartName();
+        FieldError fieldError = new FieldError(invalidPartName, invalidPartName, "널이어서는 안됩니다");
+        List<ErrorResponse.ValidationError> validationErrorList = List.of(ErrorResponse.ValidationError.of(fieldError));
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(makeErrorResponse(errorCode, validationErrorList));
+    }
+
+    private ResponseEntity<Object> handleExceptionInternal(ConstraintViolationException e, ErrorCode errorCode) {
+        String errorMessage = e.getMessage();
+        String[] split = errorMessage.split(",");
+        List<ErrorResponse.ValidationError> validationErrorList = Arrays.stream(split).map(str -> {
+            String[] split1 = str.split(":");
+            String field = split1[0].substring(split1[0].lastIndexOf(".") + 1);
+            String message = split1[1].strip();
+            return ErrorResponse.ValidationError.of(new FieldError(field, field, message));
+        }).toList();
+
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(makeErrorResponse(errorCode, validationErrorList));
+    }
+
+    private ErrorResponse makeErrorResponse(ErrorCode errorCode, List<ErrorResponse.ValidationError> validationErrorList) {
         return ErrorResponse.builder()
                 .code(errorCode.name())
                 .message(errorCode.getMessage())
