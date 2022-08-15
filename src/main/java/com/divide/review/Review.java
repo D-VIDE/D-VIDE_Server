@@ -14,6 +14,8 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -37,10 +39,10 @@ public class Review {
     @NotNull
     private Post post;
 
-    @NotEmpty
+
+    @PositiveOrZero
+    @NotNull
     private Double starRating;
-    @NotEmpty
-    private Geometry storeLocation;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -48,14 +50,26 @@ public class Review {
     @NotNull
     private String content;
 
+    @OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.ALL)
+    @NotNull
+    private List<ReviewImage> reviewImages = new ArrayList<>();
+
+    //==연관관계 편의메서드==
+    public void addReviewImage(ReviewImage reviewImage){
+        this.reviewImages.add(reviewImage);
+        reviewImage.setReview(this);
+    }
+
     @Builder
-    public Review(Long reviewId, User user, Post post, Double starRating, Geometry storeLocation, LocalDateTime createdAt, String content) {
+    public Review(Long reviewId, User user, Post post, Double starRating, LocalDateTime createdAt, String content, List<ReviewImage> reviewImages) {
         this.reviewId = reviewId;
         this.user = user;
         this.post = post;
         this.starRating = starRating;
-        this.storeLocation = storeLocation;
         this.createdAt = createdAt;
         this.content = content;
+        for(ReviewImage reviewImage: reviewImages){
+            this.addReviewImage(reviewImage);
+        }
     }
 }

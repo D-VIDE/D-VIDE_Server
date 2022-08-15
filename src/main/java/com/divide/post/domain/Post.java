@@ -4,6 +4,7 @@ import com.divide.order.Order;
 import com.divide.user.User;
 import lombok.*;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -52,7 +53,7 @@ public class Post {
     @FutureOrPresent
     private LocalDateTime targetTime;
     @NotNull
-    private Geometry deliveryLocation;
+    private Point deliveryLocation;
     @Enumerated(EnumType.STRING)
     @NotNull
     private PostStatus postStatus;
@@ -72,7 +73,7 @@ public class Post {
 
     //==생성 메서드==
     @Builder
-    private Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus, List<String> postImgUrls) {
+    private Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Point deliveryLocation, PostStatus postStatus, List<String> postImgUrls) {
         this.user = user;
         this.title = title;
         this.storeName = storeName;
