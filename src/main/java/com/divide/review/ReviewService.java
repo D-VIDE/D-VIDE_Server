@@ -17,9 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -31,8 +28,6 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-
-    private final EntityManager em;
 
     /**
      * 리뷰글 생성
@@ -76,15 +71,7 @@ public class ReviewService {
     public List<Review> findReviewsAll(Integer first, Double longitude, Double latitude,Double distance) {
         String pointFormat = getPointFormat(longitude, latitude, distance);
 
-        Query query = em.createNativeQuery("SELECT r.* FROM review r " +
-                        "JOIN post p on p.post_id = r.post_id " +
-                        "WHERE MBRContains( ST_LINESTRINGFROMTEXT(:pointFormat), p.delivery_location)", Review.class )
-                .setFirstResult(first)
-                .setParameter("pointFormat", pointFormat)
-                .setMaxResults(10);
-
-        List<Review> reviewLists = query.getResultList();
-        return reviewLists;
+        return reviewRepository.findReviewsAll(first, pointFormat);
     }
 
     private String getPointFormat(Double longitude, Double latitude, Double distance) {
