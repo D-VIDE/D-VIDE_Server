@@ -17,7 +17,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,30 +34,31 @@ public class PostService {
      * 게시글 생성
      */
     @Transactional
-    public Long create(Post post){
+    public Long create(Post post) {
         //TODO: 비즈니스 로직 추가
         postRepository.save(post);
         return post.getPostId();
     }
+
     /**
-     *전체 게시글 조회
+     * 전체 게시글 조회
      */
-    public List<Post> findPosts(){
+    public List<Post> findPosts() {
         return postRepository.findAll();
     }
 
     /**
-     *게시글 id로 조회
+     * 게시글 id로 조회
      */
-    public Post findOne(Long postId){
+    public Post findOne(Long postId) {
         return postRepository.findByPostId(postId);
     }
 
 
     /**
-     *게시글 title로 조회
+     * 게시글 title로 조회
      */
-    public List<Post> findTitle(String title){
+    public List<Post> findTitle(String title) {
         return postRepository.findByTitle(title);
     }
 
@@ -68,11 +68,8 @@ public class PostService {
         post.updateInfo(title, content);
     }
 
-    /**
-     *게시글 생성: user가 작성한 게시글
-     */
     @Transactional
-    public Long createPost(String userEmail, PostPostRequest request, MultipartFile... postImagesFiles) throws ParseException {
+    public Long createPost(String userEmail, PostPostRequest request, List<MultipartFile> postImgList) throws ParseException {
         //엔티티 조회
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
 
@@ -81,15 +78,13 @@ public class PostService {
         Point point = (Point) new WKTReader().read(pointWKT);
 
         //게시글 이미지 생성
-        PostImage[] postImages = new PostImage[postImagesFiles.length];
-        int i =0;
-        for(MultipartFile postImagefile: postImagesFiles){
+        List<String> postImageUrls = postImgList.stream().map(multipartFile -> {
             String storeName = request.getStoreName(); //filename에 뭘 해야할지 몰라서 임시로 넣음
-            String extension = StringUtils.getFilenameExtension(postImagefile.getOriginalFilename()).toLowerCase();
-            String postImageUrl = OCIUtil.uploadFile(postImagefile, OCIUtil.FolderName.POST,  storeName + "/" + UUID.randomUUID() + "." + extension);
+            String extension = StringUtils.getFilenameExtension(multipartFile.getOriginalFilename()).toLowerCase();
+            String postImageUrl = OCIUtil.uploadFile(multipartFile, OCIUtil.FolderName.POST, storeName + "/" + UUID.randomUUID() + "." + extension);
+            return postImageUrl;
+        }).toList();
 
-            postImages[i++]=PostImage.create(postImageUrl);
-        }
         //주문 생성
         Post post = Post.builder()
                 .user(user)
@@ -102,7 +97,7 @@ public class PostService {
                 .targetTime(request.getTargetTime())
                 .deliveryLocation(point)
                 .postStatus(RECRUITING)
-                .postImages(postImages)
+                .postImgUrls(postImageUrls)
                 .build();
         postRepository.save(post);
 
@@ -111,11 +106,11 @@ public class PostService {
 
     /**
      * 게시글 거리기반 조회
+     *
      * @param longitude : 기준좌표 x
      * @param latitude  : 기준좌표 y
      * @param distance  : 기준 좌표 x,y로 부터 distanceKM 떨어진 모든 범위
      * @param category  : 사용자가 선택한 카테고리
-     *
      */
     public List<Post> findPostsAll(Integer first, Double latitude, Double longitude, Double distance, Category category) {
         String pointFormat = getPointFormat(latitude, longitude, distance);

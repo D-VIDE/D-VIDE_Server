@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -44,11 +45,12 @@ public class Order {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public Order(User user, Post post, Integer orderPrice) {
+    public Order(User user, Post post, Integer orderPrice, List<String> orderImgUrls) {
         this.user = user;
         this.post = post;
         this.orderPrice = orderPrice;
         this.orderStatus = OrderStatus.ACTIVE;
         post.addOrder(this);
+        orderImgUrls.forEach(url -> new OrderImage(this, url));
     }
 }
