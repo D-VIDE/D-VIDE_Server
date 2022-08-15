@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -62,25 +63,42 @@ public class OrderService {
     }
 
     @Transactional
-    public Long saveOrder(String userEmail, Long postId, Integer orderPrice) {
+    public Long saveOrder(String userEmail, Long postId, Integer orderPrice, List<MultipartFile> orderImgFileList) {
+        // 엔티티 조회
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         Post post = postRepository.findByPostId(postId);
 
-        if (post.checkStatus() != PostStatus.RECRUITING) {
+        // validation
+        if (post.getPostStatus() != PostStatus.RECRUITING) {
             throw new RestApiException(PostErrorCode.POST_NOT_RECRUITING);
         }
 
-        Order order = new Order(user, post, orderPrice);
+        // 주문 이미지 생성
+        List<String> orderImgUrls = orderImgFileList.stream().map(orderImgFile -> {
+            String extension = StringUtils.getFilenameExtension(orderImgFile.getOriginalFilename()).toLowerCase();
+            return OCIUtil.uploadFile(orderImgFile, OCIUtil.FolderName.ORDER, postId + "/" + UUID.randomUUID() + "." + extension);
+        }).toList();
+        Order order = new Order(user, post, orderPrice, orderImgUrls);
         orderRepository.save(order);
 
         return order.getId();
     }
 
     @Transactional
-    public Long saveOrderImage(Long orderId, String orderImgUrl) {
-        Order order = orderRepository.findById(orderId).orElseThrow();
-        OrderImage orderImage = new OrderImage(order, orderImgUrl);
-        orderRepository.save(orderImage);
-        return orderImage.getId();
+    public Long saveOrderTest(String userEmail, Long postId, Integer orderPrice, List<String> orderImgUrlList) {
+        // 엔티티 조회
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
+        Post post = postRepository.findByPostId(postId);
+
+        // validation
+        if (post.checkStatus() != PostStatus.RECRUITING) {
+            throw new RestApiException(PostErrorCode.POST_NOT_RECRUITING);
+        }
+
+        // 주문 이미지 생성
+        Order order = new Order(user, post, orderPrice, orderImgUrlList);
+        orderRepository.save(order);
+
+        return order.getId();
     }
 }

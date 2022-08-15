@@ -129,10 +129,8 @@ public class InitDb {
                         .build();
                 postService.create(post);
 
-                Long orderId = orderService.saveOrder(userList.get(random.nextInt(USER_COUNT)).getEmail(), post.getPostId(), random.nextInt(3000, 100001));
-                orderService.saveOrderImage(orderId, orderImgUrl);
-                orderId = orderService.saveOrder(userList.get(random.nextInt(USER_COUNT)).getEmail(), post.getPostId(), random.nextInt(3000, 100001));
-                orderService.saveOrderImage(orderId, orderImgUrl);
+                orderService.saveOrderTest(userList.get(random.nextInt(USER_COUNT)).getEmail(), post.getPostId(), random.nextInt(3000, 100001), List.of(orderImgUrl));
+                orderService.saveOrderTest(userList.get(random.nextInt(USER_COUNT)).getEmail(), post.getPostId(), random.nextInt(3000, 100001), List.of(orderImgUrl));
             }
         }
     }
