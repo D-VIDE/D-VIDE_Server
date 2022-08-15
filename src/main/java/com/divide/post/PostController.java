@@ -34,10 +34,11 @@ public class PostController {
     private final PostService postService;
 
     /**
-     * 게시물 생성 API
+     * 게시물 생성 API V1
      * [POST] http://localhost:8080/api/v1/post
+     * @param userDetails
      * @param request
-     * @param postImageFiles : 업로드할 파일 리스트
+     * @param postImageFiles
      * @return
      * @throws ParseException
      */
@@ -47,6 +48,16 @@ public class PostController {
 
         return ResponseEntity.ok().body(new PostPostResponse(newPostId));
     }
+
+    /**
+     * 게시물 생성 API V2
+     * [POST] http://localhost:8080/api/v2/post
+     * @param userDetails
+     * @param request
+     * @param postImgFiles
+     * @return
+     * @throws ParseException
+     */
     @PostMapping( "/v2/post")
     public ResponseEntity<PostPostResponse> createPostV2(
             @AuthenticationPrincipal UserDetails userDetails,
