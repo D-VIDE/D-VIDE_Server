@@ -1,16 +1,13 @@
 package com.divide.post.dto.request;
 
 import com.divide.post.domain.Category;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
-import java.util.List;
 
 
 @Getter
@@ -31,7 +28,6 @@ public class PostPostRequest {
     @NotNull
     private int targetPrice;
 
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern= "yyyy-MM-dd HH:mm:ss")
     @NotNull
     private LocalDateTime targetTime;
 
@@ -41,5 +37,4 @@ public class PostPostRequest {
     private double latitude; //위도: y
     @NotNull
     private String content;
-
 }

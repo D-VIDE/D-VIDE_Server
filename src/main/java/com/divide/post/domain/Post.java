@@ -70,15 +70,9 @@ public class Post {
         user.getPosts().add(this);
     }
 
-    public void addPostImage(PostImage postImage) {
-        this.postImages.add(postImage);
-        postImage.setPost(this);
-    }
-
     //==생성 메서드==
-
     @Builder
-    public Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus, PostImage... postImages) {
+    private Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus, List<String> postImgUrls) {
         this.user = user;
         this.title = title;
         this.storeName = storeName;
@@ -89,9 +83,7 @@ public class Post {
         this.targetTime = targetTime;
         this.deliveryLocation = deliveryLocation;
         this.postStatus = postStatus;
-        for (PostImage postImage : postImages) {
-            this.addPostImage(postImage);
-        }
+        this.postImages = postImgUrls.stream().map(postImgUrl -> new PostImage(this, postImgUrl)).toList();
     }
 
 

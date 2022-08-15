@@ -14,10 +14,13 @@ import org.locationtech.jts.io.ParseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -26,6 +29,7 @@ import static java.util.stream.Collectors.toList;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Validated
 public class PostController {
     private final PostService postService;
 
@@ -39,8 +43,16 @@ public class PostController {
      */
     @PostMapping(value = "/v1/post")
     public ResponseEntity<PostPostResponse> createPost(@AuthenticationPrincipal UserDetails userDetails, @RequestPart @Valid PostPostRequest request , @RequestPart MultipartFile... postImageFiles) throws ParseException {
+        Long newPostId = postService.createPost(userDetails.getUsername(), request, List.of(postImageFiles));
 
-        Long newPostId = postService.createPost(userDetails.getUsername(), request, postImageFiles);
+        return ResponseEntity.ok().body(new PostPostResponse(newPostId));
+    }
+    @PostMapping( "/v2/post")
+    public ResponseEntity<PostPostResponse> createPostV2(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestPart @Valid PostPostRequest request,
+            @NotNull @Size(min= 1, max = 3) @RequestPart List<MultipartFile> postImgFiles) throws ParseException {
+        Long newPostId = postService.createPost(userDetails.getUsername(), request, postImgFiles);
 
         return ResponseEntity.ok().body(new PostPostResponse(newPostId));
     }
@@ -50,7 +62,7 @@ public class PostController {
     public Result getPostsV1(@Valid GetPostsRequest getPostsRequest){
         List<Post> findPosts = postService.findPostsAll(getPostsRequest.getFirst(), getPostsRequest.getLatitude(), getPostsRequest.getLongitude(), 0.5, getPostsRequest.getCategory());
         List<GetPostsResponseV1> collect = findPosts.stream()
-                .map( p -> new GetPostsResponseV1(p))
+                .map(GetPostsResponseV1::new)
                 .collect(toList());
         return new Result(collect);
     }
