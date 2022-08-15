@@ -10,10 +10,7 @@ import com.divide.user.UserRepository;
 import com.divide.utils.GeometryUtil;
 import com.divide.utils.OCIUtil;
 import lombok.RequiredArgsConstructor;
-import org.locationtech.jts.geom.MultiLineString;
-import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -44,10 +42,6 @@ public class ReviewService {
         //엔티티 조회
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         Post post = postRepository.findByPostId(postId);
-
-        //storeLocation: double -> point로 변환
-        String pointWKT = String.format("POINT(%s %s)", request.getLongitude(), request.getLatitude());
-        Point point = (Point) new WKTReader().read(pointWKT);
 
         //리뷰 이미지 생성
         List<ReviewImage> reviewImages= new ArrayList<ReviewImage>();
@@ -79,16 +73,21 @@ public class ReviewService {
      * @param distance  : 기준 좌표 x,y로 부터 distanceKM 떨어진 모든 범위
      *
      */
-    public List<Review> getNearbyReviews(Double latitude, Double longitude, Double distance, int offset) {
-        String pointFormat = getPointFormat(latitude, longitude, distance);
-        Query query = em.createNativeQuery("SELECT * FROM review,post WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + pointFormat + ", post.delivery_location)", Review.class)
-                .setFirstResult(offset)
+    public List<Review> findReviewsAll(Integer first, Double longitude, Double latitude,Double distance) {
+        String pointFormat = getPointFormat(longitude, latitude, distance);
+
+        Query query = em.createNativeQuery("SELECT r.* FROM review r " +
+                        "JOIN post p on p.post_id = r.post_id " +
+                        "WHERE MBRContains( ST_LINESTRINGFROMTEXT(:pointFormat), p.delivery_location)", Review.class )
+                .setFirstResult(first)
+                .setParameter("pointFormat", pointFormat)
                 .setMaxResults(10);
+
         List<Review> reviewLists = query.getResultList();
         return reviewLists;
     }
 
-    private String getPointFormat(Double latitude, Double longitude, Double distance) {
+    private String getPointFormat(Double longitude, Double latitude, Double distance) {
         //일정 거리 범위 내에있는 좌표들을 비교하기 위해서 MBR이 필요
         //MBR을 구하기 위해 북동쪽, 남서쪽 좌표 구하기
         Location northEast = GeometryUtil
@@ -96,14 +95,14 @@ public class ReviewService {
         Location southWest = GeometryUtil
                 .calculate(latitude, longitude, distance, Direction.SOUTHWEST.getBearing());
         // 기준 좌표의 북동쪽으로 nKM에 위치한 좌표 : x1, y1
-        double x1 = northEast.getLatitude();
-        double y1 = northEast.getLongitude();
+        double x1 = northEast.getLongitude();
+        double y1 = northEast.getLatitude();
         // 기준 좌표의 남서쪽으로 nKM에 위치한 좌표 : x2, y2
-        double x2 = southWest.getLatitude();
-        double y2 = southWest.getLongitude();
+        double x2 = southWest.getLongitude();
+        double y2 = southWest.getLatitude();
 
         //기준 좌표 x,y로 부터 distanceKM 떨어진 모든 범위의 delivery_location 데이터를 조회하는 쿼리
-        String pointFormat = String.format("'LINESTRING(%f %f, %f %f)')", x1, y1, x2, y2);
+        String pointFormat = String.format("LINESTRING(%f %f, %f %f)", x1, y1, x2, y2);
         return pointFormat;
     }
 

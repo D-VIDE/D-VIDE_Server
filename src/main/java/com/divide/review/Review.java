@@ -43,8 +43,6 @@ public class Review {
     @PositiveOrZero
     @NotNull
     private Double starRating;
-//    @NotNull
-//    private Geometry storeLocation; //게시글 위치로 함
 
     @CreatedDate
     private LocalDateTime createdAt;

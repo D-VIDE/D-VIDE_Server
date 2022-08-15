@@ -19,9 +19,4 @@ public class PostReviewRequest {
 
     @NotEmpty
     private String storeName;
-
-    @NotNull
-    private double longitude;
-    @NotNull
-    private double latitude;
 }

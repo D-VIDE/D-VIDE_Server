@@ -2,7 +2,7 @@ package com.divide.review;
 
 import com.divide.post.dto.response.Result;
 import com.divide.review.dto.request.PostReviewRequest;
-import com.divide.review.dto.response.GetNearbyReviewResponse;
+import com.divide.review.dto.response.GetReviewsResponse;
 import com.divide.review.dto.response.PostReviewResponse;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.io.ParseException;
@@ -32,7 +32,7 @@ public class ReviewController {
      * @throws ParseException
      */
     @PostMapping(value = "/review")
-    public ResponseEntity<PostReviewResponse> review( @RequestParam Long postId, @AuthenticationPrincipal UserDetails userDetails, @RequestPart PostReviewRequest request, @RequestPart List<MultipartFile> reviewImageFiles) throws ParseException {
+    public ResponseEntity<PostReviewResponse> createReview(@RequestParam Long postId, @AuthenticationPrincipal UserDetails userDetails, @RequestPart PostReviewRequest request, @RequestPart List<MultipartFile> reviewImageFiles) throws ParseException {
         Long newReviewId = reviewService.createReview( postId, userDetails.getUsername(), request, reviewImageFiles);
 
         return ResponseEntity.ok().body(new PostReviewResponse(newReviewId));
@@ -43,13 +43,13 @@ public class ReviewController {
      *  [GET] http://localhost:8080/api/v1/reviews/nearby?longitude=37.49015482509&latitude=127.030767490&offset=0
      *
      */
-    @GetMapping("/reviews/nearby")
-    public Result findNearbyPosts(@RequestParam("longitude") double longitude, @RequestParam("latitude") double latitude, @RequestParam(value = "offset",
-            defaultValue = "0") int offset){ //json 데이터 확장성을 위해 Result 사용
-        List<Review> findReviews = reviewService.getNearbyReviews(longitude, latitude, 0.5, offset);
+    @GetMapping("/reviews")
+    public Result getReviews(@RequestParam("longitude") double longitude, @RequestParam("latitude") double latitude, @RequestParam(value = "first",
+            defaultValue = "0") Integer first){ //json 데이터 확장성을 위해 Result 사용
+        List<Review> findReviews = reviewService.findReviewsAll(first, longitude, latitude, 0.5);
 
-        List<GetNearbyReviewResponse> collect = findReviews.stream()
-                .map( r -> new GetNearbyReviewResponse(r))
+        List<GetReviewsResponse> collect = findReviews.stream()
+                .map( r -> new GetReviewsResponse(r))
                 .collect(toList());
         return new Result(collect);
     }

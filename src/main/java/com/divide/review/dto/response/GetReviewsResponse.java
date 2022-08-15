@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class GetNearbyReviewResponse {
+public class GetReviewsResponse {
     private Long reviewId;
     private String profileImgUrl;
     private String nickname;
@@ -14,12 +14,12 @@ public class GetNearbyReviewResponse {
     private double latitude;
     private String content;
     private Double starRating;
-//    private String reviewImgUrl;
+//    private List<String> reviewImgUrl;
 //    private int likeCount;
 //    private boolean haslike;
     private String storeName;
 
-    public GetNearbyReviewResponse(Review r) {
+    public GetReviewsResponse(Review r) {
         this.reviewId = r.getReviewId();
         this.profileImgUrl = r.getUser().getProfileImgUrl();
         this.nickname = r.getUser().getNickname();
@@ -27,7 +27,7 @@ public class GetNearbyReviewResponse {
         this.latitude = r.getPost().getDeliveryLocation().getCoordinate().getY();
         this.content = r.getContent();
         this.starRating = r.getStarRating();
-//        this.reviewImgUrl = ;
+//        this.reviewImgUrl = r.getReviewImages();
 //        this.likeCount = ;
         this.storeName = r.getPost().getStoreName();
     }
