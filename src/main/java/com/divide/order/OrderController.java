@@ -11,15 +11,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Validated
 public class OrderController {
     private final OrderService orderService;
 
@@ -35,14 +41,10 @@ public class OrderController {
     @PostMapping("/v1/order")
     public ResponseEntity<PostOrderResponse> postOrder(
             @AuthenticationPrincipal UserDetails userDetails,
-            @ModelAttribute PostOrderRequest postOrderRequest
+            @RequestPart @Valid PostOrderRequest request,
+            @RequestPart @Size(min = 1, max = 3) List<MultipartFile> orderImgFiles
     ) {
-        Long orderId = orderService.saveOrder(userDetails.getUsername(), postOrderRequest.getPostId(), postOrderRequest.getOrderPrice());
-        List<MultipartFile> images = postOrderRequest.getOrderImg();
-        images.forEach(multipartFile -> {
-            String url = OCIUtil.uploadFile(multipartFile, OCIUtil.FolderName.ORDER, orderId + "/" + UUID.randomUUID());
-            orderService.saveOrderImage(orderId, url);
-        });
+        Long orderId = orderService.saveOrder(userDetails.getUsername(), request.getPostId(), request.getOrderPrice(), orderImgFiles);
         return ResponseEntity.status(HttpStatus.CREATED).body(new PostOrderResponse(orderId));
     }
 }
