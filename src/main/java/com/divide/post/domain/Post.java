@@ -73,7 +73,7 @@ public class Post {
 
     //==생성 메서드==
     @Builder
-    private Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Geometry deliveryLocation, PostStatus postStatus, List<String> postImgUrls) {
+    private Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Point deliveryLocation, PostStatus postStatus, List<String> postImgUrls) {
         this.user = user;
         this.title = title;
         this.storeName = storeName;

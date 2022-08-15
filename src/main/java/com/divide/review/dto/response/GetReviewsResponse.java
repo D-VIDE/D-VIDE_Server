@@ -14,7 +14,7 @@ public class GetReviewsResponse {
     private double latitude;
     private String content;
     private Double starRating;
-//    private List<String> reviewImgUrl;
+    private String reviewImgUrl;
 //    private int likeCount;
 //    private boolean haslike;
     private String storeName;
@@ -27,7 +27,7 @@ public class GetReviewsResponse {
         this.latitude = r.getPost().getDeliveryLocation().getCoordinate().getY();
         this.content = r.getContent();
         this.starRating = r.getStarRating();
-//        this.reviewImgUrl = r.getReviewImages();
+        this.reviewImgUrl = r.getReviewImages().get(0).getReviewImageUrl();
 //        this.likeCount = ;
         this.storeName = r.getPost().getStoreName();
     }
