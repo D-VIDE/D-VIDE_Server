@@ -11,6 +11,7 @@ import com.divide.user.User;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.io.ParseException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,7 +47,7 @@ public class PostController {
     public ResponseEntity<PostPostResponse> createPost(@AuthenticationPrincipal UserDetails userDetails, @RequestPart @Valid PostPostRequest request , @RequestPart MultipartFile... postImageFiles) throws ParseException {
         Long newPostId = postService.createPost(userDetails.getUsername(), request, List.of(postImageFiles));
 
-        return ResponseEntity.ok().body(new PostPostResponse(newPostId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new PostPostResponse(newPostId));
     }
 
     /**
@@ -65,7 +66,7 @@ public class PostController {
             @NotNull @Size(min= 1, max = 3) @RequestPart List<MultipartFile> postImgFiles) throws ParseException {
         Long newPostId = postService.createPost(userDetails.getUsername(), request, postImgFiles);
 
-        return ResponseEntity.ok().body(new PostPostResponse(newPostId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new PostPostResponse(newPostId));
     }
 
     @GetMapping("/v1/posts")
