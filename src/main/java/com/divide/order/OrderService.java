@@ -69,7 +69,7 @@ public class OrderService {
         Post post = postRepository.findByPostId(postId);
 
         // validation
-        if (post.checkStatus() != PostStatus.RECRUITING) {
+        if (post.getPostStatus() != PostStatus.RECRUITING) {
             throw new RestApiException(PostErrorCode.POST_NOT_RECRUITING);
         }
 
