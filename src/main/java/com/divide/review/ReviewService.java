@@ -26,6 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
+    private final ReviewLikeRepository reviewLikeRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
@@ -91,6 +92,23 @@ public class ReviewService {
         //기준 좌표 x,y로 부터 distanceKM 떨어진 모든 범위의 delivery_location 데이터를 조회하는 쿼리
         String pointFormat = String.format("LINESTRING(%f %f, %f %f)", x1, y1, x2, y2);
         return pointFormat;
+    }
+
+    //리뷰 좋아요
+    @Transactional
+    public Long reviewLike(String userEmail, Long reviewId){
+        //엔티티 조회
+        User currentUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
+        Review review = reviewRepository.findById(reviewId);
+
+        //리뷰 좋아요 생성
+        ReviewLike reviewLike = ReviewLike.builder()
+                .user(currentUser)
+                .review(review)
+                .build();
+
+        reviewLikeRepository.save(reviewLike);
+        return reviewLike.getReviewLikeId();
     }
 
 }

@@ -11,6 +11,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.HttpStatus;
+import com.divide.review.dto.response.PostReviewLikeResponse;
 
 import java.util.List;
 
@@ -52,5 +54,19 @@ public class ReviewController {
                 .map( r -> new GetReviewsResponse(r))
                 .collect(toList());
         return new Result(collect);
+    }
+
+    /**
+     * 리뷰 좋아요 생성
+     * [Post] http://localhost:8080/api/v1/review/3/like?userId=1
+     * @param reviewId : 유저가 누른 리뷰의 id
+     * @return
+     */
+    @PostMapping(value = "/review/{reviewId}/like")
+    public ResponseEntity<PostReviewLikeResponse> reviewLike( @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long reviewId){
+
+        Long newReviewLikeId = reviewService.reviewLike(userDetails.getUsername(), reviewId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body( new PostReviewLikeResponse(newReviewLikeId));
     }
 }
