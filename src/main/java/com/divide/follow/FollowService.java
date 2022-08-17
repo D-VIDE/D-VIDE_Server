@@ -66,4 +66,14 @@ public class FollowService {
                 )).collect(Collectors.toList())
         );
     }
+
+    public Integer getFollowingCount(String userEmail) {
+        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        return followRepository.getFollowingCount(user);
+    }
+
+    public Integer getFollowerCount(String userEmail) {
+        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        return followRepository.getFollowerCount(user);
+    }
 }

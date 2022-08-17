@@ -41,4 +41,18 @@ public class FollowRepository {
                 .setParameter("user", user)
                 .getResultList();
     }
+
+    public Integer getFollowingCount(User user) {
+        return em.createQuery("select count(f) from Follow f where f.follower = :user", Long.class)
+                .setParameter("user", user)
+                .getSingleResult()
+                .intValue();
+    }
+
+    public Integer getFollowerCount(User user) {
+        return em.createQuery("select count(f) from Follow f where f.followee = :user", Long.class)
+                .setParameter("user", user)
+                .getSingleResult()
+                .intValue();
+    }
 }
