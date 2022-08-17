@@ -41,7 +41,7 @@ public class AuthService {
         if (userRepository.findByEmail(email).isEmpty()) {
             String profileImgUrl = saveProfileImgFromUrl(email, (String) profile.get("thumbnail_image_url"));
             String nickname = (String) profile.get("nickname");
-            userRepository.signup(new User(email, passwordEncoder.encode(password), profileImgUrl, nickname, UserRole.USER));
+            userRepository.save(new User(email, passwordEncoder.encode(password), profileImgUrl, nickname, UserRole.USER));
         }
 
         return new KaKaoLoginServiceResult(email, password);
