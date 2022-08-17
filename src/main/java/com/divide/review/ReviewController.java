@@ -2,6 +2,7 @@ package com.divide.review;
 
 import com.divide.post.dto.response.Result;
 import com.divide.review.dto.request.PostReviewRequest;
+import com.divide.review.dto.response.DeleteReviewLikeResponse;
 import com.divide.review.dto.response.GetReviewsResponse;
 import com.divide.review.dto.response.PostReviewResponse;
 import lombok.RequiredArgsConstructor;
@@ -68,5 +69,19 @@ public class ReviewController {
         Long newReviewLikeId = reviewService.reviewLike(userDetails.getUsername(), reviewId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body( new PostReviewLikeResponse(newReviewLikeId));
+    }
+
+    /**
+     * 리뷰 좋아요 생성취소
+     * [Delete] http://localhost:8080/api/v1/review/{reviewId}/like
+     * @param userDetails : 현재 로그인 된 유저
+     * @param reviewId : 좋아요 취소를 누른 리뷰의 아이디
+     * @return
+     */
+    @DeleteMapping("/review/{reviewId}/like")
+    public ResponseEntity<DeleteReviewLikeResponse> reviewLikeCancel(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long reviewId){
+        reviewService.reviewLikeCancel(userDetails.getUsername(), reviewId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new DeleteReviewLikeResponse(reviewId));
     }
 }

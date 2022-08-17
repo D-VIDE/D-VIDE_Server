@@ -51,7 +51,7 @@ public class Review {
     @NotNull
     private String content;
 
-    @OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private List<ReviewLike> reviewLikes = new ArrayList();
 
     @OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.ALL)

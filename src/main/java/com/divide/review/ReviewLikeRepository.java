@@ -10,5 +10,16 @@ import javax.persistence.EntityManager;
 public class ReviewLikeRepository {
     private final EntityManager em;
 
-    public void save(ReviewLike reviewLike) {em.persist(reviewLike);}
+    public void save(ReviewLike reviewLike) {
+        em.persist(reviewLike);}
+
+    public void delete(ReviewLike reviewLike){
+        em.remove(reviewLike);
+    }
+
+    public ReviewLike findById(Long reviewLikeId){
+        ReviewLike reviewLike = em.find(ReviewLike.class, reviewLikeId);
+        return reviewLike;
+    }
+
 }

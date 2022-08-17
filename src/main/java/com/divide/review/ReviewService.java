@@ -111,4 +111,17 @@ public class ReviewService {
         return reviewLike.getReviewLikeId();
     }
 
+    @Transactional
+    public void reviewLikeCancel(String userEmail, Long reviewId){
+        //게시글 좋아요 조회
+        Review review = reviewRepository.findById(reviewId);
+        List<ReviewLike> reviewLikes = review.getReviewLikes();
+//        reviewLikes.removeIf(reviewLike -> reviewLike.getUser().getEmail().equals(userEmail));
+
+        for(ReviewLike reviewLike: reviewLikes){
+            if ( reviewLike.getUser().getEmail().equals(userEmail) ){
+                reviewLikeRepository.delete(reviewLike);
+            }
+        }
+    }
 }
