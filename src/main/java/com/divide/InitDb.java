@@ -6,7 +6,6 @@ import com.divide.order.OrderService;
 import com.divide.post.PostService;
 import com.divide.post.domain.Category;
 import com.divide.post.domain.Post;
-import com.divide.post.domain.PostImage;
 import com.divide.post.domain.PostStatus;
 import com.divide.user.User;
 import com.divide.user.UserService;
@@ -19,6 +18,8 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,7 @@ import java.nio.file.Files;
 import java.time.LocalDateTime;
 
 @Component
+@Profile("!dev")
 @RequiredArgsConstructor
 public class InitDb {
     private final InitService initService;
@@ -44,11 +46,14 @@ public class InitDb {
         initService.dbInit1();
     }
     @Component
+    @Profile("!dev")
     @Transactional
     @RequiredArgsConstructor
     static class InitService {
-        public static final int USER_COUNT = 5;
-        public static final int POST_COUNT = 30;
+        @Value("${test.user-count}")
+        public int USER_COUNT;
+        @Value("${test.post-count}")
+        public int POST_COUNT;
         private final UserService userService;
         private final PostService postService;
         private final OrderService orderService;
@@ -98,7 +103,6 @@ public class InitDb {
             List<PostStatus> postStatuses = List.of(PostStatus.values());
 
             //게시글 이미지 2개 생성
-            List<String> postImgUrls = new ArrayList<>();
             MultipartFile sampleMultipartFile = getSampleMultipartFile();
             String postImageUrl1 = OCIUtil.uploadFile(sampleMultipartFile, OCIUtil.FolderName.POST,  "sample" + "/" + UUID.randomUUID() + ".jpg");
             String postImageUrl2 = OCIUtil.uploadFile(sampleMultipartFile, OCIUtil.FolderName.POST,  "sample" + "/" + UUID.randomUUID() + ".jpg");
@@ -110,8 +114,6 @@ public class InitDb {
                 String pointWKT = String.format("POINT(%s %s)", longitude, latitude);
                 Point point = (Point) new WKTReader().read(pointWKT);
                 //게시글 이미지
-                postImgUrls.add(postImageUrl1);
-                postImgUrls.add(postImageUrl2);
 
                 Post post = Post.builder()
                         .user(userList.get(0))
@@ -124,7 +126,7 @@ public class InitDb {
                         .targetTime(LocalDateTime.now().plusMinutes(random.nextInt(30000)))
                         .deliveryLocation(point)
                         .postStatus(postStatuses.get(random.nextInt(postStatuses.size())))
-                        .postImgUrls(postImgUrls)
+                        .postImgUrls(List.of(postImageUrl1, postImageUrl2))
                         .build();
                 postService.create(post);
 
