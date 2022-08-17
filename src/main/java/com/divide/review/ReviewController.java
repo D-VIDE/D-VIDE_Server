@@ -1,10 +1,14 @@
 package com.divide.review;
 
+import com.divide.common.CommonReviewResponse;
+import com.divide.common.CommonUserResponse;
 import com.divide.post.dto.response.Result;
 import com.divide.review.dto.request.PostReviewRequest;
 import com.divide.review.dto.request.PostReviewRequestV2;
 import com.divide.review.dto.response.GetReviewsResponse;
+import com.divide.review.dto.response.GetReviewsResponseV2;
 import com.divide.review.dto.response.PostReviewResponse;
+import com.divide.user.User;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.http.HttpStatus;
@@ -68,6 +72,40 @@ public class ReviewController {
 
         List<GetReviewsResponse> collect = findReviews.stream()
                 .map( r -> new GetReviewsResponse(r))
+                .collect(toList());
+        return new Result(collect);
+    }
+
+    /**
+     * 500m이내 리뷰글 10개 조회 API V2
+     *  [GET]http://localhost:8080/api/v2/reviews?longitude=127.0307674032022&latitude=37.4901548250937&offset=0
+     *
+     */
+    @GetMapping("v2/reviews")
+    public Result getReviewsV2(@RequestParam("longitude") double longitude, @RequestParam("latitude") double latitude, @RequestParam(value = "first",
+            defaultValue = "0") Integer first){ //json 데이터 확장성을 위해 Result 사용
+        List<Review> findReviews = reviewService.findReviewsAll(first, longitude, latitude, 0.5);
+
+        List<GetReviewsResponseV2> collect = findReviews.stream()
+                .map( review -> {
+                    User user = review.getUser();
+                    return new GetReviewsResponseV2(
+                            new CommonUserResponse(
+                                    user.getId(),
+                                    user.getNickname(),
+                                    user.getProfileImgUrl()
+                            ),
+                            new CommonReviewResponse(
+                                    review.getReviewId(),
+                                    review.getPost().getDeliveryLocation().getCoordinate().getX(),
+                                    review.getPost().getDeliveryLocation().getCoordinate().getY(),
+                                    review.getContent(),
+                                    review.getStarRating(),
+                                    review.getReviewImages().get(0).getReviewImageUrl(),
+                                    review.getPost().getStoreName()
+                            )
+                    );
+                })
                 .collect(toList());
         return new Result(collect);
     }
