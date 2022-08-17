@@ -5,6 +5,7 @@ import com.divide.post.domain.Direction;
 import com.divide.post.domain.Location;
 import com.divide.post.domain.Post;
 import com.divide.review.dto.request.PostReviewRequest;
+import com.divide.review.dto.request.PostReviewRequestV2;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
 import com.divide.utils.GeometryUtil;
@@ -42,6 +43,37 @@ public class ReviewService {
         List<ReviewImage> reviewImages= new ArrayList<ReviewImage>();
         for(MultipartFile reviewImageFile: reviewImageFiles){
             String storeName = request.getStoreName();
+            String extension = StringUtils.getFilenameExtension(reviewImageFile.getOriginalFilename()).toLowerCase();
+            String reviewImageUrl = OCIUtil.uploadFile(reviewImageFile, OCIUtil.FolderName.REVIEW, storeName + "/" + UUID.randomUUID() + "." + extension);
+            reviewImages.add(ReviewImage.create(reviewImageUrl));
+        }
+
+        //리뷰 생성
+        Review review = Review.builder()
+                .user(user)
+                .post(post)
+                .starRating(request.getStarRating())
+                .content(request.getContent())
+                .reviewImages(reviewImages)
+                .build();
+
+        reviewRepository.save(review);
+        return review.getReviewId();
+    }
+
+    /**
+     * 리뷰글 생성 V2
+     */
+    @Transactional
+    public Long createReviewV2(String userEmail, PostReviewRequestV2 request, List<MultipartFile> reviewImageFiles) throws ParseException {
+        //엔티티 조회
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
+        Post post = postRepository.findByPostId(request.getPostId());
+
+        //리뷰 이미지 생성
+        List<ReviewImage> reviewImages= new ArrayList<ReviewImage>();
+        for(MultipartFile reviewImageFile: reviewImageFiles){
+            String storeName = post.getStoreName();
             String extension = StringUtils.getFilenameExtension(reviewImageFile.getOriginalFilename()).toLowerCase();
             String reviewImageUrl = OCIUtil.uploadFile(reviewImageFile, OCIUtil.FolderName.REVIEW, storeName + "/" + UUID.randomUUID() + "." + extension);
             reviewImages.add(ReviewImage.create(reviewImageUrl));
