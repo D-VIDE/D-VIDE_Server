@@ -1,12 +1,15 @@
 package com.divide.post;
 
+import com.divide.common.CommonPostDetailResponse;
 import com.divide.common.CommonPostResponse;
 import com.divide.common.CommonUserResponse;
 import com.divide.post.domain.Post;
+import com.divide.post.domain.PostImage;
 import com.divide.post.dto.request.PostPostRequest;
 import com.divide.post.dto.request.UpdatePostRequest;
 import com.divide.post.dto.request.GetPostsRequest;
 import com.divide.post.dto.response.*;
+import com.divide.review.ReviewImage;
 import com.divide.user.User;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -113,6 +116,38 @@ public class PostController {
                 })
                 .collect(toList());
         return new Result(collect);
+    }
+
+    @GetMapping("/v1/posts/{postId}")
+    public Result getPost(@PathVariable Long postId){
+        Post post = postService.findOne(postId);
+        List<PostImage> findPostImgs = post.getPostImages();
+        List<String> postImgUrls = findPostImgs.stream()
+                .map(postImage ->  postImage.getPostImageUrl())
+                .collect(toList());
+
+        User user = post.getUser();
+        GetPostResponse getPostResponse = new GetPostResponse(
+                new CommonUserResponse(
+                        user.getId(),
+                        user.getNickname(),
+                        user.getProfileImgUrl()
+                ),
+                new CommonPostDetailResponse(
+                        post.getPostId(),
+                        post.getDeliveryLocation().getCoordinate().getX(),
+                        post.getDeliveryLocation().getCoordinate().getY(),
+                        post.getTitle(),
+                        post.getTargetTime(),
+                        post.getTargetPrice(),
+                        post.getDeliveryPrice(),
+                        post.getOrderedPrice(),
+                        post.getContent(),
+                        post.getStoreName(),
+                        postImgUrls
+                )
+        );
+        return new Result(getPostResponse);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.divide.review;
 
 import com.divide.post.domain.Post;
+import com.divide.post.domain.PostImage;
 import com.divide.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -49,6 +50,9 @@ public class Review {
 
     @NotNull
     private String content;
+
+    @OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.REMOVE)
+    private List<ReviewLike> reviewLikes = new ArrayList();
 
     @OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.ALL)
     @NotNull

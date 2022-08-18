@@ -34,6 +34,7 @@ public class UserService {
         MultipartFile profileImg = signupRequest.getProfileImg();
         String extension = StringUtils.getFilenameExtension(profileImg.getOriginalFilename()).toLowerCase();
         String profileImgUrl = OCIUtil.uploadFile(profileImg, OCIUtil.FolderName.PROFILE,  email + "/" + UUID.randomUUID() + "." + extension);
+
         User newUser = new User(
                 email,
                 passwordEncoder.encode(signupRequest.getPassword()),
@@ -41,7 +42,8 @@ public class UserService {
                 signupRequest.getNickname(),
                 UserRole.USER
         );
-        userRepository.signup(newUser);
+        userRepository.save(newUser);
+
         return newUser.getId();
     }
 }
