@@ -105,7 +105,8 @@ public class ReviewController {
                                     review.getContent(),
                                     review.getStarRating(),
                                     review.getReviewImages().get(0).getReviewImageUrl(),
-                                    review.getPost().getStoreName()
+                                    review.getPost().getStoreName(),
+                                    review.getReviewLikes().size()
                             )
                     );
                 })

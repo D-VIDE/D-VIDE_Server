@@ -14,6 +14,6 @@ public class CommonReviewResponse {
     private Double starRating;
     private String reviewImgUrl;
     private String storeName;
-//    private int likeCount;
+    private Integer likeCount;
 //    private boolean haslike;
 }
