@@ -44,9 +44,6 @@ public class UserService {
         );
         userRepository.save(newUser);
 
-        UserBadge userBadge = new UserBadge(newUser, UserBadge.BadgeName.DIVIDER);
-        userRepository.save(userBadge);
-
         return newUser.getId();
     }
 }

@@ -9,10 +9,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -36,7 +40,13 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @NotEmpty
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+    private Set<UserBadge> badges = new HashSet<>();
+
     @NotNull
+    @PositiveOrZero
     private Integer savedMoney = 0;
 
     @CreatedDate
@@ -47,11 +57,16 @@ public class User {
     @OneToMany(mappedBy = "user") //읽기 전용, 매핑된 거울!
     private List<Post> posts = new ArrayList<>();
 
-    public User( String email, String password, String profileImgUrl, String nickname, UserRole role) {
+    public User(String email, String password, String profileImgUrl, String nickname, UserRole role) {
         this.email = email;
         this.password = password;
         this.profileImgUrl = profileImgUrl;
         this.nickname = nickname;
         this.role = role;
+        this.badges.add(new UserBadge(this, UserBadge.BadgeName.DIVIDER));
+    }
+
+    public void addBadge(UserBadge.BadgeName badge) {
+        badges.add(new UserBadge(this, badge));
     }
 }

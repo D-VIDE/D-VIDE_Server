@@ -20,9 +20,6 @@ public class UserRepository {
     public void save(User user) {
         em.persist(user);
     }
-    public void save(UserBadge userBadge) {
-        em.persist(userBadge);
-    }
 
     public Optional<User> findByEmail(String email){
         try {
