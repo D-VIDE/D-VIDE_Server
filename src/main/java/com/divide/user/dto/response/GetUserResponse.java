@@ -14,7 +14,7 @@ public class GetUserResponse {
     private String email;
     private String nickname;
     private String profileImgUrl;
-    private List<UserBadge> badges;
+    private List<String> badges;
     private Integer followerCount;
     private Integer followingCount;
     private Integer savedPrice;

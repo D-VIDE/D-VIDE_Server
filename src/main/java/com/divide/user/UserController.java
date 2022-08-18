@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,11 +36,12 @@ public class UserController {
         User user = userService.getUserByEmail(userDetails.getUsername());
         Integer followerCount = followService.getFollowerCount(userDetails.getUsername());
         Integer followingCount = followService.getFollowingCount(userDetails.getUsername());
+        List<String> badgeNameList = user.getBadges().stream().map(userBadge -> userBadge.getBadgeName().getKrName()).toList();
         return GetUserResponse.builder()
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .profileImgUrl(user.getProfileImgUrl())
-                .badges(new ArrayList<>())
+                .badges(badgeNameList)
                 .followerCount(followerCount)
                 .followingCount(followingCount)
                 .savedPrice(user.getSavedMoney())
