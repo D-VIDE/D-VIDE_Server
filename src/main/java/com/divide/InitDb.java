@@ -7,6 +7,9 @@ import com.divide.post.PostService;
 import com.divide.post.domain.Category;
 import com.divide.post.domain.Post;
 import com.divide.post.domain.PostStatus;
+import com.divide.review.ReviewService;
+import com.divide.review.dto.request.PostReviewRequest;
+import com.divide.review.dto.request.PostReviewRequestV2;
 import com.divide.user.User;
 import com.divide.user.UserService;
 import com.divide.user.dto.request.SignupRequest;
@@ -57,6 +60,7 @@ public class InitDb {
         private final UserService userService;
         private final PostService postService;
         private final OrderService orderService;
+        private final ReviewService reviewService;
 
         Random random = new Random();
 
@@ -107,6 +111,9 @@ public class InitDb {
             String postImageUrl1 = OCIUtil.uploadFile(sampleMultipartFile, OCIUtil.FolderName.POST,  "sample" + "/" + UUID.randomUUID() + ".jpg");
             String postImageUrl2 = OCIUtil.uploadFile(sampleMultipartFile, OCIUtil.FolderName.POST,  "sample" + "/" + UUID.randomUUID() + ".jpg");
             String orderImgUrl = OCIUtil.uploadFile(sampleMultipartFile, OCIUtil.FolderName.ORDER, "sample" + "/" + UUID.randomUUID() + ".jpg");
+            // 리뷰 이미지 생성
+            String reviewImgUrl1 = OCIUtil.uploadFile(sampleMultipartFile, OCIUtil.FolderName.REVIEW, "sample" + "/" + UUID.randomUUID() + ".jpg");
+            String reviewImgUrl2 = OCIUtil.uploadFile(sampleMultipartFile, OCIUtil.FolderName.REVIEW, "sample" + "/" + UUID.randomUUID() + ".jpg");
 
             for (int i = 0; i < POST_COUNT; ++i) {
                 double longitude = 127.030767490957 + random.nextDouble() / 100;
@@ -132,6 +139,8 @@ public class InitDb {
 
                 orderService.saveOrderTest(userList.get(random.nextInt(USER_COUNT)).getEmail(), post.getPostId(), random.nextInt(3000, 100001), List.of(orderImgUrl));
                 orderService.saveOrderTest(userList.get(random.nextInt(USER_COUNT)).getEmail(), post.getPostId(), random.nextInt(3000, 100001), List.of(orderImgUrl));
+
+                reviewService.createReviewTest(userList.get(random.nextInt(USER_COUNT)).getEmail(), 5 * random.nextDouble(),"content"+i, post.getPostId(), List.of(reviewImgUrl1, reviewImgUrl2));
             }
         }
     }

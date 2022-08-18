@@ -4,6 +4,7 @@ import com.divide.post.PostRepository;
 import com.divide.post.domain.Direction;
 import com.divide.post.domain.Location;
 import com.divide.post.domain.Post;
+import com.divide.post.domain.PostImage;
 import com.divide.review.dto.request.PostReviewRequest;
 import com.divide.review.dto.request.PostReviewRequestV2;
 import com.divide.user.User;
@@ -87,6 +88,28 @@ public class ReviewService {
                 .starRating(request.getStarRating())
                 .content(request.getContent())
                 .reviewImages(reviewImages)
+                .build();
+
+        reviewRepository.save(review);
+        return review.getReviewId();
+    }
+
+    /**
+     * 리뷰글 생성 Test
+     */
+    @Transactional
+    public Long createReviewTest(String userEmail, Double starRating, String content, Long postId, List<String> reviewImgUrls) throws ParseException {
+        //엔티티 조회
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
+        Post post = postRepository.findByPostId(postId);
+
+        //리뷰 생성
+        Review review = Review.builder()
+                .user(user)
+                .post(post)
+                .starRating(starRating)
+                .content(content)
+                .reviewImages(reviewImgUrls.stream().map(reviewImgUrl -> ReviewImage.create(reviewImgUrl)).toList())
                 .build();
 
         reviewRepository.save(review);
