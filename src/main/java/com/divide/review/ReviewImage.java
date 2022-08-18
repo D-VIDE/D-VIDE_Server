@@ -26,6 +26,11 @@ public class ReviewImage {
     @NotNull
     private String reviewImageUrl;
 
+    public ReviewImage(Review review, String reviewImgUrl) {
+        this.review = review;
+        this.reviewImageUrl = reviewImgUrl;
+    }
+
     //==생성메서드==
     public static ReviewImage create(String reviewImageUrl){
         ReviewImage reviewImage = new ReviewImage();
