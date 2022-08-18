@@ -26,6 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
+    private final ReviewLikeRepository reviewLikeRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
@@ -93,4 +94,34 @@ public class ReviewService {
         return pointFormat;
     }
 
+    //리뷰 좋아요
+    @Transactional
+    public Long reviewLike(String userEmail, Long reviewId){
+        //엔티티 조회
+        User currentUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
+        Review review = reviewRepository.findById(reviewId);
+
+        //리뷰 좋아요 생성
+        ReviewLike reviewLike = ReviewLike.builder()
+                .user(currentUser)
+                .review(review)
+                .build();
+
+        reviewLikeRepository.save(reviewLike);
+        return reviewLike.getReviewLikeId();
+    }
+
+    @Transactional
+    public void reviewLikeCancel(String userEmail, Long reviewId){
+        //게시글 좋아요 조회
+        Review review = reviewRepository.findById(reviewId);
+        List<ReviewLike> reviewLikes = review.getReviewLikes();
+//        reviewLikes.removeIf(reviewLike -> reviewLike.getUser().getEmail().equals(userEmail));
+
+        for(ReviewLike reviewLike: reviewLikes){
+            if ( reviewLike.getUser().getEmail().equals(userEmail) ){
+                reviewLikeRepository.delete(reviewLike);
+            }
+        }
+    }
 }

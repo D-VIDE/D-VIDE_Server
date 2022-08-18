@@ -26,4 +26,9 @@ public class ReviewRepository {
         return reviewLists;
     }
 
+    public Review findById(Long reviewId){
+        Review review = em.find(Review.class, reviewId);
+        return review;
+    }
+
 }
