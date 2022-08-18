@@ -119,7 +119,7 @@ public class ReviewController {
      * @param reviewId : 유저가 누른 리뷰의 id
      * @return
      */
-    @PostMapping(value = "/review/{reviewId}/like")
+    @PostMapping(value = "v1/review/{reviewId}/like")
     public ResponseEntity<PostReviewLikeResponse> reviewLike( @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long reviewId){
 
         Long newReviewLikeId = reviewService.reviewLike(userDetails.getUsername(), reviewId);
@@ -134,7 +134,7 @@ public class ReviewController {
      * @param reviewId : 좋아요 취소를 누른 리뷰의 아이디
      * @return
      */
-    @DeleteMapping("/review/{reviewId}/like")
+    @DeleteMapping("v1/review/{reviewId}/like")
     public ResponseEntity<DeleteReviewLikeResponse> reviewLikeCancel(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long reviewId){
         reviewService.reviewLikeCancel(userDetails.getUsername(), reviewId);
 
