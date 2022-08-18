@@ -1,6 +1,7 @@
 package com.divide.user;
 
 import com.divide.follow.FollowService;
+import com.divide.user.dto.response.GetOtherUserResponse;
 import com.divide.user.dto.request.SignupRequest;
 import com.divide.user.dto.response.GetUserResponse;
 import com.divide.user.dto.response.SignupResponse;
@@ -11,9 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,7 +28,9 @@ public class UserController {
     }
 
     /**
-     * 현재 자신의 정보
+     * 현재 내 정보 조회 API
+     * @param userDetails
+     * @return
      */
     @GetMapping("/user")
     public GetUserResponse getUser(@AuthenticationPrincipal UserDetails userDetails) {
@@ -45,6 +46,23 @@ public class UserController {
                 .followerCount(followerCount)
                 .followingCount(followingCount)
                 .savedPrice(user.getSavedMoney())
+                .build();
+    }
+
+    @GetMapping("/user/{id}")
+    public GetOtherUserResponse getOtherUser(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long userId) {
+        User user = userService.getOtherUser(userId);
+        Integer followerCount = followService.getFollowerCount(user.getEmail());
+        Integer followingCount = followService.getFollowingCount(user.getEmail());
+        List<String> badgeNameList = user.getBadges().stream().map(userBadge -> userBadge.getBadgeName().getKrName()).toList();
+        return GetOtherUserResponse.builder()
+                .nickname(user.getNickname())
+                .profileImgUrl(user.getProfileImgUrl())
+                .badges(badgeNameList)
+                .followerCount(followerCount)
+                .followingCount(followingCount)
                 .build();
     }
 }
