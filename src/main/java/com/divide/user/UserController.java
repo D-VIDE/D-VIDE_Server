@@ -16,12 +16,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api")
 public class UserController {
     private final UserService userService;
     private final FollowService followService;
 
-    @PostMapping("/user")
+    @PostMapping("/v1/user")
     public ResponseEntity<SignupResponse> signup(@ModelAttribute SignupRequest signupRequest) {
         Long saveId = userService.signup(signupRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(new SignupResponse(saveId));
@@ -32,7 +32,7 @@ public class UserController {
      * @param userDetails
      * @return
      */
-    @GetMapping("/user")
+    @GetMapping("/v1/user")
     public GetUserResponse getUser(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
         Integer followerCount = followService.getFollowerCount(userDetails.getUsername());
@@ -49,7 +49,7 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/v1/user/{id}")
     public GetOtherUserResponse getOtherUser(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("id") Long userId) {
