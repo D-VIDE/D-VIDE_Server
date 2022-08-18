@@ -50,6 +50,8 @@ public class Order {
         this.post = post;
         this.orderPrice = orderPrice;
         this.orderStatus = OrderStatus.ACTIVE;
+        /* TODO: 아낀 금액 제대로 계산하기 */
+        user.addSavedMoney(post.getDeliveryPrice());
         post.addOrder(this);
         orderImgUrls.forEach(url -> new OrderImage(this, url));
     }
