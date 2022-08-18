@@ -1,29 +1,39 @@
 package com.divide.user;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository {
+@Repository
+@RequiredArgsConstructor
+public class UserRepository {
+    private final EntityManager em;
 
-    /**
-     * 모든 User들을 조회하는 테스트용 메서드
-     * @return 모든 User들
-     */
-    List<User> getUsers();
+    public List<User> getUsers() {
+        return em.createQuery("select u from User u", User.class).getResultList();
+    }
 
-    /**
-     * 전달받은 User로 회원가입을 하는 메서드
-     * @param user
-     * @return
-     */
-    void signup(User user);
+    public void save(User user) {
+        em.persist(user);
+    }
 
-    /**
-     * email로 회원을 조회하는 메서드
-     * @param email
-     * @return user
-     */
-    Optional<User> findByEmail(String email);
+    public Optional<User> findByEmail(String email){
+        try {
+            return Optional.of(em.createQuery("select u from User u" +
+                            " where u.email = :email", User.class)
+                    .setParameter("email", email)
+                    .getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
 
-    User findById(Long id);
+    public User findById(Long id){
+        User user = em.find(User.class, id); //postId는 PK
+        return user;
+    }
 }

@@ -2,6 +2,7 @@ package com.divide.auth;
 
 import com.divide.auth.dto.KaKaoLoginServiceResult;
 import com.divide.user.User;
+import com.divide.user.UserBadge;
 import com.divide.user.UserRepository;
 import com.divide.user.UserRole;
 import com.divide.utils.OCIUtil;
@@ -41,7 +42,8 @@ public class AuthService {
         if (userRepository.findByEmail(email).isEmpty()) {
             String profileImgUrl = saveProfileImgFromUrl(email, (String) profile.get("thumbnail_image_url"));
             String nickname = (String) profile.get("nickname");
-            userRepository.signup(new User(email, passwordEncoder.encode(password), profileImgUrl, nickname, UserRole.USER));
+            User user = new User(email, passwordEncoder.encode(password), profileImgUrl, nickname, UserRole.USER);
+            userRepository.save(user);
         }
 
         return new KaKaoLoginServiceResult(email, password);
