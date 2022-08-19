@@ -29,6 +29,13 @@ public class FollowService {
         return newFollow.getId();
     }
 
+    public Long remove(User follower, User followee) {
+        Follow follow = followRepository.find(follower, followee);
+
+        followRepository.remove(follow.getId());
+        return follow.getId();
+    }
+
     public GetFollowResponse getFFFList(String userEmail) {
         List<Follow> followList = followRepository.getFFFList(userRepository.findByEmail(userEmail).orElseThrow());
         return new GetFollowResponse(

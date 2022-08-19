@@ -17,6 +17,17 @@ public class FollowRepository {
         em.persist(follow);
     }
 
+    public Follow find(User follower, User followee) {
+        return em.createQuery("select f from Follow f where f.follower = :follower and f.followee = :followee", Follow.class)
+                .setParameter("follower", follower)
+                .setParameter("followee", followee)
+                .getSingleResult();
+    }
+
+    public void remove(Long followId) {
+        em.remove(followId);
+    }
+
     public List<Follow> getFFFList(User user) {
         List<Follow> followerList = getFollowerList(user);
 

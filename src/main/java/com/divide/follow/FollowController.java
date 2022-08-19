@@ -1,7 +1,9 @@
 package com.divide.follow;
 
+import com.divide.follow.dto.request.DeleteFollowRequest;
 import com.divide.follow.dto.request.GetFollowResponse;
 import com.divide.follow.dto.request.PostFollowRequest;
+import com.divide.follow.dto.response.DeleteFollowResponse;
 import com.divide.follow.dto.response.PostFollowResponse;
 import com.divide.user.User;
 import com.divide.user.UserService;
@@ -41,5 +43,16 @@ public class FollowController {
         User followee = userService.getUserById(postFollowRequest.getUserId());
         Long saveId = followService.save(follower, followee);
         return ResponseEntity.status(201).body(new PostFollowResponse(saveId));
+    }
+
+    @DeleteMapping("follow")
+    public ResponseEntity<DeleteFollowResponse> deleteFollow(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody DeleteFollowRequest deleteFollowRequest
+    ) {
+        User follower = userService.getUserByEmail(userDetails.getUsername());
+        User followee = userService.getUserById(deleteFollowRequest.getUserId());
+        Long removedId = followService.remove(follower, followee);
+        return ResponseEntity.ok(new DeleteFollowResponse(removedId));
     }
 }
