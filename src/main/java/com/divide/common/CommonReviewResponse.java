@@ -15,5 +15,5 @@ public class CommonReviewResponse {
     private String reviewImgUrl;
     private String storeName;
     private Integer likeCount;
-    private boolean isLiked;
+    private Boolean isLiked;
 }
