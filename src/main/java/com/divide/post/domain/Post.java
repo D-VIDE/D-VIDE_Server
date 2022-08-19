@@ -65,12 +65,6 @@ public class Post {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    //==연관관계 편의메서드==
-    public void setUser(User user) {
-        this.user = user;
-        user.getPosts().add(this);
-    }
-
     //==생성 메서드==
     @Builder
     private Post(User user, String title, String storeName, String content, int targetPrice, int deliveryPrice, Category category, LocalDateTime targetTime, Point deliveryLocation, PostStatus postStatus, List<String> postImgUrls) {

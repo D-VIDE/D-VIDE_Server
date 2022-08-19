@@ -26,6 +26,11 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(""));
     }
 
+    @Transactional(readOnly = true)
+    public User getOtherUser(Long userId) {
+        return userRepository.findById(userId);
+    }
+
     public Long signup(SignupRequest signupRequest) {
         String email = signupRequest.getEmail();
         if (userRepository.findByEmail(email).isPresent()) {

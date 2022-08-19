@@ -2,6 +2,7 @@ package com.divide;
 
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.FileIOErrorCode;
+import com.divide.follow.FollowService;
 import com.divide.order.OrderService;
 import com.divide.post.PostService;
 import com.divide.post.domain.Category;
@@ -60,6 +61,7 @@ public class InitDb {
         private final UserService userService;
         private final PostService postService;
         private final OrderService orderService;
+        private final FollowService followService;
         private final ReviewService reviewService;
 
         Random random = new Random();
@@ -101,7 +103,20 @@ public class InitDb {
                 userService.signup(new SignupRequest(email, "password" + (i == 0 ? 1 : i), getSampleMultipartFile(), "nickname" + (i == 0 ? 1 : i)));
                 userList.add(userService.getUserByEmail(email));
             }
+            for (int i = 0; i < USER_COUNT; ++i) {
+                for (int j = i + 1; j < USER_COUNT; ++j) {
+                    int nextInt = random.nextInt(0, 3);
+                    if (nextInt == 0) {
+                        followService.save(userList.get(i).getEmail(), userList.get(j).getId());
+                    } else if (nextInt == 1) {
+                        followService.save(userList.get(j).getEmail(), userList.get(i).getId());
+                    } else {
+                        followService.save(userList.get(i).getEmail(), userList.get(j).getId());
+                        followService.save(userList.get(j).getEmail(), userList.get(i).getId());
+                    }
+                }
 
+            }
 
             List<Category> categories = List.of(Category.values());
             List<PostStatus> postStatuses = List.of(PostStatus.values());
