@@ -56,6 +56,13 @@ public class FollowRepository {
                 .intValue();
     }
 
+    public Boolean checkFFF(Follow follow) {
+        return em.createQuery("select count(f) > 0 from Follow f where f.followee = :other and f.follower = :me", Boolean.class)
+                .setParameter("other", follow.getFollower())
+                .setParameter("me", follow.getFollowee())
+                .getSingleResult();
+    }
+
     public Integer getFollowerCount(User user) {
         return em.createQuery("select count(f) from Follow f where f.followee = :user", Long.class)
                 .setParameter("user", user)

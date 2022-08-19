@@ -5,6 +5,7 @@ import com.divide.exception.code.CommonErrorCode;
 import com.divide.exception.code.FollowErrorCode;
 import com.divide.exception.code.UserErrorCode;
 import com.divide.follow.dto.request.GetFollowResponse;
+import com.divide.follow.dto.request.GetFollowResponseWithRelation;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,30 +42,25 @@ public class FollowService {
         return follow.getId();
     }
 
-    public GetFollowResponse getFollowingList(String userEmail, Integer first) {
+    public List<GetFollowResponse> getFollowingList(String userEmail, Integer first) {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         List<Follow> followList = followRepository.getFollowingList(user, first);
-        return new GetFollowResponse(
-                followList.stream().map(f -> new GetFollowResponse.GetFollowResponseElement(
-                        f.getFollowee().getId(),
-                        f.getFollowee().getProfileImgUrl(),
-                        f.getFollowee().getNickname(),
-                        FollowRelation.FOLLOWING.name()
-                )).collect(Collectors.toList())
-        );
+        return followList.stream().map(f -> new GetFollowResponse(
+                f.getFollower().getId(),
+                f.getFollower().getProfileImgUrl(),
+                f.getFollower().getNickname()
+        )).collect(Collectors.toList());
     }
 
-    public GetFollowResponse getFollowerList(String userEmail, Integer first) {
+    public List<GetFollowResponse> getFollowerList(String userEmail, Integer first) {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         List<Follow> followList = followRepository.getFollowerList(user, first);
-        return new GetFollowResponse(
-                followList.stream().map(f -> new GetFollowResponse.GetFollowResponseElement(
-                        f.getFollower().getId(),
-                        f.getFollower().getProfileImgUrl(),
-                        f.getFollower().getNickname(),
-                        FollowRelation.FOLLOWER.name()
-                )).collect(Collectors.toList())
-        );
+        return followList.stream().map(f -> new GetFollowResponseWithRelation(
+                f.getFollower().getId(),
+                f.getFollower().getProfileImgUrl(),
+                f.getFollower().getNickname(),
+                followRepository.checkFFF(f)
+        )).collect(Collectors.toList());
     }
 
     public Integer getFollowingCount(String userEmail) {

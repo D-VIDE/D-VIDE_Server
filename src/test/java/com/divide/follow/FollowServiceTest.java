@@ -72,13 +72,13 @@ class FollowServiceTest {
 
         // then
         assertEquals(List.of(user2.getId(), user3.getId()),
-                followService.getFollowingList(user1.getEmail(), 0).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowingList(user1.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
         assertEquals(List.of(),
-                followService.getFollowingList(user2.getEmail(), 0).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowingList(user2.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
         assertEquals(List.of(user4.getId(), user5.getId(), user6.getId(), user7.getId(), user8.getId(), user9.getId()),
-                followService.getFollowingList(user3.getEmail(), 0).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowingList(user3.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
         assertEquals(List.of(),
-                followService.getFollowingList(user8.getEmail(), 0).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowingList(user8.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
     }
 
     @Test
@@ -108,12 +108,12 @@ class FollowServiceTest {
 
         // then
         assertEquals(List.of(user1.getId() ,user4.getId(), user5.getId()),
-                followService.getFollowerList(user2.getEmail(), 0).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowerList(user2.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
         assertEquals(List.of(),
-                followService.getFollowerList(user1.getEmail(), 0).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowerList(user1.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
         assertEquals(List.of(user3.getId()),
-                followService.getFollowerList(user5.getEmail(), 0).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowerList(user5.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
         assertEquals(List.of(user1.getId()),
-                followService.getFollowerList(user3.getEmail(), 0).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowerList(user3.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
     }
 }

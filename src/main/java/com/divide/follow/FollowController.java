@@ -6,6 +6,7 @@ import com.divide.follow.dto.request.PostFollowRequest;
 import com.divide.follow.dto.response.DeleteFollowResponse;
 import com.divide.follow.dto.response.GetFollowRequest;
 import com.divide.follow.dto.response.PostFollowResponse;
+import com.divide.post.dto.response.Result;
 import com.divide.user.User;
 import com.divide.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,16 +25,16 @@ public class FollowController {
     private final UserService userService;
 
     @GetMapping("follow")
-    public ResponseEntity<GetFollowResponse> getFollow(
+    public ResponseEntity getFollow(
             @AuthenticationPrincipal UserDetails userDetails,
             @ModelAttribute GetFollowRequest getFollowRequest
     ) {
-        GetFollowResponse getFollowResponse = null;
+        List<GetFollowResponse> getFollowResponse = null;
         switch (getFollowRequest.getRelation()) {
             case FOLLOWING -> getFollowResponse = followService.getFollowingList(userDetails.getUsername(), getFollowRequest.getFirst());
             case FOLLOWER -> getFollowResponse = followService.getFollowerList(userDetails.getUsername(), getFollowRequest.getFirst());
         }
-        return ResponseEntity.ok(getFollowResponse);
+        return ResponseEntity.ok(new Result(getFollowResponse));
     }
 
     @PostMapping("follow")
