@@ -34,13 +34,13 @@ public class FollowRepository {
         em.remove(follow);
     }
     public List<Follow> getFollowingList(User user) {
-        return em.createQuery("select f from Follow f where f.follower = :user", Follow.class)
+        return em.createQuery("select f from Follow f where f.follower = :user order by f.createdAt desc", Follow.class)
                 .setParameter("user", user)
                 .getResultList();
     }
 
     public List<Follow> getFollowerList(User user) {
-        return em.createQuery("select f from Follow f where f.followee = :user", Follow.class)
+        return em.createQuery("select f from Follow f where f.followee = :user order by f.createdAt desc", Follow.class)
                 .setParameter("user", user)
                 .getResultList();
     }
