@@ -2,6 +2,7 @@ package com.divide.follow;
 
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.CommonErrorCode;
+import com.divide.exception.code.FollowErrorCode;
 import com.divide.follow.dto.request.GetFollowResponse;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,9 +32,9 @@ public class FollowService {
     }
 
     public Long remove(User follower, User followee) {
-        Follow follow = followRepository.find(follower, followee);
+        Follow follow = followRepository.find(follower, followee).orElseThrow(() -> new RestApiException(FollowErrorCode.FOLLOW_NOT_FOUND));
 
-        followRepository.remove(follow.getId());
+        followRepository.remove(follow);
         return follow.getId();
     }
 
