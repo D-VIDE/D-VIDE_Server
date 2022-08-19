@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum FollowErrorCode implements ErrorCode {
-    FOLLOW_NOT_FOUND(HttpStatus.FORBIDDEN, "Follow is not found"),
+    DUPLICATED_FOLLOW(HttpStatus.BAD_REQUEST, "Already followed"),
+    FOLLOW_NOT_FOUND(HttpStatus.NOT_FOUND, "Follow is not found"),
+    FOLLOW_SELF_ERROR(HttpStatus.BAD_REQUEST, "Self follow is not permitted"),
     ;
 
     private final HttpStatus httpStatus;

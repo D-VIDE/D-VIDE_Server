@@ -24,7 +24,9 @@ public class FollowService {
 
     public Long save(User follower, User followee) {
         /* 자기 자신일 경우 */
-        if (follower.getId() == followee.getId()) throw new RestApiException(CommonErrorCode.INVALID_REQUEST);
+        if (follower.getId() == followee.getId()) throw new RestApiException(FollowErrorCode.FOLLOW_SELF_ERROR);
+        /* 이미 등록된 Follow일 경우 */
+        if (followRepository.find(follower, followee).isPresent()) throw new RestApiException(FollowErrorCode.DUPLICATED_FOLLOW);
 
         Follow newFollow = new Follow(follower, followee);
         followRepository.save(newFollow);
