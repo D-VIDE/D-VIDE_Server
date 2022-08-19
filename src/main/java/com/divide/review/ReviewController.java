@@ -10,15 +10,16 @@ import com.divide.review.dto.response.GetReviewsResponse;
 import com.divide.review.dto.response.GetReviewsResponseV2;
 import com.divide.review.dto.response.PostReviewResponse;
 import com.divide.user.User;
+import com.divide.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.http.HttpStatus;
 import com.divide.review.dto.response.PostReviewLikeResponse;
 
 import javax.validation.Valid;
@@ -85,13 +86,15 @@ public class ReviewController {
      *
      */
     @GetMapping("v2/reviews")
-    public Result getReviewsV2(@RequestParam("longitude") double longitude, @RequestParam("latitude") double latitude, @RequestParam(value = "first",
+    public Result getReviewsV2(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("longitude") double longitude, @RequestParam("latitude") double latitude, @RequestParam(value = "first",
             defaultValue = "0") Integer first){ //json 데이터 확장성을 위해 Result 사용
         List<Review> findReviews = reviewService.findReviewsAll(first, longitude, latitude, 0.5);
 
         List<GetReviewsResponseV2> collect = findReviews.stream()
                 .map( review -> {
                     User user = review.getUser();
+                    Boolean isReviewLiked = reviewService.isReviewLiked(userDetails.getUsername(), review);
+
                     return new GetReviewsResponseV2(
                             new CommonUserResponse(
                                     user.getId(),
@@ -106,7 +109,8 @@ public class ReviewController {
                                     review.getStarRating(),
                                     review.getReviewImages().get(0).getReviewImageUrl(),
                                     review.getPost().getStoreName(),
-                                    review.getReviewLikes().size()
+                                    review.getReviewLikes().size(),
+                                    isReviewLiked
                             )
                     );
                 })

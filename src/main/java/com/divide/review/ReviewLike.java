@@ -30,8 +30,7 @@ public class ReviewLike {
     private User user;
 
     @Builder
-    public ReviewLike(Long reviewLikeId, Review review, User user) {
-        this.reviewLikeId = reviewLikeId;
+    public ReviewLike( Review review, User user) {
         this.review = review;
         this.user = user;
     }

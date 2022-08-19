@@ -4,7 +4,6 @@ import com.divide.post.PostRepository;
 import com.divide.post.domain.Direction;
 import com.divide.post.domain.Location;
 import com.divide.post.domain.Post;
-import com.divide.post.domain.PostImage;
 import com.divide.review.dto.request.PostReviewRequest;
 import com.divide.review.dto.request.PostReviewRequestV2;
 import com.divide.user.User;
@@ -21,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -177,6 +177,18 @@ public class ReviewService {
             if ( reviewLike.getUser().getEmail().equals(userEmail) ){
                 reviewLikeRepository.delete(reviewLike);
             }
+        }
+    }
+
+    public Boolean isReviewLiked(String userEmail, Review review){
+        //현재 유저 조회
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
+
+        Optional<ReviewLike> reviewLike = reviewLikeRepository.findByUserIdAndReviewId(user.getId(), review.getReviewId());
+        if(reviewLike.equals(Optional.empty()) ){
+            return false;
+        }else{
+            return true;
         }
     }
 }
