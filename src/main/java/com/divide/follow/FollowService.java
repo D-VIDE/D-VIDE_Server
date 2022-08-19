@@ -40,18 +40,6 @@ public class FollowService {
         return follow.getId();
     }
 
-    public GetFollowResponse getFFFList(String userEmail) {
-        List<Follow> followList = followRepository.getFFFList(userRepository.findByEmail(userEmail).orElseThrow());
-        return new GetFollowResponse(
-                followList.stream().map(f -> new GetFollowResponse.GetFollowResponseElement(
-                        f.getFollowee().getId(),
-                        f.getFollowee().getProfileImgUrl(),
-                        f.getFollowee().getNickname(),
-                        FollowRelation.FFF.name()
-                )).collect(Collectors.toList())
-        );
-    }
-
     public GetFollowResponse getFollowingList(String userEmail) {
         List<Follow> followList = followRepository.getFollowingList(userRepository.findByEmail(userEmail).orElseThrow());
         return new GetFollowResponse(

@@ -27,7 +27,6 @@ public class FollowController {
     ) {
         GetFollowResponse getFollowResponse = null;
         switch (relation) {
-            case FFF -> getFollowResponse = followService.getFFFList(userDetails.getUsername());
             case FOLLOWING -> getFollowResponse = followService.getFollowingList(userDetails.getUsername());
             case FOLLOWER -> getFollowResponse = followService.getFollowerList(userDetails.getUsername());
         }

@@ -33,21 +33,6 @@ public class FollowRepository {
     public void remove(Follow follow) {
         em.remove(follow);
     }
-
-    public List<Follow> getFFFList(User user) {
-        List<Follow> followerList = getFollowerList(user);
-
-        return em.createQuery(
-                "select f1 " +
-                        "from Follow f1 " +
-                        "where f1.follower = :follower and f1.followee in :followerList",
-                Follow.class
-        )
-                .setParameter("follower", user)
-                .setParameter("followerList", followerList.stream().map(f -> f.getFollower()).toList())
-                .getResultList();
-    }
-
     public List<Follow> getFollowingList(User user) {
         return em.createQuery("select f from Follow f where f.follower = :user", Follow.class)
                 .setParameter("user", user)
