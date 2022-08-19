@@ -10,14 +10,12 @@ import com.divide.review.dto.response.GetReviewsResponse;
 import com.divide.review.dto.response.GetReviewsResponseV2;
 import com.divide.review.dto.response.PostReviewResponse;
 import com.divide.user.User;
-import com.divide.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.divide.review.dto.response.PostReviewLikeResponse;
@@ -117,7 +115,6 @@ public class ReviewController {
                 .collect(toList());
         return new Result(collect);
     }
-
     /**
      * 리뷰 좋아요 생성
      * [Post] http://localhost:8080/api/v1/review/3/like?userId=1
@@ -126,8 +123,7 @@ public class ReviewController {
      */
     @PostMapping(value = "v1/review/{reviewId}/like")
     public ResponseEntity<PostReviewLikeResponse> reviewLike( @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long reviewId){
-
-        Long newReviewLikeId = reviewService.reviewLike(userDetails.getUsername(), reviewId);
+        Long newReviewLikeId = reviewService.createReviewLike(userDetails.getUsername(), reviewId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body( new PostReviewLikeResponse(newReviewLikeId));
     }
@@ -141,7 +137,7 @@ public class ReviewController {
      */
     @DeleteMapping("v1/review/{reviewId}/like")
     public ResponseEntity<DeleteReviewLikeResponse> reviewLikeCancel(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long reviewId){
-        reviewService.reviewLikeCancel(userDetails.getUsername(), reviewId);
+        reviewService.cancelReviewLike(userDetails.getUsername(), reviewId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new DeleteReviewLikeResponse(reviewId));
     }

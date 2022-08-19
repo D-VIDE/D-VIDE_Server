@@ -1,5 +1,7 @@
 package com.divide.review;
 
+import com.divide.exception.RestApiException;
+import com.divide.exception.code.ReviewLikeErrorCode;
 import com.divide.post.PostRepository;
 import com.divide.post.domain.Direction;
 import com.divide.post.domain.Location;
@@ -149,9 +151,14 @@ public class ReviewService {
         return pointFormat;
     }
 
+    private boolean validateDuplicateReviewLike(ReviewLike reviewLike){
+        Optional<ReviewLike> DbReviewLike = reviewLikeRepository.findByUserIdAndReviewId(reviewLike.getUser().getId(), reviewLike.getReview().getReviewId());
+        return DbReviewLike.isPresent();
+    }
+
     //리뷰 좋아요
     @Transactional
-    public Long reviewLike(String userEmail, Long reviewId){
+    public Long createReviewLike(String userEmail, Long reviewId){
         //엔티티 조회
         User currentUser = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         Review review = reviewRepository.findById(reviewId);
@@ -162,12 +169,17 @@ public class ReviewService {
                 .review(review)
                 .build();
 
+        //리뷰 좋아요 중복 체크
+        if(validateDuplicateReviewLike(reviewLike)){
+            throw new RestApiException(ReviewLikeErrorCode.DUPLICATED_LIKE);
+        }
+
         reviewLikeRepository.save(reviewLike);
         return reviewLike.getReviewLikeId();
     }
 
     @Transactional
-    public void reviewLikeCancel(String userEmail, Long reviewId){
+    public void cancelReviewLike(String userEmail, Long reviewId){
         //게시글 좋아요 조회
         Review review = reviewRepository.findById(reviewId);
         List<ReviewLike> reviewLikes = review.getReviewLikes();

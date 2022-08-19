@@ -13,7 +13,8 @@ public class ReviewLikeRepository {
     private final EntityManager em;
 
     public void save(ReviewLike reviewLike) {
-        em.persist(reviewLike);}
+        em.persist(reviewLike);
+    }
 
     public void delete(ReviewLike reviewLike){
         em.remove(reviewLike);
