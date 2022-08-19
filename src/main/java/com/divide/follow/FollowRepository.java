@@ -33,30 +33,19 @@ public class FollowRepository {
     public void remove(Follow follow) {
         em.remove(follow);
     }
-
-    public List<Follow> getFFFList(User user) {
-        List<Follow> followerList = getFollowerList(user);
-
-        return em.createQuery(
-                "select f1 " +
-                        "from Follow f1 " +
-                        "where f1.follower = :follower and f1.followee in :followerList",
-                Follow.class
-        )
-                .setParameter("follower", user)
-                .setParameter("followerList", followerList.stream().map(f -> f.getFollower()).toList())
+    public List<Follow> getFollowingList(User user, Integer first) {
+        return em.createQuery("select f from Follow f where f.follower = :user order by f.createdAt desc", Follow.class)
+                .setParameter("user", user)
+                .setFirstResult(first)
+                .setMaxResults(30)
                 .getResultList();
     }
 
-    public List<Follow> getFollowingList(User user) {
-        return em.createQuery("select f from Follow f where f.follower = :user", Follow.class)
+    public List<Follow> getFollowerList(User user, Integer first) {
+        return em.createQuery("select f from Follow f where f.followee = :user order by f.createdAt desc", Follow.class)
                 .setParameter("user", user)
-                .getResultList();
-    }
-
-    public List<Follow> getFollowerList(User user) {
-        return em.createQuery("select f from Follow f where f.followee = :user", Follow.class)
-                .setParameter("user", user)
+                .setFirstResult(first)
+                .setMaxResults(30)
                 .getResultList();
     }
 
@@ -65,6 +54,13 @@ public class FollowRepository {
                 .setParameter("user", user)
                 .getSingleResult()
                 .intValue();
+    }
+
+    public Boolean checkFFF(Follow follow) {
+        return em.createQuery("select count(f) > 0 from Follow f where f.followee = :other and f.follower = :me", Boolean.class)
+                .setParameter("other", follow.getFollower())
+                .setParameter("me", follow.getFollowee())
+                .getSingleResult();
     }
 
     public Integer getFollowerCount(User user) {

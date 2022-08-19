@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -63,24 +61,24 @@ class FollowServiceTest {
         User user9 = userService.getUserByEmail("email9@gmail.com");
 
         // when
-        followService.save(user1.getEmail(), user2.getId());
-        followService.save(user1.getEmail(), user3.getId());
-        followService.save(user3.getEmail(), user4.getId());
-        followService.save(user3.getEmail(), user5.getId());
-        followService.save(user3.getEmail(), user6.getId());
-        followService.save(user3.getEmail(), user7.getId());
-        followService.save(user3.getEmail(), user8.getId());
-        followService.save(user3.getEmail(), user9.getId());
+        followService.save(user1, user2);
+        followService.save(user1, user3);
+        followService.save(user3, user4);
+        followService.save(user3, user5);
+        followService.save(user3, user6);
+        followService.save(user3, user7);
+        followService.save(user3, user8);
+        followService.save(user3, user9);
 
         // then
         assertEquals(List.of(user2.getId(), user3.getId()),
-                followService.getFollowingList(user1.getEmail()).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowingList(user1.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
         assertEquals(List.of(),
-                followService.getFollowingList(user2.getEmail()).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowingList(user2.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
         assertEquals(List.of(user4.getId(), user5.getId(), user6.getId(), user7.getId(), user8.getId(), user9.getId()),
-                followService.getFollowingList(user3.getEmail()).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowingList(user3.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
         assertEquals(List.of(),
-                followService.getFollowingList(user8.getEmail()).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowingList(user8.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
     }
 
     @Test
@@ -97,61 +95,25 @@ class FollowServiceTest {
         User user9 = userService.getUserByEmail("email9@gmail.com");
 
         // when
-        followService.save(user1.getEmail(), user2.getId());
-        followService.save(user1.getEmail(), user3.getId());
-        followService.save(user3.getEmail(), user4.getId());
-        followService.save(user3.getEmail(), user5.getId());
-        followService.save(user3.getEmail(), user6.getId());
-        followService.save(user3.getEmail(), user7.getId());
-        followService.save(user3.getEmail(), user8.getId());
-        followService.save(user3.getEmail(), user9.getId());
-        followService.save(user4.getEmail(), user2.getId());
-        followService.save(user5.getEmail(), user2.getId());
+        followService.save(user1, user2);
+        followService.save(user1, user3);
+        followService.save(user3, user4);
+        followService.save(user3, user5);
+        followService.save(user3, user6);
+        followService.save(user3, user7);
+        followService.save(user3, user8);
+        followService.save(user3, user9);
+        followService.save(user4, user2);
+        followService.save(user5, user2);
 
         // then
         assertEquals(List.of(user1.getId() ,user4.getId(), user5.getId()),
-                followService.getFollowerList(user2.getEmail()).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowerList(user2.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
         assertEquals(List.of(),
-                followService.getFollowerList(user1.getEmail()).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowerList(user1.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
         assertEquals(List.of(user3.getId()),
-                followService.getFollowerList(user5.getEmail()).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowerList(user5.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
         assertEquals(List.of(user1.getId()),
-                followService.getFollowerList(user3.getEmail()).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
-    }
-
-    @Test
-    public void fffTest() throws Exception {
-        // given
-        User user1 = userService.getUserByEmail("email1@gmail.com");
-        User user2 = userService.getUserByEmail("email2@gmail.com");
-        User user3 = userService.getUserByEmail("email3@gmail.com");
-        User user4 = userService.getUserByEmail("email4@gmail.com");
-        User user5 = userService.getUserByEmail("email5@gmail.com");
-        User user6 = userService.getUserByEmail("email6@gmail.com");
-        User user7 = userService.getUserByEmail("email7@gmail.com");
-        User user8 = userService.getUserByEmail("email8@gmail.com");
-        User user9 = userService.getUserByEmail("email9@gmail.com");
-
-        // when
-        followService.save(user1.getEmail(), user2.getId());
-        followService.save(user1.getEmail(), user3.getId());
-        followService.save(user1.getEmail(), user4.getId());
-        followService.save(user1.getEmail(), user5.getId());
-        followService.save(user1.getEmail(), user6.getId());
-        followService.save(user2.getEmail(), user1.getId());
-        followService.save(user3.getEmail(), user1.getId());
-        followService.save(user4.getEmail(), user1.getId());
-        followService.save(user5.getEmail(), user1.getId());
-        followService.save(user6.getEmail(), user1.getId());
-
-        // then
-        assertEquals(List.of(user2.getId(), user3.getId(), user4.getId(), user5.getId(), user6.getId()),
-                followService.getFFFList(user1.getEmail()).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
-        assertEquals(List.of(user1.getId()),
-                followService.getFFFList(user2.getEmail()).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
-        assertEquals(List.of(user1.getId()),
-                followService.getFFFList(user5.getEmail()).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
-        assertEquals(List.of(),
-                followService.getFFFList(user8.getEmail()).getFollowList().stream().map(GetFollowResponse.GetFollowResponseElement::getUserId).collect(Collectors.toList()));
+                followService.getFollowerList(user3.getEmail(), 0).stream().map(GetFollowResponse::getUserId).collect(Collectors.toList()));
     }
 }
