@@ -107,12 +107,12 @@ public class InitDb {
                 for (int j = i + 1; j < USER_COUNT; ++j) {
                     int nextInt = random.nextInt(0, 3);
                     if (nextInt == 0) {
-                        followService.save(userList.get(i).getEmail(), userList.get(j).getId());
+                        followService.save(userList.get(i), userList.get(j));
                     } else if (nextInt == 1) {
-                        followService.save(userList.get(j).getEmail(), userList.get(i).getId());
+                        followService.save(userList.get(j), userList.get(i));
                     } else {
-                        followService.save(userList.get(i).getEmail(), userList.get(j).getId());
-                        followService.save(userList.get(j).getEmail(), userList.get(i).getId());
+                        followService.save(userList.get(i), userList.get(j));
+                        followService.save(userList.get(j), userList.get(i));
                     }
                 }
 

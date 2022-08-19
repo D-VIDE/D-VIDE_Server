@@ -22,13 +22,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(""));
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId);
     }
 
     @Transactional(readOnly = true)
-    public User getOtherUser(Long userId) {
-        return userRepository.findById(userId);
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(""));
     }
 
     public Long signup(SignupRequest signupRequest) {

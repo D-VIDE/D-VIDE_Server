@@ -20,13 +20,11 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
 
-    public Long save(String myUserEmail, Long targetId) {
-        User myUser = userRepository.findByEmail(myUserEmail).orElseThrow(() -> new UsernameNotFoundException(""));
+    public Long save(User follower, User followee) {
         /* 자기 자신일 경우 */
-        if (myUser.getId() == targetId) throw new RestApiException(CommonErrorCode.INVALID_REQUEST);
+        if (follower.getId() == followee.getId()) throw new RestApiException(CommonErrorCode.INVALID_REQUEST);
 
-        User targetUser = userRepository.findById(targetId);
-        Follow newFollow = new Follow(myUser, targetUser);
+        Follow newFollow = new Follow(follower, followee);
         followRepository.save(newFollow);
         return newFollow.getId();
     }
