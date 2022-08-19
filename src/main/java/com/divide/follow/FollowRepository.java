@@ -33,15 +33,19 @@ public class FollowRepository {
     public void remove(Follow follow) {
         em.remove(follow);
     }
-    public List<Follow> getFollowingList(User user) {
+    public List<Follow> getFollowingList(User user, Integer first) {
         return em.createQuery("select f from Follow f where f.follower = :user order by f.createdAt desc", Follow.class)
                 .setParameter("user", user)
+                .setFirstResult(first)
+                .setMaxResults(30)
                 .getResultList();
     }
 
-    public List<Follow> getFollowerList(User user) {
+    public List<Follow> getFollowerList(User user, Integer first) {
         return em.createQuery("select f from Follow f where f.followee = :user order by f.createdAt desc", Follow.class)
                 .setParameter("user", user)
+                .setFirstResult(first)
+                .setMaxResults(30)
                 .getResultList();
     }
 

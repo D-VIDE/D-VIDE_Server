@@ -3,6 +3,7 @@ package com.divide.follow;
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.CommonErrorCode;
 import com.divide.exception.code.FollowErrorCode;
+import com.divide.exception.code.UserErrorCode;
 import com.divide.follow.dto.request.GetFollowResponse;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
@@ -40,8 +41,9 @@ public class FollowService {
         return follow.getId();
     }
 
-    public GetFollowResponse getFollowingList(String userEmail) {
-        List<Follow> followList = followRepository.getFollowingList(userRepository.findByEmail(userEmail).orElseThrow());
+    public GetFollowResponse getFollowingList(String userEmail, Integer first) {
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
+        List<Follow> followList = followRepository.getFollowingList(user, first);
         return new GetFollowResponse(
                 followList.stream().map(f -> new GetFollowResponse.GetFollowResponseElement(
                         f.getFollowee().getId(),
@@ -52,8 +54,9 @@ public class FollowService {
         );
     }
 
-    public GetFollowResponse getFollowerList(String userEmail) {
-        List<Follow> followList = followRepository.getFollowerList(userRepository.findByEmail(userEmail).orElseThrow());
+    public GetFollowResponse getFollowerList(String userEmail, Integer first) {
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
+        List<Follow> followList = followRepository.getFollowerList(user, first);
         return new GetFollowResponse(
                 followList.stream().map(f -> new GetFollowResponse.GetFollowResponseElement(
                         f.getFollower().getId(),
