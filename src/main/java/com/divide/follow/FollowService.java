@@ -2,6 +2,7 @@ package com.divide.follow;
 
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.CommonErrorCode;
+import com.divide.exception.code.FollowErrorCode;
 import com.divide.follow.dto.request.GetFollowResponse;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,15 +22,22 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
 
-    public Long save(String myUserEmail, Long targetId) {
-        User myUser = userRepository.findByEmail(myUserEmail).orElseThrow(() -> new UsernameNotFoundException(""));
+    public Long save(User follower, User followee) {
         /* 자기 자신일 경우 */
-        if (myUser.getId() == targetId) throw new RestApiException(CommonErrorCode.INVALID_REQUEST);
+        if (follower.getId() == followee.getId()) throw new RestApiException(FollowErrorCode.FOLLOW_SELF_ERROR);
+        /* 이미 등록된 Follow일 경우 */
+        if (followRepository.find(follower, followee).isPresent()) throw new RestApiException(FollowErrorCode.DUPLICATED_FOLLOW);
 
-        User targetUser = userRepository.findById(targetId);
-        Follow newFollow = new Follow(myUser, targetUser);
+        Follow newFollow = new Follow(follower, followee);
         followRepository.save(newFollow);
         return newFollow.getId();
+    }
+
+    public Long remove(User follower, User followee) {
+        Follow follow = followRepository.find(follower, followee).orElseThrow(() -> new RestApiException(FollowErrorCode.FOLLOW_NOT_FOUND));
+
+        followRepository.remove(follow);
+        return follow.getId();
     }
 
     public GetFollowResponse getFFFList(String userEmail) {

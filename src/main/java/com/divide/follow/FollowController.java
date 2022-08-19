@@ -1,8 +1,12 @@
 package com.divide.follow;
 
+import com.divide.follow.dto.request.DeleteFollowRequest;
 import com.divide.follow.dto.request.GetFollowResponse;
 import com.divide.follow.dto.request.PostFollowRequest;
+import com.divide.follow.dto.response.DeleteFollowResponse;
 import com.divide.follow.dto.response.PostFollowResponse;
+import com.divide.user.User;
+import com.divide.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 public class FollowController {
     private final FollowService followService;
+    private final UserService userService;
 
     @GetMapping("follow")
     public ResponseEntity<GetFollowResponse> getFollow(
@@ -34,7 +39,20 @@ public class FollowController {
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody PostFollowRequest postFollowRequest
     ) {
-        Long saveId = followService.save(userDetails.getUsername(), postFollowRequest.getUserId());
+        User follower = userService.getUserByEmail(userDetails.getUsername());
+        User followee = userService.getUserById(postFollowRequest.getUserId());
+        Long saveId = followService.save(follower, followee);
         return ResponseEntity.status(201).body(new PostFollowResponse(saveId));
+    }
+
+    @DeleteMapping("follow")
+    public ResponseEntity<DeleteFollowResponse> deleteFollow(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody DeleteFollowRequest deleteFollowRequest
+    ) {
+        User follower = userService.getUserByEmail(userDetails.getUsername());
+        User followee = userService.getUserById(deleteFollowRequest.getUserId());
+        Long removedId = followService.remove(follower, followee);
+        return ResponseEntity.ok(new DeleteFollowResponse(removedId));
     }
 }

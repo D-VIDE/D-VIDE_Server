@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -15,6 +17,21 @@ public class FollowRepository {
 
     public void save(Follow follow) {
         em.persist(follow);
+    }
+
+    public Optional<Follow> find(User follower, User followee) {
+        try {
+            return Optional.ofNullable(em.createQuery("select f from Follow f where f.follower = :follower and f.followee = :followee", Follow.class)
+                    .setParameter("follower", follower)
+                    .setParameter("followee", followee)
+                    .getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
+    public void remove(Follow follow) {
+        em.remove(follow);
     }
 
     public List<Follow> getFFFList(User user) {

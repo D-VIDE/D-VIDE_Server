@@ -53,7 +53,7 @@ public class UserController {
     public GetOtherUserResponse getOtherUser(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("id") Long userId) {
-        User user = userService.getOtherUser(userId);
+        User user = userService.getUserById(userId);
         Integer followerCount = followService.getFollowerCount(user.getEmail());
         Integer followingCount = followService.getFollowingCount(user.getEmail());
         List<String> badgeNameList = user.getBadges().stream().map(userBadge -> userBadge.getBadgeName().getKrName()).toList();
