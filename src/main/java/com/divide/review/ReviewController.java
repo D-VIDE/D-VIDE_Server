@@ -18,7 +18,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.http.HttpStatus;
 import com.divide.review.dto.response.PostReviewLikeResponse;
 
 import javax.validation.Valid;
@@ -85,13 +84,15 @@ public class ReviewController {
      *
      */
     @GetMapping("v2/reviews")
-    public Result getReviewsV2(@RequestParam("longitude") double longitude, @RequestParam("latitude") double latitude, @RequestParam(value = "first",
+    public Result getReviewsV2(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("longitude") double longitude, @RequestParam("latitude") double latitude, @RequestParam(value = "first",
             defaultValue = "0") Integer first){ //json 데이터 확장성을 위해 Result 사용
         List<Review> findReviews = reviewService.findReviewsAll(first, longitude, latitude, 0.5);
 
         List<GetReviewsResponseV2> collect = findReviews.stream()
                 .map( review -> {
                     User user = review.getUser();
+                    Boolean isReviewLiked = reviewService.isReviewLiked(userDetails.getUsername(), review);
+
                     return new GetReviewsResponseV2(
                             new CommonUserResponse(
                                     user.getId(),
@@ -105,14 +106,15 @@ public class ReviewController {
                                     review.getContent(),
                                     review.getStarRating(),
                                     review.getReviewImages().get(0).getReviewImageUrl(),
-                                    review.getPost().getStoreName()
+                                    review.getPost().getStoreName(),
+                                    review.getReviewLikes().size(),
+                                    isReviewLiked
                             )
                     );
                 })
                 .collect(toList());
         return new Result(collect);
     }
-
     /**
      * 리뷰 좋아요 생성
      * [Post] http://localhost:8080/api/v1/review/3/like?userId=1
@@ -121,8 +123,7 @@ public class ReviewController {
      */
     @PostMapping(value = "v1/review/{reviewId}/like")
     public ResponseEntity<PostReviewLikeResponse> reviewLike( @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long reviewId){
-
-        Long newReviewLikeId = reviewService.reviewLike(userDetails.getUsername(), reviewId);
+        Long newReviewLikeId = reviewService.createReviewLike(userDetails.getUsername(), reviewId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body( new PostReviewLikeResponse(newReviewLikeId));
     }
@@ -136,7 +137,7 @@ public class ReviewController {
      */
     @DeleteMapping("v1/review/{reviewId}/like")
     public ResponseEntity<DeleteReviewLikeResponse> reviewLikeCancel(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long reviewId){
-        reviewService.reviewLikeCancel(userDetails.getUsername(), reviewId);
+        reviewService.cancelReviewLike(userDetails.getUsername(), reviewId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new DeleteReviewLikeResponse(reviewId));
     }
