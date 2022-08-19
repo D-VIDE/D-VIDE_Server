@@ -12,6 +12,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,7 +56,7 @@ public class User {
         this.profileImgUrl = profileImgUrl;
         this.nickname = nickname;
         this.role = role;
-        addBadge(UserBadge.BadgeName.DIVIDER);
+        Arrays.stream(UserBadge.BadgeName.values()).forEach(this::addBadge);
     }
 
     public void addBadge(UserBadge.BadgeName badge) {

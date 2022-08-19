@@ -33,7 +33,12 @@ public class UserBadge {
     @AllArgsConstructor
     @Getter
     public enum BadgeName {
-        DIVIDER("디바이더"), CHICKEN_KILLER("치킨 킬러"), // TODO: 뱃지 이름 정의
+        CHICKEN("가슴이 통닭통닭"),
+        ZHANG_CHEN("장첸"),
+        INSIDER_DIVIDER("인싸 디바이더"),
+        LONELY_GOURMET("고독한 미식가"),
+        SWEET_DIVIDER("서윗 드바이더"),
+        CAFFEINE_VAMPIRE("카페인 뱀파이어"), // TODO: 뱃지 조건.... 어떻게 해요 ㅠㅜ
         ;
 
         private String krName;
