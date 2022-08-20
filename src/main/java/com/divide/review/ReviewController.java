@@ -122,7 +122,7 @@ public class ReviewController {
      * @param first : 페이징을 위함
      * @return
      */
-    @GetMapping("/v1/myReviews")
+    @GetMapping("/v1/reviews/myself")
     public Result getMyReviews(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value = "first", defaultValue = "0") Integer first){
         List<Review> myReviews = reviewService.findMyReviews(userDetails.getUsername(), first);
         List<GetReviewsResponseV2> collect = myReviews.stream()
