@@ -161,8 +161,8 @@ public class ReviewController {
      */
     @GetMapping("/v1/reviews/others")
     public Result getOthersReviews(@AuthenticationPrincipal UserDetails userDetails, @RequestParam Long userId, @RequestParam(value = "first", defaultValue = "0") Integer first){
-        List<Review> myReviews = reviewService.findReviewsAllByUserId(userId, first);
-        List<GetReviewsResponseV2> collect = myReviews.stream()
+        List<Review> otherReviews = reviewService.findReviewsAllByUserId(userId, first);
+        List<GetReviewsResponseV2> collect = otherReviews.stream()
                 .map( review -> {
                     User user = review.getUser();
                     Boolean isReviewLiked = reviewService.isReviewLiked(userDetails.getUsername(), review);
@@ -192,8 +192,8 @@ public class ReviewController {
 
     @GetMapping("/v1/reviews/search")
     public Result getSearchedReviews(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String storeName, @RequestParam(value = "first", defaultValue = "0") Integer first){
-        List<Review> myReviews = reviewService.findReviewsAllByStoreName(storeName, first);
-        List<GetReviewsResponseV2> collect = myReviews.stream()
+        List<Review> searchedReviews = reviewService.findReviewsAllByStoreName(storeName, first);
+        List<GetReviewsResponseV2> collect = searchedReviews.stream()
                 .map( review -> {
                     User user = review.getUser();
                     Boolean isReviewLiked = reviewService.isReviewLiked(userDetails.getUsername(), review);
