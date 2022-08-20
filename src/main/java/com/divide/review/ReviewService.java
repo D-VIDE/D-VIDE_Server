@@ -164,6 +164,10 @@ public class ReviewService {
         return reviewRepository.findReviewsAllByUserId(first, user.getId());
     }
 
+    public List<Review> findReviewsAllByUserId(Long userId, Integer first){
+        return reviewRepository.findReviewsAllByUserId( first, userId);
+    }
+
     private boolean validateDuplicateReviewLike(ReviewLike reviewLike){
         Optional<ReviewLike> DbReviewLike = reviewLikeRepository.findByUserIdAndReviewId(reviewLike.getUser().getId(), reviewLike.getReview().getReviewId());
         return DbReviewLike.isPresent();
