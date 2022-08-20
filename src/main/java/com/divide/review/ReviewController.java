@@ -192,6 +192,37 @@ public class ReviewController {
         return new Result(collect);
     }
 
+    @GetMapping("/v1/reviews/search")
+    public Result getSearchedReviews(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String storeName, @RequestParam(value = "first", defaultValue = "0") Integer first){
+        List<Review> myReviews = reviewService.findReviewsAllByStoreName(storeName, first);
+        List<GetReviewsResponseV2> collect = myReviews.stream()
+                .map( review -> {
+                    User user = review.getUser();
+                    Boolean isReviewLiked = reviewService.isReviewLiked(userDetails.getUsername(), review);
+
+                    return new GetReviewsResponseV2(
+                            new CommonUserResponse(
+                                    user.getId(),
+                                    user.getNickname(),
+                                    user.getProfileImgUrl()
+                            ),
+                            new CommonReviewResponse(
+                                    review.getReviewId(),
+                                    review.getPost().getDeliveryLocation().getCoordinate().getX(),
+                                    review.getPost().getDeliveryLocation().getCoordinate().getY(),
+                                    review.getContent(),
+                                    review.getStarRating(),
+                                    review.getReviewImages().get(0).getReviewImageUrl(),
+                                    review.getPost().getStoreName(),
+                                    review.getReviewLikes().size(),
+                                    isReviewLiked
+                            )
+                    );
+                })
+                .collect(toList());
+        return new Result(collect);
+    }
+
     /**
      * 리뷰 좋아요 생성
      * [Post] http://localhost:8080/api/v1/review/3/like?userId=1

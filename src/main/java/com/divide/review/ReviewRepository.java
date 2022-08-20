@@ -38,6 +38,19 @@ public class ReviewRepository {
         return reviewLists;
     }
 
+
+    public List<Review> findReviewsAllByStoreName(Integer first, String storeName){
+        Query query = em.createNativeQuery("SELECT r.* FROM review r " +
+                        "JOIN post p on p.post_id = r.post_id " +
+                        "WHERE p.store_name = :storeName", Review.class)
+                .setFirstResult(first)
+                .setParameter("storeName", storeName)
+                .setMaxResults(10);
+
+        List<Review> reviewLists = query.getResultList();
+        return reviewLists;
+    }
+
     public Review findById(Long reviewId){
         Review review = em.find(Review.class, reviewId);
         return review;
