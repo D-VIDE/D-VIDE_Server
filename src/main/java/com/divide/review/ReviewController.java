@@ -1,14 +1,12 @@
 package com.divide.review;
 
+import com.divide.common.CommonReviewDetailResponse;
 import com.divide.common.CommonReviewResponse;
 import com.divide.common.CommonUserResponse;
 import com.divide.post.dto.response.Result;
 import com.divide.review.dto.request.PostReviewRequest;
 import com.divide.review.dto.request.PostReviewRequestV2;
-import com.divide.review.dto.response.DeleteReviewLikeResponse;
-import com.divide.review.dto.response.GetReviewsResponse;
-import com.divide.review.dto.response.GetReviewsResponseV2;
-import com.divide.review.dto.response.PostReviewResponse;
+import com.divide.review.dto.response.*;
 import com.divide.user.User;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.io.ParseException;
@@ -18,9 +16,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.divide.review.dto.response.PostReviewLikeResponse;
 
 import javax.validation.Valid;
+import javax.ws.rs.Path;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -221,6 +219,37 @@ public class ReviewController {
                 })
                 .collect(toList());
         return new Result(collect);
+    }
+
+    @GetMapping("/v1/review/{reviewId}")
+    public Result getReview(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long reviewId){
+        Review review = reviewService.findReview(reviewId);
+        List<ReviewImage> findReviewImgs = review.getReviewImages();
+        List<String> reviewImgUrls = findReviewImgs.stream()
+                .map(reviewImg -> reviewImg.getReviewImageUrl())
+                .collect(toList());
+        User user = review.getUser();
+        Boolean isReviewLiked = reviewService.isReviewLiked(userDetails.getUsername(), review);
+
+        GetReviewResponse getReviewResponse = new GetReviewResponse(
+                new CommonUserResponse(
+                        user.getId(),
+                        user.getNickname(),
+                        user.getProfileImgUrl()
+                ),
+                new CommonReviewDetailResponse(
+                        review.getReviewId(),
+                        review.getPost().getDeliveryLocation().getCoordinate().getX(),
+                        review.getPost().getDeliveryLocation().getCoordinate().getY(),
+                        review.getContent(),
+                        review.getStarRating(),
+                        reviewImgUrls,
+                        review.getPost().getStoreName(),
+                        review.getReviewLikes().size(),
+                        isReviewLiked
+                )
+        );
+        return new Result(getReviewResponse);
     }
 
     /**

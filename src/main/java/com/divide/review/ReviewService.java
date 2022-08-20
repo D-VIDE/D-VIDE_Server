@@ -172,6 +172,10 @@ public class ReviewService {
         return reviewRepository.findReviewsAllByStoreName( first, storeName);
     }
 
+    public Review findReview(Long reviewId){
+        return reviewRepository.findById(reviewId);
+    }
+
     private boolean validateDuplicateReviewLike(ReviewLike reviewLike){
         Optional<ReviewLike> DbReviewLike = reviewLikeRepository.findByUserIdAndReviewId(reviewLike.getUser().getId(), reviewLike.getReview().getReviewId());
         return DbReviewLike.isPresent();
