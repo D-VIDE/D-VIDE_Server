@@ -151,6 +151,19 @@ public class ReviewService {
         return pointFormat;
     }
 
+    /**
+     * 내 리뷰글 조회
+     * @param userEmail
+     * @param first
+     * @return
+     */
+    public List<Review> findMyReviews(String userEmail, Integer first){
+        //현재 유저 조회
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
+
+        return reviewRepository.findReviewsAllByUserId(first, user.getId());
+    }
+
     private boolean validateDuplicateReviewLike(ReviewLike reviewLike){
         Optional<ReviewLike> DbReviewLike = reviewLikeRepository.findByUserIdAndReviewId(reviewLike.getUser().getId(), reviewLike.getReview().getReviewId());
         return DbReviewLike.isPresent();
