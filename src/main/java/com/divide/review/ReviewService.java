@@ -172,6 +172,11 @@ public class ReviewService {
         return reviewRepository.findReviewsAllByStoreName( first, storeName);
     }
 
+    public List<Review> findReviewsByStarRating(Integer first){
+        return reviewRepository.findReviewsByStarRating(first);
+    }
+
+
     public Review findReview(Long reviewId){
         return reviewRepository.findById(reviewId);
     }

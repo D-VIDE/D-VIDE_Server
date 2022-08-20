@@ -56,4 +56,15 @@ public class ReviewRepository {
         return review;
     }
 
+    public List<Review>findReviewsByStarRating(Integer first){
+        Query query = em.createNativeQuery("SELECT r.* FROM review r " +
+                        "JOIN post p on p.post_id = r.post_id " +
+                        "ORDER BY r.star_rating DESC", Review.class)
+                .setFirstResult(first)
+                .setMaxResults(5);
+
+        List<Review> reviewLists = query.getResultList();
+        return reviewLists;
+    }
+
 }

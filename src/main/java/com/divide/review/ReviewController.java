@@ -253,6 +253,27 @@ public class ReviewController {
     }
 
     /**
+     * 추천 맛집 조회 API
+     * 별점을 기준으로 정렬해서 5개의 리뷰를 보여줍니다.
+     * [GET] http://localhost:8080/api/v1/reviews/recommend?first=0
+     * @param first
+     * @return
+     */
+    @GetMapping("v1/reviews/recommend")
+    public Result getRecommendReviews(@RequestParam(value = "first", defaultValue = "0") Integer first){
+        List<Review> recommendReviews = reviewService.findReviewsByStarRating(first);
+        List<GetRecommendsResponse> collect = recommendReviews.stream()
+                .map( review -> {
+                    return new GetRecommendsResponse(
+                            review.getPost().getStoreName(),
+                            review.getReviewImages().get(0).getReviewImageUrl()
+                    );
+                })
+                .collect(toList());
+        return new Result(collect);
+    }
+
+    /**
      * 리뷰 좋아요 생성
      * [Post] http://localhost:8080/api/v1/review/3/like?userId=1
      * @param reviewId : 유저가 누른 리뷰의 id
