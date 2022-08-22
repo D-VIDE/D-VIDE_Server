@@ -1,14 +1,12 @@
 package com.divide.review;
 
+import com.divide.common.CommonReviewDetailResponse;
 import com.divide.common.CommonReviewResponse;
 import com.divide.common.CommonUserResponse;
 import com.divide.post.dto.response.Result;
 import com.divide.review.dto.request.PostReviewRequest;
 import com.divide.review.dto.request.PostReviewRequestV2;
-import com.divide.review.dto.response.DeleteReviewLikeResponse;
-import com.divide.review.dto.response.GetReviewsResponse;
-import com.divide.review.dto.response.GetReviewsResponseV2;
-import com.divide.review.dto.response.PostReviewResponse;
+import com.divide.review.dto.response.*;
 import com.divide.user.User;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.io.ParseException;
@@ -18,9 +16,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.divide.review.dto.response.PostReviewLikeResponse;
 
 import javax.validation.Valid;
+import javax.ws.rs.Path;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -115,6 +113,166 @@ public class ReviewController {
                 .collect(toList());
         return new Result(collect);
     }
+
+    /**
+     * 내가 쓴 리뷰 조회 API
+     * @param userDetails : 현재 유저를 받아오기 위함
+     * @param first : 페이징을 위함
+     * @return
+     */
+    @GetMapping("/v1/reviews/myself")
+    public Result getMyReviews(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value = "first", defaultValue = "0") Integer first){
+        List<Review> myReviews = reviewService.findMyReviews(userDetails.getUsername(), first);
+        List<GetReviewsResponseV2> collect = myReviews.stream()
+                .map( review -> {
+                    User user = review.getUser();
+                    Boolean isReviewLiked = reviewService.isReviewLiked(userDetails.getUsername(), review);
+
+                    return new GetReviewsResponseV2(
+                            new CommonUserResponse(
+                                    user.getId(),
+                                    user.getNickname(),
+                                    user.getProfileImgUrl()
+                            ),
+                            new CommonReviewResponse(
+                                    review.getReviewId(),
+                                    review.getPost().getDeliveryLocation().getCoordinate().getX(),
+                                    review.getPost().getDeliveryLocation().getCoordinate().getY(),
+                                    review.getContent(),
+                                    review.getStarRating(),
+                                    review.getReviewImages().get(0).getReviewImageUrl(),
+                                    review.getPost().getStoreName(),
+                                    review.getReviewLikes().size(),
+                                    isReviewLiked
+                            )
+                    );
+                })
+                .collect(toList());
+        return new Result(collect);
+    }
+
+    /**
+     * 타인이 쓴 리뷰 조회
+     * [GET] http://localhost:8080/api/v1/reviews/others?first=0&userId=2
+     * @param userDetails : 나의 좋아요 여부를 보기 위한 파라미터
+     * @param userId : 타인의 id
+     * @param first : 페이징을 위한 값
+     * @return
+     */
+    @GetMapping("/v1/reviews/others")
+    public Result getOthersReviews(@AuthenticationPrincipal UserDetails userDetails, @RequestParam Long userId, @RequestParam(value = "first", defaultValue = "0") Integer first){
+        List<Review> otherReviews = reviewService.findReviewsAllByUserId(userId, first);
+        List<GetReviewsResponseV2> collect = otherReviews.stream()
+                .map( review -> {
+                    User user = review.getUser();
+                    Boolean isReviewLiked = reviewService.isReviewLiked(userDetails.getUsername(), review);
+
+                    return new GetReviewsResponseV2(
+                            new CommonUserResponse(
+                                    user.getId(),
+                                    user.getNickname(),
+                                    user.getProfileImgUrl()
+                            ),
+                            new CommonReviewResponse(
+                                    review.getReviewId(),
+                                    review.getPost().getDeliveryLocation().getCoordinate().getX(),
+                                    review.getPost().getDeliveryLocation().getCoordinate().getY(),
+                                    review.getContent(),
+                                    review.getStarRating(),
+                                    review.getReviewImages().get(0).getReviewImageUrl(),
+                                    review.getPost().getStoreName(),
+                                    review.getReviewLikes().size(),
+                                    isReviewLiked
+                            )
+                    );
+                })
+                .collect(toList());
+        return new Result(collect);
+    }
+
+    @GetMapping("/v1/reviews/search")
+    public Result getSearchedReviews(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String storeName, @RequestParam(value = "first", defaultValue = "0") Integer first){
+        List<Review> searchedReviews = reviewService.findReviewsAllByStoreName(storeName, first);
+        List<GetReviewsResponseV2> collect = searchedReviews.stream()
+                .map( review -> {
+                    User user = review.getUser();
+                    Boolean isReviewLiked = reviewService.isReviewLiked(userDetails.getUsername(), review);
+
+                    return new GetReviewsResponseV2(
+                            new CommonUserResponse(
+                                    user.getId(),
+                                    user.getNickname(),
+                                    user.getProfileImgUrl()
+                            ),
+                            new CommonReviewResponse(
+                                    review.getReviewId(),
+                                    review.getPost().getDeliveryLocation().getCoordinate().getX(),
+                                    review.getPost().getDeliveryLocation().getCoordinate().getY(),
+                                    review.getContent(),
+                                    review.getStarRating(),
+                                    review.getReviewImages().get(0).getReviewImageUrl(),
+                                    review.getPost().getStoreName(),
+                                    review.getReviewLikes().size(),
+                                    isReviewLiked
+                            )
+                    );
+                })
+                .collect(toList());
+        return new Result(collect);
+    }
+
+    @GetMapping("/v1/review/{reviewId}")
+    public Result getReview(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long reviewId){
+        Review review = reviewService.findReview(reviewId);
+        List<ReviewImage> findReviewImgs = review.getReviewImages();
+        List<String> reviewImgUrls = findReviewImgs.stream()
+                .map(reviewImg -> reviewImg.getReviewImageUrl())
+                .collect(toList());
+        User user = review.getUser();
+        Boolean isReviewLiked = reviewService.isReviewLiked(userDetails.getUsername(), review);
+
+        GetReviewResponse getReviewResponse = new GetReviewResponse(
+                new CommonUserResponse(
+                        user.getId(),
+                        user.getNickname(),
+                        user.getProfileImgUrl()
+                ),
+                new CommonReviewDetailResponse(
+                        review.getReviewId(),
+                        review.getPost().getDeliveryLocation().getCoordinate().getX(),
+                        review.getPost().getDeliveryLocation().getCoordinate().getY(),
+                        review.getContent(),
+                        review.getStarRating(),
+                        reviewImgUrls,
+                        review.getPost().getStoreName(),
+                        review.getReviewLikes().size(),
+                        isReviewLiked
+                )
+        );
+        return new Result(getReviewResponse);
+    }
+
+    /**
+     * 추천 맛집 조회 API
+     * 별점을 기준으로 정렬해서 5개의 리뷰를 보여줍니다.
+     * [GET] http://localhost:8080/api/v1/reviews/recommend?first=0
+     * @param first
+     * @return
+     */
+    @GetMapping("v1/reviews/recommend")
+    public Result getRecommendReviews(@RequestParam(value = "first", defaultValue = "0") Integer first){
+        List<Review> recommendReviews = reviewService.findReviewsByStarRating(first);
+        List<GetRecommendsResponse> collect = recommendReviews.stream()
+                .map( review -> {
+                    return new GetRecommendsResponse(
+                            review.getPost().getStoreName(),
+                            review.getReviewImages().get(0).getReviewImageUrl()
+                    );
+                })
+                .collect(toList());
+        return new Result(collect);
+    }
+
     /**
      * 리뷰 좋아요 생성
      * [Post] http://localhost:8080/api/v1/review/3/like?userId=1
