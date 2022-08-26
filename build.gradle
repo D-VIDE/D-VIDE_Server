@@ -46,6 +46,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	implementation group: 'org.hibernate', name: 'hibernate-spatial', version: '5.6.9.Final'
+	implementation 'com.google.firebase:firebase-admin:9.0.0'
 }
 
 tasks.named('test') {
