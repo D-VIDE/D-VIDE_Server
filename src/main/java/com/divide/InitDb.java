@@ -104,7 +104,9 @@ public class InitDb {
                 userList.add(userService.getUserByEmail(email));
             }
             for (int i = 0; i < USER_COUNT; ++i) {
+                if (i == 5) continue;
                 for (int j = i + 1; j < USER_COUNT; ++j) {
+                    if (j == 5) continue;
                     int nextInt = random.nextInt(0, 3);
                     if (nextInt == 0) {
                         followService.save(userList.get(i), userList.get(j));
