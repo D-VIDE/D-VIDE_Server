@@ -38,10 +38,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @NotEmpty
-    @JsonIgnore
-    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<UserBadge> badges = new HashSet<>();
+    @NotNull
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private UserBadge selectedBadge;
 
     @NotNull
     @PositiveOrZero
@@ -56,11 +55,7 @@ public class User {
         this.profileImgUrl = profileImgUrl;
         this.nickname = nickname;
         this.role = role;
-        Arrays.stream(UserBadge.BadgeName.values()).forEach(this::addBadge);
-    }
-
-    public void addBadge(UserBadge.BadgeName badge) {
-        badges.add(new UserBadge(this, badge));
+        this.selectedBadge = new UserBadge(this, UserBadge.BadgeName.BEGINNER);
     }
 
     public void addSavedMoney(int value) {

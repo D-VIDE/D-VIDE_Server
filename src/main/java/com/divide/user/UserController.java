@@ -33,16 +33,16 @@ public class UserController {
      * @return
      */
     @GetMapping("/v1/user")
-    public GetUserResponse getUser(@AuthenticationPrincipal UserDetails userDetails) {
+    public GetUserResponse getUserV1(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
         Integer followerCount = followService.getFollowerCount(userDetails.getUsername());
         Integer followingCount = followService.getFollowingCount(userDetails.getUsername());
-        List<String> badgeNameList = user.getBadges().stream().map(userBadge -> userBadge.getBadgeName().getKrName()).toList();
+
         return GetUserResponse.builder()
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .profileImgUrl(user.getProfileImgUrl())
-                .badges(badgeNameList)
+                .badge(user.getSelectedBadge().getBadgeName().getKrName())
                 .followerCount(followerCount)
                 .followingCount(followingCount)
                 .savedPrice(user.getSavedMoney())
@@ -56,11 +56,10 @@ public class UserController {
         User user = userService.getUserById(userId);
         Integer followerCount = followService.getFollowerCount(user.getEmail());
         Integer followingCount = followService.getFollowingCount(user.getEmail());
-        List<String> badgeNameList = user.getBadges().stream().map(userBadge -> userBadge.getBadgeName().getKrName()).toList();
         return GetOtherUserResponse.builder()
                 .nickname(user.getNickname())
                 .profileImgUrl(user.getProfileImgUrl())
-                .badges(badgeNameList)
+                .badge(user.getSelectedBadge().getBadgeName().getKrName())
                 .followerCount(followerCount)
                 .followingCount(followingCount)
                 .build();

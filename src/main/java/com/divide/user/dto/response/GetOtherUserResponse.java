@@ -12,7 +12,7 @@ import java.util.List;
 public class GetOtherUserResponse {
     private String profileImgUrl;
     private String nickname;
-    private List<String> badges;
+    private String badge;
     private Integer followingCount;
     private Integer followerCount;
 }
