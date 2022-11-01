@@ -16,4 +16,11 @@ public class UserBadgeRepository {
                 .setParameter("user", user)
                 .getResultList();
     }
+
+    public UserBadge findByUserAndBadgeName(User user, UserBadge.BadgeName badgeName) {
+        return em.createQuery("select ub from UserBadge as ub where ub.user = :user and ub.badgeName = :badgeName", UserBadge.class)
+                .setParameter("user", user)
+                .setParameter("badgeName", badgeName)
+                .getSingleResult();
+    }
 }

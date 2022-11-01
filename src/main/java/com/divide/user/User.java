@@ -61,4 +61,8 @@ public class User {
     public void addSavedMoney(int value) {
         savedMoney += value;
     }
+
+    public void updateSelectedBadge(UserBadge userBadge) {
+        this.selectedBadge = userBadge;
+    }
 }

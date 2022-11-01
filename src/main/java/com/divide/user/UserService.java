@@ -58,4 +58,9 @@ public class UserService {
     public List<UserBadge> getBadgeList(User user) {
         return userBadgeRepository.findByUser(user);
     }
+
+    public void updateSelectedBadge(User user, UserBadge.BadgeName badgeName) {
+        UserBadge userBadge = userBadgeRepository.findByUserAndBadgeName(user, badgeName);
+        user.updateSelectedBadge(userBadge);
+    }
 }

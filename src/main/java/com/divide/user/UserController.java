@@ -1,6 +1,7 @@
 package com.divide.user;
 
 import com.divide.follow.FollowService;
+import com.divide.user.dto.request.PostUserBadgeRequest;
 import com.divide.user.dto.response.*;
 import com.divide.user.dto.request.SignupRequest;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -98,5 +102,29 @@ public class UserController {
         return GetUserBadgeResponse.builder()
                 .badges(badges)
                 .build();
+    }
+
+    /**
+     * 대표 badge 선택 API
+     * TODO: exception 재정의
+     * @param userDetails
+     * @param postUserBadgeRequest
+     * @return
+     */
+    @PostMapping("/v1/user/badge")
+    public ResponseEntity postUserBadge(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody PostUserBadgeRequest postUserBadgeRequest
+    ) {
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        List<UserBadge> badgeList = userService.getBadgeList(user);
+        Optional<UserBadge.BadgeName> badgeName = badgeList.stream()
+                .map(UserBadge::getBadgeName)
+                .filter(name -> name.getKrName().equals(postUserBadgeRequest.getBadgeName()))
+                .findFirst();
+
+        userService.updateSelectedBadge(user, badgeName.orElseThrow());
+
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }
