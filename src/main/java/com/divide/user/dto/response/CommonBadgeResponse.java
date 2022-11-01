@@ -1,10 +1,10 @@
 package com.divide.user.dto.response;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@Builder
+@AllArgsConstructor
 public class CommonBadgeResponse {
     private String name;
     private String description;

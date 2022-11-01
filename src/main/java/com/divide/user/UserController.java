@@ -40,12 +40,15 @@ public class UserController {
         User user = userService.getUserByEmail(userDetails.getUsername());
         Integer followerCount = followService.getFollowerCount(userDetails.getUsername());
         Integer followingCount = followService.getFollowingCount(userDetails.getUsername());
+        CommonBadgeResponse badgeResponse = new CommonBadgeResponse(
+                user.getSelectedBadge().getBadgeName().getKrName(),
+                user.getSelectedBadge().getBadgeName().getDescription());
 
         return GetUserResponse.builder()
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .profileImgUrl(user.getProfileImgUrl())
-                .badge(user.getSelectedBadge().getBadgeName().getKrName())
+                .badge(badgeResponse)
                 .followerCount(followerCount)
                 .followingCount(followingCount)
                 .savedPrice(user.getSavedMoney())
@@ -65,10 +68,13 @@ public class UserController {
         User user = userService.getUserById(userId);
         Integer followerCount = followService.getFollowerCount(user.getEmail());
         Integer followingCount = followService.getFollowingCount(user.getEmail());
+        CommonBadgeResponse badgeResponse = new CommonBadgeResponse(
+                user.getSelectedBadge().getBadgeName().getKrName(),
+                user.getSelectedBadge().getBadgeName().getDescription());
         return GetOtherUserResponse.builder()
                 .nickname(user.getNickname())
                 .profileImgUrl(user.getProfileImgUrl())
-                .badge(user.getSelectedBadge().getBadgeName().getKrName())
+                .badge(badgeResponse)
                 .followerCount(followerCount)
                 .followingCount(followingCount)
                 .build();
@@ -85,10 +91,9 @@ public class UserController {
     ) {
         User user = userService.getUserByEmail(userDetails.getUsername());
         List<CommonBadgeResponse> badges = userService.getBadgeList(user).stream()
-                .map(ub -> CommonBadgeResponse.builder()
-                        .name(ub.getBadgeName().getKrName())
-                        .description(ub.getBadgeName().getDescription())
-                        .build())
+                .map(ub -> new CommonBadgeResponse(
+                        user.getSelectedBadge().getBadgeName().getKrName(),
+                        user.getSelectedBadge().getBadgeName().getDescription()))
                 .toList();
         return GetUserBadgeResponse.builder()
                 .badges(badges)
