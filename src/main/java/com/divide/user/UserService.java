@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
+    private final UserBadgeRepository userBadgeRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
@@ -50,5 +52,30 @@ public class UserService {
         userRepository.save(newUser);
 
         return newUser.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserBadge> getBadgeList(User user) {
+        return userBadgeRepository.findByUser(user);
+    }
+
+    public void updateSelectedBadge(User user, UserBadge.BadgeName badgeName) {
+        UserBadge userBadge = userBadgeRepository.findByUserAndBadgeName(user, badgeName);
+        if (user.getSelectedBadge().equals(userBadge)) {
+            throw new RestApiException(UserErrorCode.ALREADY_SET_BADGE_NAME);
+        }
+        user.updateSelectedBadge(userBadge);
+    }
+
+    public Long saveUserBadge(User user, UserBadge.BadgeName badgeName) {
+        boolean badgeExists = userBadgeRepository.findByUser(user).stream()
+                .map(UserBadge::getBadgeName)
+                .anyMatch(bn -> bn.equals(badgeName));
+        if (badgeExists) {
+            throw new RestApiException(UserErrorCode.ALREADY_REGISTERED_BADGE);
+        }
+        UserBadge userBadge = new UserBadge(user, badgeName);
+        userBadgeRepository.save(userBadge);
+        return userBadge.getId();
     }
 }

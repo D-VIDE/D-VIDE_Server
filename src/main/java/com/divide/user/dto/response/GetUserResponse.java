@@ -1,11 +1,9 @@
 package com.divide.user.dto.response;
 
-import com.divide.user.UserBadge;
+import com.divide.common.CommonBadgeResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
 
 @AllArgsConstructor
 @Getter
@@ -14,7 +12,7 @@ public class GetUserResponse {
     private String email;
     private String nickname;
     private String profileImgUrl;
-    private List<String> badges;
+    private CommonBadgeResponse badge;
     private Integer followerCount;
     private Integer followingCount;
     private Integer savedPrice;
