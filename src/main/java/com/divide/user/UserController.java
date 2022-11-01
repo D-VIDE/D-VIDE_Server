@@ -1,10 +1,8 @@
 package com.divide.user;
 
 import com.divide.follow.FollowService;
-import com.divide.user.dto.response.GetOtherUserResponse;
+import com.divide.user.dto.response.*;
 import com.divide.user.dto.request.SignupRequest;
-import com.divide.user.dto.response.GetUserResponse;
-import com.divide.user.dto.response.SignupResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +19,11 @@ public class UserController {
     private final UserService userService;
     private final FollowService followService;
 
+    /**
+     * 회원가입 API
+     * @param signupRequest
+     * @return
+     */
     @PostMapping("/v1/user")
     public ResponseEntity<SignupResponse> signup(@ModelAttribute SignupRequest signupRequest) {
         Long saveId = userService.signup(signupRequest);
@@ -49,6 +52,12 @@ public class UserController {
                 .build();
     }
 
+    /**
+     * 타인의 정보 조회 API
+     * @param userDetails
+     * @param userId
+     * @return
+     */
     @GetMapping("/v1/user/{id}")
     public GetOtherUserResponse getOtherUser(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -65,6 +74,11 @@ public class UserController {
                 .build();
     }
 
+    /**
+     * 현재 유저의 badge 정보 조회 API
+     * @param userDetails
+     * @return
+     */
     @GetMapping("/v1/user/badges")
     public GetUserBadgeResponse getUserBadge(
             @AuthenticationPrincipal UserDetails userDetails
