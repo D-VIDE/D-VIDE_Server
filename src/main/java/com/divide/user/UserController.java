@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,13 +62,11 @@ public class UserController {
 
     /**
      * 타인의 정보 조회 API
-     * @param userDetails
      * @param userId
      * @return
      */
     @GetMapping("/v1/user/{id}")
     public GetOtherUserResponse getOtherUser(
-            @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("id") Long userId) {
         User user = userService.getUserById(userId);
         Integer followerCount = followService.getFollowerCount(user.getEmail());
@@ -108,7 +105,6 @@ public class UserController {
 
     /**
      * 대표 badge 선택 API
-     * TODO: exception 재정의
      * @param userDetails
      * @param postUserBadgeRequest
      * @return
