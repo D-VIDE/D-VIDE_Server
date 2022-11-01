@@ -11,6 +11,10 @@ import java.util.List;
 public class UserBadgeRepository {
     private final EntityManager em;
 
+    public void save(UserBadge userBadge) {
+        em.persist(userBadge);
+    }
+
     public List<UserBadge> findByUser(User user) {
         return em.createQuery("select ub from UserBadge as ub where ub.user = :user", UserBadge.class)
                 .setParameter("user", user)

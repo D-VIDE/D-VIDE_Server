@@ -63,4 +63,10 @@ public class UserService {
         UserBadge userBadge = userBadgeRepository.findByUserAndBadgeName(user, badgeName);
         user.updateSelectedBadge(userBadge);
     }
+
+    public Long saveUserBadge(User user, UserBadge.BadgeName badgeName) {
+        UserBadge userBadge = new UserBadge(user, badgeName);
+        userBadgeRepository.save(userBadge);
+        return userBadge.getId();
+    }
 }
