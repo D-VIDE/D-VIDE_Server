@@ -61,6 +61,9 @@ public class UserService {
 
     public void updateSelectedBadge(User user, UserBadge.BadgeName badgeName) {
         UserBadge userBadge = userBadgeRepository.findByUserAndBadgeName(user, badgeName);
+        if (user.getSelectedBadge().equals(userBadge)) {
+            throw new RestApiException(UserErrorCode.ALREADY_SET_BADGE_NAME);
+        }
         user.updateSelectedBadge(userBadge);
     }
 
