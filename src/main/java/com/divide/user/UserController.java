@@ -1,5 +1,7 @@
 package com.divide.user;
 
+import com.divide.exception.RestApiException;
+import com.divide.exception.code.UserErrorCode;
 import com.divide.follow.FollowService;
 import com.divide.user.dto.request.PostUserBadgeRequest;
 import com.divide.user.dto.response.*;
@@ -123,7 +125,7 @@ public class UserController {
                 .filter(name -> name.getKrName().equals(postUserBadgeRequest.getBadgeName()))
                 .findFirst();
 
-        userService.updateSelectedBadge(user, badgeName.orElseThrow());
+        userService.updateSelectedBadge(user, badgeName.orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_BADGE_NAME)));
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
