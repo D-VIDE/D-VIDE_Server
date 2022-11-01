@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
+    private final UserBadgeRepository userBadgeRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
@@ -50,5 +52,10 @@ public class UserService {
         userRepository.save(newUser);
 
         return newUser.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserBadge> getBadgeList(User user) {
+        return userBadgeRepository.findByUser(user);
     }
 }

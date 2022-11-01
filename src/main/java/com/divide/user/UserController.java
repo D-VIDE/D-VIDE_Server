@@ -64,4 +64,20 @@ public class UserController {
                 .followingCount(followingCount)
                 .build();
     }
+
+    @GetMapping("/v1/user/badges")
+    public GetUserBadgeResponse getUserBadge(
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        List<CommonBadgeResponse> badges = userService.getBadgeList(user).stream()
+                .map(ub -> CommonBadgeResponse.builder()
+                        .name(ub.getBadgeName().getKrName())
+                        .description(ub.getBadgeName().getDescription())
+                        .build())
+                .toList();
+        return GetUserBadgeResponse.builder()
+                .badges(badges)
+                .build();
+    }
 }
