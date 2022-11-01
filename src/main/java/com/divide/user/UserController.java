@@ -96,8 +96,8 @@ public class UserController {
         User user = userService.getUserByEmail(userDetails.getUsername());
         List<CommonBadgeResponse> badges = userService.getBadgeList(user).stream()
                 .map(ub -> new CommonBadgeResponse(
-                        user.getSelectedBadge().getBadgeName().getKrName(),
-                        user.getSelectedBadge().getBadgeName().getDescription()))
+                        ub.getBadgeName().getKrName(),
+                        ub.getBadgeName().getDescription()))
                 .toList();
         return GetUserBadgeResponse.builder()
                 .badges(badges)
