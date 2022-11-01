@@ -1,4 +1,4 @@
-package com.divide.user.dto.response;
+package com.divide.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

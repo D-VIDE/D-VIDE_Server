@@ -1,5 +1,6 @@
 package com.divide.user;
 
+import com.divide.common.CommonBadgeResponse;
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.UserErrorCode;
 import com.divide.follow.FollowService;
