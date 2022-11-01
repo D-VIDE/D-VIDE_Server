@@ -68,6 +68,12 @@ public class UserService {
     }
 
     public Long saveUserBadge(User user, UserBadge.BadgeName badgeName) {
+        boolean badgeExists = userBadgeRepository.findByUser(user).stream()
+                .map(UserBadge::getBadgeName)
+                .anyMatch(bn -> bn.equals(badgeName));
+        if (badgeExists) {
+            throw new RestApiException(UserErrorCode.ALREADY_REGISTERED_BADGE);
+        }
         UserBadge userBadge = new UserBadge(user, badgeName);
         userBadgeRepository.save(userBadge);
         return userBadge.getId();

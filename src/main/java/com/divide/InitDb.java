@@ -99,6 +99,7 @@ public class InitDb {
             /* User 등록 */
             List<User> userList = new ArrayList<>();
             List<UserBadge.BadgeName> badgeNameList = new ArrayList<>(List.of(UserBadge.BadgeName.values()));
+            badgeNameList.remove(0);
             for (int i = 0; i < USER_COUNT; ++i) {
                 String email = "email" + (i == 0 ? "" : i) + "@gmail.com";
                 userService.signup(new SignupRequest(email, "password" + (i == 0 ? 1 : i), getSampleMultipartFile(), "nickname" + (i == 0 ? 1 : i)));

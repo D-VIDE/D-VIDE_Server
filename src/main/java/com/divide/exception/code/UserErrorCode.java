@@ -12,7 +12,7 @@ public enum UserErrorCode implements ErrorCode {
     DUPLICATED_USER(HttpStatus.FORBIDDEN, "User is already signed"),
     INVALID_BADGE_NAME(HttpStatus.BAD_REQUEST, "BadgeName is not valid"),
     ALREADY_SET_BADGE_NAME(HttpStatus.FORBIDDEN, "BadgeName is already set as request"),
-    ;
+    ALREADY_REGISTERED_BADGE(HttpStatus.FORBIDDEN, "Badge is already registered");
 
 
     private final HttpStatus httpStatus;
