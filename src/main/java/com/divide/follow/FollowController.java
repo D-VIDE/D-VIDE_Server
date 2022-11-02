@@ -1,5 +1,7 @@
 package com.divide.follow;
 
+import com.divide.exception.RestApiException;
+import com.divide.exception.code.UserErrorCode;
 import com.divide.follow.dto.request.DeleteFollowRequest;
 import com.divide.follow.dto.request.GetFollowOtherRequest;
 import com.divide.follow.dto.request.GetFollowResponse;
@@ -61,6 +63,9 @@ public class FollowController {
     ) {
         User me = userService.getUserByEmail(userDetails.getUsername());
         User other = userService.getUserById(getFollowOtherRequest.getUserId());
+        if (me.getId().equals(other.getId())) {
+            throw new RestApiException(UserErrorCode.OTHER_USER_IS_ME);
+        }
         List<GetFollowOtherResponse> getFollowOtherResponses = followService.getFollowIngOther(me, other, getFollowOtherRequest.getFirst());
 
         return ResponseEntity.ok(getFollowOtherResponses);
