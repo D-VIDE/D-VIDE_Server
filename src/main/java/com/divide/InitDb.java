@@ -12,6 +12,7 @@ import com.divide.review.ReviewService;
 import com.divide.review.dto.request.PostReviewRequest;
 import com.divide.review.dto.request.PostReviewRequestV2;
 import com.divide.user.User;
+import com.divide.user.UserBadge;
 import com.divide.user.UserService;
 import com.divide.user.dto.request.SignupRequest;
 import com.divide.utils.OCIUtil;
@@ -89,20 +90,30 @@ public class InitDb {
 
                 OutputStream os = fileItem.getOutputStream();
                 IOUtils.copy(is, os);
-                CommonsMultipartFile commonsMultipartFile = new CommonsMultipartFile(fileItem);
-                return commonsMultipartFile;
+                return new CommonsMultipartFile(fileItem);
             } catch (IOException e) {
                 throw new RestApiException(FileIOErrorCode.FILE_IO_ERROR);
             }
         }
         public void dbInit1() throws ParseException {
-            //String email, String password, String profileImgUrl, String nickname, UserRole role
-            List<User> userList = new ArrayList<User>();
+            /* User 등록 */
+            List<User> userList = new ArrayList<>();
+            List<UserBadge.BadgeName> badgeNameList = new ArrayList<>(List.of(UserBadge.BadgeName.values()));
+            badgeNameList.remove(0);
             for (int i = 0; i < USER_COUNT; ++i) {
                 String email = "email" + (i == 0 ? "" : i) + "@gmail.com";
                 userService.signup(new SignupRequest(email, "password" + (i == 0 ? 1 : i), getSampleMultipartFile(), "nickname" + (i == 0 ? 1 : i)));
-                userList.add(userService.getUserByEmail(email));
+                User user = userService.getUserByEmail(email);
+                userList.add(user);
+
+                int badgeSize = new Random().nextInt(1, badgeNameList.size() - 1);
+                Collections.shuffle(badgeNameList);
+                badgeNameList.stream()
+                        .limit(badgeSize)
+                        .forEach(badgeName -> userService.saveUserBadge(user, badgeName));
             }
+
+            /* Follow 등록 */
             for (int i = 0; i < USER_COUNT; ++i) {
                 if (i == 5) continue;
                 for (int j = i + 1; j < USER_COUNT; ++j) {
@@ -123,12 +134,13 @@ public class InitDb {
             List<Category> categories = List.of(Category.values());
             List<PostStatus> postStatuses = List.of(PostStatus.values());
 
-            //게시글 이미지 2개 생성
+            /* 게시글 이미지 2개 생성 */
             MultipartFile sampleMultipartFile = getSampleMultipartFile();
             String postImageUrl1 = OCIUtil.uploadFile(sampleMultipartFile, OCIUtil.FolderName.POST,  "sample" + "/" + UUID.randomUUID() + ".jpg");
             String postImageUrl2 = OCIUtil.uploadFile(sampleMultipartFile, OCIUtil.FolderName.POST,  "sample" + "/" + UUID.randomUUID() + ".jpg");
             String orderImgUrl = OCIUtil.uploadFile(sampleMultipartFile, OCIUtil.FolderName.ORDER, "sample" + "/" + UUID.randomUUID() + ".jpg");
-            // 리뷰 이미지 생성
+
+            /* 리뷰 이미지 생성 */
             String reviewImgUrl1 = OCIUtil.uploadFile(sampleMultipartFile, OCIUtil.FolderName.REVIEW, "sample" + "/" + UUID.randomUUID() + ".jpg");
             String reviewImgUrl2 = OCIUtil.uploadFile(sampleMultipartFile, OCIUtil.FolderName.REVIEW, "sample" + "/" + UUID.randomUUID() + ".jpg");
 
@@ -137,8 +149,8 @@ public class InitDb {
                 double latitude = 37.4901548250937 + random.nextDouble() / 100;
                 String pointWKT = String.format("POINT(%s %s)", longitude, latitude);
                 Point point = (Point) new WKTReader().read(pointWKT);
-                //게시글 이미지
 
+                /* 게시글 생성 */
                 Post post = Post.builder()
                         .user(userList.get(0))
                         .title("title" + i)
@@ -154,9 +166,11 @@ public class InitDb {
                         .build();
                 postService.create(post);
 
+                /* 주문 생성 */
                 orderService.saveOrderTest(userList.get(random.nextInt(USER_COUNT)).getEmail(), post.getPostId(), random.nextInt(3000, 100001), List.of(orderImgUrl));
                 orderService.saveOrderTest(userList.get(random.nextInt(USER_COUNT)).getEmail(), post.getPostId(), random.nextInt(3000, 100001), List.of(orderImgUrl));
 
+                /* 리뷰 생성 */
                 reviewService.createReviewTest(userList.get(random.nextInt(USER_COUNT)).getEmail(), 5 * random.nextDouble(),"content"+i, post.getPostId(), List.of(reviewImgUrl1, reviewImgUrl2));
             }
         }
