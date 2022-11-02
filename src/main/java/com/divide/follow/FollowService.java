@@ -1,9 +1,7 @@
 package com.divide.follow;
 
 import com.divide.exception.RestApiException;
-import com.divide.exception.code.CommonErrorCode;
 import com.divide.exception.code.FollowErrorCode;
-import com.divide.exception.code.UserErrorCode;
 import com.divide.follow.dto.request.GetFollowResponse;
 import com.divide.follow.dto.request.GetFollowResponseWithRelation;
 import com.divide.user.User;
@@ -13,8 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,6 +58,16 @@ public class FollowService {
                 f.getFollower().getProfileImgUrl(),
                 f.getFollower().getNickname(),
                 followRepository.checkFFF(f)
+        )).collect(Collectors.toList());
+    }
+
+    public List<GetFollowResponse> getFollowerList(String userEmail, Integer first) {
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
+        List<Follow> followList = followRepository.getFollowerList(user, first);
+        return followList.stream().map(f -> new GetFollowResponse(
+                f.getFollower().getId(),
+                f.getFollower().getProfileImgUrl(),
+                f.getFollower().getNickname()
         )).collect(Collectors.toList());
     }
 
