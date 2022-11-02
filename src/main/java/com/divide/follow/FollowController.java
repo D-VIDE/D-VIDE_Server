@@ -1,9 +1,11 @@
 package com.divide.follow;
 
 import com.divide.follow.dto.request.DeleteFollowRequest;
+import com.divide.follow.dto.request.GetFollowOtherRequest;
 import com.divide.follow.dto.request.GetFollowResponse;
 import com.divide.follow.dto.request.PostFollowRequest;
 import com.divide.follow.dto.response.DeleteFollowResponse;
+import com.divide.follow.dto.response.GetFollowOtherResponse;
 import com.divide.follow.dto.response.GetFollowRequest;
 import com.divide.follow.dto.response.PostFollowResponse;
 import com.divide.post.dto.response.Result;
@@ -50,6 +52,18 @@ public class FollowController {
             case FOLLOWER -> getFollowResponse.addAll(followService.getFollowerList(userDetails.getUsername(), getFollowRequest.getFirst()));
         }
         return ResponseEntity.ok(new Result(getFollowResponse));
+    }
+
+    @GetMapping("/v1/follow/other")
+    public ResponseEntity getFollowOther(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @ModelAttribute GetFollowOtherRequest getFollowOtherRequest
+    ) {
+        User me = userService.getUserByEmail(userDetails.getUsername());
+        User other = userService.getUserById(getFollowOtherRequest.getUserId());
+        List<GetFollowOtherResponse> getFollowOtherResponses = followService.getFollowIngOther(me, other, getFollowOtherRequest.getFirst());
+
+        return ResponseEntity.ok(getFollowOtherResponses);
     }
 
     @PostMapping("/v1/follow")

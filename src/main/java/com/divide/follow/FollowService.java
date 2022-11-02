@@ -4,6 +4,7 @@ import com.divide.exception.RestApiException;
 import com.divide.exception.code.FollowErrorCode;
 import com.divide.follow.dto.request.GetFollowResponse;
 import com.divide.follow.dto.request.GetFollowResponseWithRelation;
+import com.divide.follow.dto.response.GetFollowOtherResponse;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -84,5 +85,17 @@ public class FollowService {
 
     public Boolean getFollowed(User me, User other) {
         return followRepository.find(me, other).isPresent();
+    }
+
+    public List<GetFollowOtherResponse> getFollowIngOther(User me, User other, Integer first) {
+        List<Follow> followingList = followRepository.getFollowingList(other, first);
+        return followingList.stream().map(
+                f -> GetFollowOtherResponse.builder()
+                        .userId(f.getFollowee().getId())
+                        .nickname(f.getFollowee().getNickname())
+                        .profileImgUrl(f.getFollowee().getProfileImgUrl())
+                        .followed(followRepository.find(me, f.getFollowee()).isPresent())
+                        .build()
+            ).toList();
     }
 }
