@@ -25,7 +25,7 @@ public class FollowController {
     private final FollowService followService;
     private final UserService userService;
 
-    @GetMapping("follow")
+    @Deprecated
     @GetMapping("/v1/follow")
     public ResponseEntity getFollowV1(
             @AuthenticationPrincipal UserDetails userDetails,
