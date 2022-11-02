@@ -44,9 +44,9 @@ public class FollowService {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         List<Follow> followList = followRepository.getFollowingList(user, first);
         return followList.stream().map(f -> new GetFollowResponse(
-                f.getFollower().getId(),
-                f.getFollower().getProfileImgUrl(),
-                f.getFollower().getNickname()
+                f.getFollowee().getId(),
+                f.getFollowee().getProfileImgUrl(),
+                f.getFollowee().getNickname()
         )).collect(Collectors.toList());
     }
 
