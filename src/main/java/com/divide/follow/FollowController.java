@@ -66,7 +66,11 @@ public class FollowController {
         if (me.getId().equals(other.getId())) {
             throw new RestApiException(UserErrorCode.OTHER_USER_IS_ME);
         }
-        List<GetFollowOtherResponse> getFollowOtherResponses = followService.getFollowIngOther(me, other, getFollowOtherRequest.getFirst());
+
+        List<GetFollowOtherResponse> getFollowOtherResponses = new ArrayList<>();
+        switch (getFollowOtherRequest.getRelation()) {
+            case FOLLOWING -> getFollowOtherResponses.addAll(followService.getOtherFollowingList(me, other, getFollowOtherRequest.getFirst()));
+        }
 
         return ResponseEntity.ok(getFollowOtherResponses);
     }

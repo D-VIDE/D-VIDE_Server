@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,7 +86,7 @@ public class FollowService {
         return followRepository.find(me, other).isPresent();
     }
 
-    public List<GetFollowOtherResponse> getFollowIngOther(User me, User other, Integer first) {
+    public List<GetFollowOtherResponse> getOtherFollowingList(User me, User other, Integer first) {
         List<Follow> followingList = followRepository.getFollowingList(other, first);
         return followingList.stream().map(
                 f -> GetFollowOtherResponse.builder()
