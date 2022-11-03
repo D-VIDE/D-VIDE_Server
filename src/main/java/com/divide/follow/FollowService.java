@@ -97,4 +97,16 @@ public class FollowService {
                         .build()
             ).toList();
     }
+
+    public List<GetFollowOtherResponse> getOtherFollowerList(User me, User other, Integer first) {
+        List<Follow> followerList = followRepository.getFollowerList(other, first);
+        return followerList.stream().map(
+                f -> GetFollowOtherResponse.builder()
+                        .userId(f.getFollower().getId())
+                        .nickname(f.getFollower().getNickname())
+                        .profileImgUrl(f.getFollower().getProfileImgUrl())
+                        .followed(followRepository.find(me, f.getFollower()).isPresent())
+                        .build()
+        ).toList();
+    }
 }

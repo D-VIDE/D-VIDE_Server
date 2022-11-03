@@ -70,6 +70,7 @@ public class FollowController {
         List<GetFollowOtherResponse> getFollowOtherResponses = new ArrayList<>();
         switch (getFollowOtherRequest.getRelation()) {
             case FOLLOWING -> getFollowOtherResponses.addAll(followService.getOtherFollowingList(me, other, getFollowOtherRequest.getFirst()));
+            case FOLLOWER -> getFollowOtherResponses.addAll(followService.getOtherFollowerList(me, other, getFollowOtherRequest.getFirst()));
         }
 
         return ResponseEntity.ok(getFollowOtherResponses);
