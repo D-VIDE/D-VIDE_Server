@@ -1,9 +1,13 @@
 package com.divide.follow;
 
+import com.divide.exception.RestApiException;
+import com.divide.exception.code.UserErrorCode;
 import com.divide.follow.dto.request.DeleteFollowRequest;
+import com.divide.follow.dto.request.GetFollowOtherRequest;
 import com.divide.follow.dto.request.GetFollowResponse;
 import com.divide.follow.dto.request.PostFollowRequest;
 import com.divide.follow.dto.response.DeleteFollowResponse;
+import com.divide.follow.dto.response.GetFollowOtherResponse;
 import com.divide.follow.dto.response.GetFollowRequest;
 import com.divide.follow.dto.response.PostFollowResponse;
 import com.divide.post.dto.response.Result;
@@ -15,29 +19,64 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api")
 public class FollowController {
     private final FollowService followService;
     private final UserService userService;
 
-    @GetMapping("follow")
-    public ResponseEntity getFollow(
+    @Deprecated
+    @GetMapping("/v1/follow")
+    public ResponseEntity getFollowV1(
             @AuthenticationPrincipal UserDetails userDetails,
             @ModelAttribute GetFollowRequest getFollowRequest
     ) {
-        List<GetFollowResponse> getFollowResponse = null;
+        List<GetFollowResponse> getFollowResponse = new ArrayList<>();
         switch (getFollowRequest.getRelation()) {
-            case FOLLOWING -> getFollowResponse = followService.getFollowingList(userDetails.getUsername(), getFollowRequest.getFirst());
-            case FOLLOWER -> getFollowResponse = followService.getFollowerList(userDetails.getUsername(), getFollowRequest.getFirst());
+            case FOLLOWING -> getFollowResponse.addAll(followService.getFollowingList(userDetails.getUsername(), getFollowRequest.getFirst()));
+            case FOLLOWER -> getFollowResponse.addAll(followService.getFollowerListWithFFF(userDetails.getUsername(), getFollowRequest.getFirst()));
         }
         return ResponseEntity.ok(new Result(getFollowResponse));
     }
 
-    @PostMapping("follow")
+    @GetMapping("/v2/follow")
+    public ResponseEntity getFollowV2(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @ModelAttribute GetFollowRequest getFollowRequest
+    ) {
+        List<GetFollowResponse> getFollowResponse = new ArrayList<>();
+        switch (getFollowRequest.getRelation()) {
+            case FOLLOWING -> getFollowResponse.addAll(followService.getFollowingList(userDetails.getUsername(), getFollowRequest.getFirst()));
+            case FOLLOWER -> getFollowResponse.addAll(followService.getFollowerList(userDetails.getUsername(), getFollowRequest.getFirst()));
+        }
+        return ResponseEntity.ok(new Result(getFollowResponse));
+    }
+
+    @GetMapping("/v1/follow/other")
+    public ResponseEntity getFollowOther(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @ModelAttribute GetFollowOtherRequest getFollowOtherRequest
+    ) {
+        User me = userService.getUserByEmail(userDetails.getUsername());
+        User other = userService.getUserById(getFollowOtherRequest.getUserId());
+        if (me.getId().equals(other.getId())) {
+            throw new RestApiException(UserErrorCode.OTHER_USER_IS_ME);
+        }
+
+        List<GetFollowOtherResponse> getFollowOtherResponses = new ArrayList<>();
+        switch (getFollowOtherRequest.getRelation()) {
+            case FOLLOWING -> getFollowOtherResponses.addAll(followService.getOtherFollowingList(me, other, getFollowOtherRequest.getFirst()));
+            case FOLLOWER -> getFollowOtherResponses.addAll(followService.getOtherFollowerList(me, other, getFollowOtherRequest.getFirst()));
+        }
+
+        return ResponseEntity.ok(getFollowOtherResponses);
+    }
+
+    @PostMapping("/v1/follow")
     public ResponseEntity<PostFollowResponse> postFollow(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody PostFollowRequest postFollowRequest
@@ -48,7 +87,7 @@ public class FollowController {
         return ResponseEntity.status(201).body(new PostFollowResponse(saveId));
     }
 
-    @DeleteMapping("follow")
+    @DeleteMapping("/v1/follow")
     public ResponseEntity<DeleteFollowResponse> deleteFollow(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody DeleteFollowRequest deleteFollowRequest

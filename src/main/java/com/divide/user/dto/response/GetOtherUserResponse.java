@@ -14,4 +14,5 @@ public class GetOtherUserResponse {
     private CommonBadgeResponse badge;
     private Integer followingCount;
     private Integer followerCount;
+    private Boolean followed;
 }

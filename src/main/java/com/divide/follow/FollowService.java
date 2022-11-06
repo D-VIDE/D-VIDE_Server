@@ -1,11 +1,10 @@
 package com.divide.follow;
 
 import com.divide.exception.RestApiException;
-import com.divide.exception.code.CommonErrorCode;
 import com.divide.exception.code.FollowErrorCode;
-import com.divide.exception.code.UserErrorCode;
 import com.divide.follow.dto.request.GetFollowResponse;
 import com.divide.follow.dto.request.GetFollowResponseWithRelation;
+import com.divide.follow.dto.response.GetFollowOtherResponse;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +24,7 @@ public class FollowService {
 
     public Long save(User follower, User followee) {
         /* 자기 자신일 경우 */
-        if (follower.getId() == followee.getId()) throw new RestApiException(FollowErrorCode.FOLLOW_SELF_ERROR);
+        if (follower.getId().equals(followee.getId())) throw new RestApiException(FollowErrorCode.FOLLOW_SELF_ERROR);
         /* 이미 등록된 Follow일 경우 */
         if (followRepository.find(follower, followee).isPresent()) throw new RestApiException(FollowErrorCode.DUPLICATED_FOLLOW);
 
@@ -46,13 +44,14 @@ public class FollowService {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         List<Follow> followList = followRepository.getFollowingList(user, first);
         return followList.stream().map(f -> new GetFollowResponse(
-                f.getFollower().getId(),
-                f.getFollower().getProfileImgUrl(),
-                f.getFollower().getNickname()
+                f.getFollowee().getId(),
+                f.getFollowee().getProfileImgUrl(),
+                f.getFollowee().getNickname()
         )).collect(Collectors.toList());
     }
 
-    public List<GetFollowResponse> getFollowerList(String userEmail, Integer first) {
+    @Deprecated
+    public List<GetFollowResponse> getFollowerListWithFFF(String userEmail, Integer first) {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         List<Follow> followList = followRepository.getFollowerList(user, first);
         return followList.stream().map(f -> new GetFollowResponseWithRelation(
@@ -60,6 +59,16 @@ public class FollowService {
                 f.getFollower().getProfileImgUrl(),
                 f.getFollower().getNickname(),
                 followRepository.checkFFF(f)
+        )).collect(Collectors.toList());
+    }
+
+    public List<GetFollowResponse> getFollowerList(String userEmail, Integer first) {
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
+        List<Follow> followList = followRepository.getFollowerList(user, first);
+        return followList.stream().map(f -> new GetFollowResponse(
+                f.getFollower().getId(),
+                f.getFollower().getProfileImgUrl(),
+                f.getFollower().getNickname()
         )).collect(Collectors.toList());
     }
 
@@ -71,5 +80,33 @@ public class FollowService {
     public Integer getFollowerCount(String userEmail) {
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         return followRepository.getFollowerCount(user);
+    }
+
+    public Boolean getFollowed(User me, User other) {
+        return followRepository.find(me, other).isPresent();
+    }
+
+    public List<GetFollowOtherResponse> getOtherFollowingList(User me, User other, Integer first) {
+        List<Follow> followingList = followRepository.getFollowingList(other, first);
+        return followingList.stream().map(
+                f -> GetFollowOtherResponse.builder()
+                        .userId(f.getFollowee().getId())
+                        .nickname(f.getFollowee().getNickname())
+                        .profileImgUrl(f.getFollowee().getProfileImgUrl())
+                        .followed(followRepository.find(me, f.getFollowee()).isPresent())
+                        .build()
+            ).toList();
+    }
+
+    public List<GetFollowOtherResponse> getOtherFollowerList(User me, User other, Integer first) {
+        List<Follow> followerList = followRepository.getFollowerList(other, first);
+        return followerList.stream().map(
+                f -> GetFollowOtherResponse.builder()
+                        .userId(f.getFollower().getId())
+                        .nickname(f.getFollower().getNickname())
+                        .profileImgUrl(f.getFollower().getProfileImgUrl())
+                        .followed(followRepository.find(me, f.getFollower()).isPresent())
+                        .build()
+        ).toList();
     }
 }
