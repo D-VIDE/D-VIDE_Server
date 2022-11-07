@@ -8,19 +8,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -32,7 +28,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @ExtendWith({RestDocumentationExtension.class})
 public class FollowControllerTest {
     @Autowired
@@ -81,59 +77,59 @@ public class FollowControllerTest {
                     ));
     }
 
-    @Test
-    @WithUserDetails("email@gmail.com")
-    public void postFollow() throws Exception {
-        // given
-        PostFollowRequest postFollowRequest = new PostFollowRequest(5L);
-
-        // when
-        ResultActions resultActions = mockMvc.perform(post("/api/v1/follow")
-                .content(objectMapper.writeValueAsString(postFollowRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        // then
-        resultActions
-                .andDo(document("post-follow",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("팔로우할 user의 id")
-                                        .attributes(key("example").value(5))
-                        ),
-                        responseFields(
-                                fieldWithPath("followId").type(JsonFieldType.NUMBER).description("팔로우 id")
-                                        .attributes(key("example").value(2))
-                        )
-                ));
-    }
-
-    @Test
-    @WithUserDetails("email@gmail.com")
-    public void deleteFollow() throws Exception {
-        // given
-        DeleteFollowRequest postFollowRequest = new DeleteFollowRequest(5L);
-
-        // when
-        ResultActions resultActions = mockMvc.perform(delete("/api/v1/follow")
-                .content(objectMapper.writeValueAsString(postFollowRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        // then
-        resultActions
-                .andDo(document("delete-follow",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("언팔로우할 user의 id")
-                                        .attributes(key("example").value(5))
-                        ),
-                        responseFields(
-                                fieldWithPath("followId").type(JsonFieldType.NUMBER).description("팔로우 id")
-                                        .attributes(key("example").value(2))
-                        )
-                ));
-    }
+//    @Test
+//    @WithUserDetails("email@gmail.com")
+//    public void postFollow() throws Exception {
+//        // given
+//        PostFollowRequest postFollowRequest = new PostFollowRequest(5L);
+//
+//        // when
+//        ResultActions resultActions = mockMvc.perform(post("/api/v1/follow")
+//                .content(objectMapper.writeValueAsString(postFollowRequest))
+//                .contentType(MediaType.APPLICATION_JSON)
+//        );
+//
+//        // then
+//        resultActions
+//                .andDo(document("post-follow",
+//                        preprocessRequest(prettyPrint()),
+//                        preprocessResponse(prettyPrint()),
+//                        requestFields(
+//                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("팔로우할 user의 id")
+//                                        .attributes(key("example").value(5))
+//                        ),
+//                        responseFields(
+//                                fieldWithPath("followId").type(JsonFieldType.NUMBER).description("팔로우 id")
+//                                        .attributes(key("example").value(2))
+//                        )
+//                ));
+//    }
+//
+//    @Test
+//    @WithUserDetails("email@gmail.com")
+//    public void deleteFollow() throws Exception {
+//        // given
+//        DeleteFollowRequest postFollowRequest = new DeleteFollowRequest(5L);
+//
+//        // when
+//        ResultActions resultActions = mockMvc.perform(delete("/api/v1/follow")
+//                .content(objectMapper.writeValueAsString(postFollowRequest))
+//                .contentType(MediaType.APPLICATION_JSON)
+//        );
+//
+//        // then
+//        resultActions
+//                .andDo(document("delete-follow",
+//                        preprocessRequest(prettyPrint()),
+//                        preprocessResponse(prettyPrint()),
+//                        requestFields(
+//                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("언팔로우할 user의 id")
+//                                        .attributes(key("example").value(5))
+//                        ),
+//                        responseFields(
+//                                fieldWithPath("followId").type(JsonFieldType.NUMBER).description("팔로우 id")
+//                                        .attributes(key("example").value(2))
+//                        )
+//                ));
+//    }
 }

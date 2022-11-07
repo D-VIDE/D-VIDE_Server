@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>Spring REST Docs</h1>
 <div class="details">
-<span id="revnumber">version 0.0.1-SNAPSHOT</span>
+<span id="revnumber">version 0.0.4</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -448,8 +448,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_follow">Follow</a>
 <ul class="sectlevel2">
 <li><a href="#_1_follow_조회">1. Follow 조회</a></li>
-<li><a href="#_2_follow_생성">2. Follow 생성</a></li>
-<li><a href="#_3_follow_삭제">3. Follow 삭제</a></li>
 </ul>
 </li>
 </ul>
@@ -509,24 +507,24 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 786
+Content-Length: 785
 
 {
   "data" : [ {
     "userId" : 2,
-    "profileImgUrl" : "https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axzo04wlqj1l/b/DivideBucket/o/PROFILE/email1@gmail.com/5ced3739-23d3-46c4-9b36-5e1e177f00bd.jpg",
+    "profileImgUrl" : "https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axzo04wlqj1l/b/DivideBucket/o/PROFILE/email1@gmail.com/9d153839-d7ec-4573-b5a1-1d9983916896.jpg",
     "nickname" : "nickname1",
-    "isFFF" : false
-  }, {
-    "userId" : 3,
-    "profileImgUrl" : "https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axzo04wlqj1l/b/DivideBucket/o/PROFILE/email2@gmail.com/084821a4-d13e-4d3b-a16c-344af044ad72.jpg",
-    "nickname" : "nickname2",
     "isFFF" : true
   }, {
-    "userId" : 5,
-    "profileImgUrl" : "https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axzo04wlqj1l/b/DivideBucket/o/PROFILE/email4@gmail.com/ab280c17-49b5-4edd-b6bd-a6045397a4bd.jpg",
-    "nickname" : "nickname4",
+    "userId" : 4,
+    "profileImgUrl" : "https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axzo04wlqj1l/b/DivideBucket/o/PROFILE/email3@gmail.com/9660e8c0-bdfe-4ac4-8214-186059cd729f.jpg",
+    "nickname" : "nickname3",
     "isFFF" : false
+  }, {
+    "userId" : 5,
+    "profileImgUrl" : "https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axzo04wlqj1l/b/DivideBucket/o/PROFILE/email4@gmail.com/ca662392-91de-465e-a288-89261501c48d.jpg",
+    "nickname" : "nickname4",
+    "isFFF" : true
   } ]
 }</code></pre>
 </div>
@@ -572,173 +570,13 @@ Content-Length: 786
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_2_follow_생성"><a class="link" href="#_2_follow_생성">2. Follow 생성</a></h3>
-<div class="sect3">
-<h4 id="_request_2"><a class="link" href="#_request_2">Request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/follow HTTP/1.1
-Content-Type: application/json
-Content-Length: 20
-Host: localhost:8080
-
-{
-  "userId" : 5
-}</code></pre>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_request_fields"><a class="link" href="#_request_fields">Request Fields</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">구조</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">userId</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팔로우할 user의 id</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_2"><a class="link" href="#_response_2">Response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
-Content-Type: application/json
-Content-Length: 23
-
-{
-  "followId" : 15
-}</code></pre>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_response_fields_2"><a class="link" href="#_response_fields_2">Response Fields</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">구조</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">followId</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팔로우 id</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_3_follow_삭제"><a class="link" href="#_3_follow_삭제">3. Follow 삭제</a></h3>
-<div class="sect3">
-<h4 id="_request_3"><a class="link" href="#_request_3">Request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /api/v1/follow HTTP/1.1
-Content-Type: application/json
-Content-Length: 20
-Host: localhost:8080
-
-{
-  "userId" : 5
-}</code></pre>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_request_fields_2"><a class="link" href="#_request_fields_2">Request Fields</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">구조</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">userId</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">언팔로우할 user의 id</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_3"><a class="link" href="#_response_3">Response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json
-Content-Length: 22
-
-{
-  "followId" : 5
-}</code></pre>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_response_fields_3"><a class="link" href="#_response_fields_3">Response Fields</a></h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">구조</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">followId</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팔로우 id</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.0.1-SNAPSHOT<br>
-Last updated 2022-08-26 14:42:11 +0900
+Version 0.0.4<br>
+Last updated 2022-11-06 19:59:44 +0900
 </div>
 </div>
 </body>
