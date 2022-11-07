@@ -2,6 +2,7 @@ package com.divide.follow;
 
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.FollowErrorCode;
+import com.divide.follow.dto.response.GetFollowOtherResponseWithFollowId;
 import com.divide.follow.dto.response.GetFollowResponse;
 import com.divide.follow.dto.response.GetFollowResponseWithFollowId;
 import com.divide.follow.dto.response.GetFollowResponseWithRelation;
@@ -116,6 +117,7 @@ public class FollowService {
         return followRepository.find(me, other).isPresent();
     }
 
+    @Deprecated
     public List<GetFollowOtherResponse> getOtherFollowingList(User me, User other, Integer first) {
         List<Follow> followingList = followRepository.getFollowingList(other, first);
         return followingList.stream().map(
@@ -125,9 +127,23 @@ public class FollowService {
                         .profileImgUrl(f.getFollowee().getProfileImgUrl())
                         .followed(followRepository.find(me, f.getFollowee()).isPresent())
                         .build()
-            ).toList();
+        ).toList();
     }
 
+    public List<GetFollowOtherResponse> getOtherFollowingListWithFollowId(User me, User other, Integer first) {
+        List<Follow> followingList = followRepository.getFollowingList(other, first);
+        return followingList.stream().map(
+                f -> GetFollowOtherResponseWithFollowId.builder()
+                        .userId(f.getFollowee().getId())
+                        .nickname(f.getFollowee().getNickname())
+                        .profileImgUrl(f.getFollowee().getProfileImgUrl())
+                        .followed(followRepository.find(me, f.getFollowee()).isPresent())
+                        .followId(f.getId())
+                        .build()
+        ).collect(Collectors.toList());
+    }
+
+    @Deprecated
     public List<GetFollowOtherResponse> getOtherFollowerList(User me, User other, Integer first) {
         List<Follow> followerList = followRepository.getFollowerList(other, first);
         return followerList.stream().map(
@@ -138,5 +154,18 @@ public class FollowService {
                         .followed(followRepository.find(me, f.getFollower()).isPresent())
                         .build()
         ).toList();
+    }
+
+    public List<GetFollowOtherResponse> getOtherFollowerListWithFollowId(User me, User other, Integer first) {
+        List<Follow> followerList = followRepository.getFollowerList(other, first);
+        return followerList.stream().map(
+                f -> GetFollowOtherResponseWithFollowId.builder()
+                        .userId(f.getFollower().getId())
+                        .nickname(f.getFollower().getNickname())
+                        .profileImgUrl(f.getFollower().getProfileImgUrl())
+                        .followed(followRepository.find(me, f.getFollower()).isPresent())
+                        .followId(f.getId())
+                        .build()
+        ).collect(Collectors.toList());
     }
 }
