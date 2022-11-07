@@ -91,7 +91,6 @@ public class FollowController {
         return ResponseEntity.ok(getFollowOtherResponses);
     }
 
-    @Deprecated
     @GetMapping("/v2/follow/other")
     public ResponseEntity getFollowOtherV2(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -99,9 +98,9 @@ public class FollowController {
     ) {
         User me = userService.getUserByEmail(userDetails.getUsername());
         User other = userService.getUserById(getFollowOtherRequest.getUserId());
-        if (me.getId().equals(other.getId())) {
-            throw new RestApiException(UserErrorCode.OTHER_USER_IS_ME);
-        }
+//        if (me.getId().equals(other.getId())) {
+//            throw new RestApiException(UserErrorCode.OTHER_USER_IS_ME);
+//        }
 
         List<GetFollowOtherResponse> getFollowOtherResponses = new ArrayList<>();
         switch (getFollowOtherRequest.getRelation()) {

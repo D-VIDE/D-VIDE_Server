@@ -162,29 +162,19 @@ public class ReviewController {
     @GetMapping("/v1/reviews/others")
     public Result getOthersReviews(@AuthenticationPrincipal UserDetails userDetails, @RequestParam Long userId, @RequestParam(value = "first", defaultValue = "0") Integer first){
         List<Review> otherReviews = reviewService.findReviewsAllByUserId(userId, first);
-        List<GetReviewsResponseV2> collect = otherReviews.stream()
+        List<CommonReviewResponse> collect = otherReviews.stream()
                 .map( review -> {
-                    User user = review.getUser();
                     Boolean isReviewLiked = reviewService.isReviewLiked(userDetails.getUsername(), review);
-
-                    return new GetReviewsResponseV2(
-                            new CommonUserResponse(
-                                    user.getId(),
-                                    user.getNickname(),
-                                    user.getProfileImgUrl()
-                            ),
-                            new CommonReviewResponse(
-                                    review.getReviewId(),
-                                    review.getPost().getDeliveryLocation().getCoordinate().getX(),
-                                    review.getPost().getDeliveryLocation().getCoordinate().getY(),
-                                    review.getContent(),
-                                    review.getStarRating(),
-                                    review.getReviewImages().get(0).getReviewImageUrl(),
-                                    review.getPost().getStoreName(),
-                                    review.getReviewLikes().size(),
-                                    isReviewLiked
-                            )
-                    );
+                    return new CommonReviewResponse(
+                            review.getReviewId(),
+                            review.getPost().getDeliveryLocation().getCoordinate().getX(),
+                            review.getPost().getDeliveryLocation().getCoordinate().getY(),
+                            review.getContent(),
+                            review.getStarRating(),
+                            review.getReviewImages().get(0).getReviewImageUrl(),
+                            review.getPost().getStoreName(),
+                            review.getReviewLikes().size(),
+                            isReviewLiked);
                 })
                 .collect(toList());
         return new Result(collect);
