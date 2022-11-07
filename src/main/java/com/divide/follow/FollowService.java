@@ -133,13 +133,12 @@ public class FollowService {
     public List<GetFollowOtherResponse> getOtherFollowingListWithFollowId(User me, User other, Integer first) {
         List<Follow> followingList = followRepository.getFollowingList(other, first);
         return followingList.stream().map(
-                f -> GetFollowOtherResponseWithFollowId.builder()
-                        .userId(f.getFollowee().getId())
-                        .nickname(f.getFollowee().getNickname())
-                        .profileImgUrl(f.getFollowee().getProfileImgUrl())
-                        .followed(followRepository.find(me, f.getFollowee()).isPresent())
-                        .followId(f.getId())
-                        .build()
+                f -> new GetFollowOtherResponseWithFollowId(
+                        f.getFollowee().getId(),
+                        f.getFollowee().getProfileImgUrl(),
+                        f.getFollowee().getNickname(),
+                        followRepository.find(me, f.getFollowee()).isPresent(),
+                        f.getId())
         ).collect(Collectors.toList());
     }
 
@@ -159,13 +158,12 @@ public class FollowService {
     public List<GetFollowOtherResponse> getOtherFollowerListWithFollowId(User me, User other, Integer first) {
         List<Follow> followerList = followRepository.getFollowerList(other, first);
         return followerList.stream().map(
-                f -> GetFollowOtherResponseWithFollowId.builder()
-                        .userId(f.getFollower().getId())
-                        .nickname(f.getFollower().getNickname())
-                        .profileImgUrl(f.getFollower().getProfileImgUrl())
-                        .followed(followRepository.find(me, f.getFollower()).isPresent())
-                        .followId(f.getId())
-                        .build()
+                f -> new GetFollowOtherResponseWithFollowId(
+                        f.getFollower().getId(),
+                        f.getFollower().getProfileImgUrl(),
+                        f.getFollower().getNickname(),
+                        followRepository.find(me, f.getFollower()).isPresent(),
+                        f.getId())
         ).collect(Collectors.toList());
     }
 }
