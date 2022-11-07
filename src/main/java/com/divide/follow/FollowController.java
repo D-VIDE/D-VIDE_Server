@@ -70,8 +70,9 @@ public class FollowController {
         return ResponseEntity.ok(new Result(getFollowResponse));
     }
 
+    @Deprecated
     @GetMapping("/v1/follow/other")
-    public ResponseEntity getFollowOther(
+    public ResponseEntity getFollowOtherV1(
             @AuthenticationPrincipal UserDetails userDetails,
             @ModelAttribute GetFollowOtherRequest getFollowOtherRequest
     ) {
@@ -85,6 +86,27 @@ public class FollowController {
         switch (getFollowOtherRequest.getRelation()) {
             case FOLLOWING -> getFollowOtherResponses.addAll(followService.getOtherFollowingList(me, other, getFollowOtherRequest.getFirst()));
             case FOLLOWER -> getFollowOtherResponses.addAll(followService.getOtherFollowerList(me, other, getFollowOtherRequest.getFirst()));
+        }
+
+        return ResponseEntity.ok(getFollowOtherResponses);
+    }
+
+    @Deprecated
+    @GetMapping("/v2/follow/other")
+    public ResponseEntity getFollowOtherV2(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @ModelAttribute GetFollowOtherRequest getFollowOtherRequest
+    ) {
+        User me = userService.getUserByEmail(userDetails.getUsername());
+        User other = userService.getUserById(getFollowOtherRequest.getUserId());
+        if (me.getId().equals(other.getId())) {
+            throw new RestApiException(UserErrorCode.OTHER_USER_IS_ME);
+        }
+
+        List<GetFollowOtherResponse> getFollowOtherResponses = new ArrayList<>();
+        switch (getFollowOtherRequest.getRelation()) {
+            case FOLLOWING -> getFollowOtherResponses.addAll(followService.getOtherFollowingListWithFollowId(me, other, getFollowOtherRequest.getFirst()));
+            case FOLLOWER -> getFollowOtherResponses.addAll(followService.getOtherFollowerListWithFollowId(me, other, getFollowOtherRequest.getFirst()));
         }
 
         return ResponseEntity.ok(getFollowOtherResponses);
