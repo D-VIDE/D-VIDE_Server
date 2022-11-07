@@ -33,9 +33,13 @@ public class FollowService {
         return newFollow.getId();
     }
 
-    public Long remove(Long followId) {
+    public Long remove(Long followId, User me) throws RestApiException {
         Follow follow = followRepository.findById(followId)
                 .orElseThrow(() -> new RestApiException(FollowErrorCode.FOLLOW_NOT_FOUND));
+
+        if (!follow.getFollower().equals(me) && !follow.getFollowee().equals(me)) {
+            throw new RestApiException(FollowErrorCode.FOLLOW_ACCESS_UNAUTHORIZED);
+        }
 
         followRepository.remove(follow);
         return followId;

@@ -92,7 +92,8 @@ public class FollowController {
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody DeleteFollowRequest deleteFollowRequest
     ) {
-        Long removedId = followService.remove(deleteFollowRequest.getFollowId());
+        User me = userService.getUserByEmail(userDetails.getUsername());
+        Long removedId = followService.remove(deleteFollowRequest.getFollowId(), me);
         return ResponseEntity.ok(new DeleteFollowResponse(removedId));
     }
 }
