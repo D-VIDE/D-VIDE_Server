@@ -71,9 +71,9 @@ public class UserController {
             @AuthenticationPrincipal UserDetails myUserDetails,
             @PathVariable("id") Long userId) {
         User me = userService.getUserByEmail(myUserDetails.getUsername());
-        if (me.getId().equals(userId)) {
-            throw new RestApiException(UserErrorCode.OTHER_USER_IS_ME);
-        }
+//        if (me.getId().equals(userId)) {
+//            throw new RestApiException(UserErrorCode.OTHER_USER_IS_ME);
+//        }
         User otherUser = userService.getUserById(userId);
         Integer followerCount = followService.getFollowerCount(otherUser.getEmail());
         Integer followingCount = followService.getFollowingCount(otherUser.getEmail());
