@@ -33,11 +33,12 @@ public class FollowService {
         return newFollow.getId();
     }
 
-    public Long remove(User follower, User followee) {
-        Follow follow = followRepository.find(follower, followee).orElseThrow(() -> new RestApiException(FollowErrorCode.FOLLOW_NOT_FOUND));
+    public Long remove(Long followId) {
+        Follow follow = followRepository.findById(followId)
+                .orElseThrow(() -> new RestApiException(FollowErrorCode.FOLLOW_NOT_FOUND));
 
         followRepository.remove(follow);
-        return follow.getId();
+        return followId;
     }
 
     public List<GetFollowResponse> getFollowingList(String userEmail, Integer first) {
