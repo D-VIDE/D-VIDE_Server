@@ -30,6 +30,16 @@ public class FollowRepository {
         }
     }
 
+    public Optional<Follow> findById(Long followId) {
+        try {
+            return Optional.ofNullable(em.createQuery("select f from Follow f where f.id = :followId", Follow.class)
+                    .setParameter("followId", followId)
+                    .getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
     public void remove(Follow follow) {
         em.remove(follow);
     }

@@ -1,4 +1,4 @@
-package com.divide.follow.dto.response;
+package com.divide.follow.dto.request;
 
 import com.divide.follow.FollowRelation;
 import lombok.Getter;

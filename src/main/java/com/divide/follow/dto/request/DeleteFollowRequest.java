@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeleteFollowRequest {
-    private Long userId;
+    private Long followId;
 }
