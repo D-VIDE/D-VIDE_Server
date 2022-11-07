@@ -9,8 +9,6 @@ import com.divide.post.domain.Category;
 import com.divide.post.domain.Post;
 import com.divide.post.domain.PostStatus;
 import com.divide.review.ReviewService;
-import com.divide.review.dto.request.PostReviewRequest;
-import com.divide.review.dto.request.PostReviewRequestV2;
 import com.divide.user.User;
 import com.divide.user.UserBadge;
 import com.divide.user.UserService;
@@ -159,7 +157,7 @@ public class InitDb {
                         .targetPrice(random.nextInt(18000, 100001))
                         .deliveryPrice(random.nextInt(1000, 5001))
                         .category(categories.get(random.nextInt(categories.size())))
-                        .targetTime(LocalDateTime.now().plusMinutes(random.nextInt(30000)))
+                        .targetTime(LocalDateTime.now().plusMinutes(random.nextInt(60,30000)))
                         .deliveryLocation(point)
                         .postStatus(postStatuses.get(random.nextInt(postStatuses.size())))
                         .postImgUrls(List.of(postImageUrl1, postImageUrl2))

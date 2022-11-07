@@ -18,20 +18,20 @@ include::{snippets}/get-follow/request-parameters.adoc[]
 include::{snippets}/get-follow/http-response.adoc[]
 include::{snippets}/get-follow/response-fields.adoc[]
 
-=== 2. Follow 생성
-==== Request
-include::{snippets}/post-follow/http-request.adoc[]
-include::{snippets}/post-follow/request-fields.adoc[]
-
-==== Response
-include::{snippets}/post-follow/http-response.adoc[]
-include::{snippets}/post-follow/response-fields.adoc[]
-
-=== 3. Follow 삭제
-==== Request
-include::{snippets}/delete-follow/http-request.adoc[]
-include::{snippets}/delete-follow/request-fields.adoc[]
-
-==== Response
-include::{snippets}/delete-follow/http-response.adoc[]
-include::{snippets}/delete-follow/response-fields.adoc[]
+//=== 2. Follow 생성
+//==== Request
+//include::{snippets}/post-follow/http-request.adoc[]
+//include::{snippets}/post-follow/request-fields.adoc[]
+//
+//==== Response
+//include::{snippets}/post-follow/http-response.adoc[]
+//include::{snippets}/post-follow/response-fields.adoc[]
+//
+//=== 3. Follow 삭제
+//==== Request
+//include::{snippets}/delete-follow/http-request.adoc[]
+//include::{snippets}/delete-follow/request-fields.adoc[]
+//
+//==== Response
+//include::{snippets}/delete-follow/http-response.adoc[]
+//include::{snippets}/delete-follow/response-fields.adoc[]

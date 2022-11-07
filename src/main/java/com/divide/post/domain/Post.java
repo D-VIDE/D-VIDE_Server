@@ -23,8 +23,7 @@ import static javax.persistence.FetchType.LAZY;
 @EntityListeners(AuditingEntityListener.class)
 public class Post {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id") //FK
