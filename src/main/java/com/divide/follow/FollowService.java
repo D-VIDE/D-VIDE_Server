@@ -67,6 +67,7 @@ public class FollowService {
         )).collect(Collectors.toList());
     }
 
+    @Deprecated
     public List<GetFollowResponse> getFollowerList(String userEmail, Integer first) {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         List<Follow> followList = followRepository.getFollowerList(user, first);

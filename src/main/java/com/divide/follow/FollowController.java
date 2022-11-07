@@ -43,6 +43,7 @@ public class FollowController {
         return ResponseEntity.ok(new Result(getFollowResponse));
     }
 
+    @Deprecated
     @GetMapping("/v2/follow")
     public ResponseEntity getFollowV2(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -52,6 +53,19 @@ public class FollowController {
         switch (getFollowRequest.getRelation()) {
             case FOLLOWING -> getFollowResponse.addAll(followService.getFollowingList(userDetails.getUsername(), getFollowRequest.getFirst()));
             case FOLLOWER -> getFollowResponse.addAll(followService.getFollowerList(userDetails.getUsername(), getFollowRequest.getFirst()));
+        }
+        return ResponseEntity.ok(new Result(getFollowResponse));
+    }
+
+    @GetMapping("/v3/follow")
+    public ResponseEntity getFollowV3(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @ModelAttribute GetFollowRequest getFollowRequest
+    ) {
+        List<GetFollowResponse> getFollowResponse = new ArrayList<>();
+        switch (getFollowRequest.getRelation()) {
+            case FOLLOWING -> getFollowResponse.addAll(followService.getFollowingListWithFollowId(userDetails.getUsername(), getFollowRequest.getFirst()));
+            case FOLLOWER -> getFollowResponse.addAll(followService.getFollowerListWithFollowId(userDetails.getUsername(), getFollowRequest.getFirst()));
         }
         return ResponseEntity.ok(new Result(getFollowResponse));
     }
