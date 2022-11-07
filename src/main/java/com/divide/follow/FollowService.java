@@ -2,8 +2,8 @@ package com.divide.follow;
 
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.FollowErrorCode;
-import com.divide.follow.dto.request.GetFollowResponse;
-import com.divide.follow.dto.request.GetFollowResponseWithRelation;
+import com.divide.follow.dto.response.GetFollowResponse;
+import com.divide.follow.dto.response.GetFollowResponseWithRelation;
 import com.divide.follow.dto.response.GetFollowOtherResponse;
 import com.divide.user.User;
 import com.divide.user.UserRepository;
