@@ -1,6 +1,7 @@
 package com.divide.user;
 
 import com.divide.common.CommonBadgeResponse;
+import com.divide.common.CommonLocationResponse;
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.UserErrorCode;
 import com.divide.follow.FollowService;
@@ -38,12 +39,12 @@ public class UserController {
     }
 
     /**
-     * 현재 내 정보 조회 API
+     * 현재 내 정보 조회 API V1
      * @param userDetails
      * @return
      */
     @GetMapping("/v1/user")
-    public GetUserResponse getUserV1(@AuthenticationPrincipal UserDetails userDetails) {
+    public GetUserResponseV1 getUserV1(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
         Integer followerCount = followService.getFollowerCount(userDetails.getUsername());
         Integer followingCount = followService.getFollowingCount(userDetails.getUsername());
@@ -51,7 +52,7 @@ public class UserController {
                 user.getSelectedBadge().getBadgeName().getKrName(),
                 user.getSelectedBadge().getBadgeName().getDescription());
 
-        return GetUserResponse.builder()
+        return GetUserResponseV1.builder()
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .profileImgUrl(user.getProfileImgUrl())
@@ -59,6 +60,40 @@ public class UserController {
                 .followerCount(followerCount)
                 .followingCount(followingCount)
                 .savedPrice(user.getSavedMoney())
+                .build();
+    }
+
+    /**
+     * 현재 내 정보 조회 API V2
+     * @param userDetails
+     * @return
+     */
+    @GetMapping("/v2/user")
+    public GetUserResponseV2 getUserV2(@AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        Integer followerCount = followService.getFollowerCount(userDetails.getUsername());
+        Integer followingCount = followService.getFollowingCount(userDetails.getUsername());
+        CommonBadgeResponse badgeResponse = new CommonBadgeResponse(
+                user.getSelectedBadge().getBadgeName().getKrName(),
+                user.getSelectedBadge().getBadgeName().getDescription());
+
+        CommonLocationResponse locationResponse = null;
+        if (user.getLocation() != null) {
+            locationResponse = new CommonLocationResponse(
+                    user.getLocation().getLatitude(),
+                    user.getLocation().getLongitude()
+            );
+        }
+
+        return GetUserResponseV2.builder()
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .profileImgUrl(user.getProfileImgUrl())
+                .badge(badgeResponse)
+                .followerCount(followerCount)
+                .followingCount(followingCount)
+                .savedPrice(user.getSavedMoney())
+                .location(locationResponse)
                 .build();
     }
 
