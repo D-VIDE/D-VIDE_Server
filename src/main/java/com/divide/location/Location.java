@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Geometry;
 
 import javax.persistence.*;
+import org.locationtech.jts.geom.Point;
 
 @Entity
 @Getter
@@ -15,8 +16,9 @@ public class Location {
     @Column(name = "location_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    private Geometry geometry;
+    private Double latitude;
+    private Double longitude;
 }
