@@ -1,5 +1,6 @@
 package com.divide.user;
 
+import com.divide.fcm.FcmToken;
 import com.divide.location.Location;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.annotation.Nullable;
@@ -54,6 +55,12 @@ public class User {
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @Nullable
     private Location location;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fcmtoken_id")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @Nullable
+    private FcmToken fcmToken;
 
     @CreatedDate
     private LocalDateTime createdAt;
