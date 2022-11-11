@@ -37,7 +37,6 @@ dependencies {
 	implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage-extensions:2.36.1'
 	implementation 'commons-fileupload:commons-fileupload:1.4'
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
-    implementation 'org.projectlombok:lombok:1.18.22'
 
     runtimeOnly 'mysql:mysql-connector-java'
 
