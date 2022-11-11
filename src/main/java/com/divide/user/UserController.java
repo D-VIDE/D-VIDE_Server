@@ -5,6 +5,7 @@ import com.divide.exception.RestApiException;
 import com.divide.exception.code.UserErrorCode;
 import com.divide.follow.FollowService;
 import com.divide.user.dto.request.PostUserBadgeRequest;
+import com.divide.user.dto.request.PostUserLocationRequest;
 import com.divide.user.dto.response.*;
 import com.divide.user.dto.request.SignupRequest;
 import lombok.RequiredArgsConstructor;
@@ -132,6 +133,16 @@ public class UserController {
 
         userService.updateSelectedBadge(user, badgeName.orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_BADGE_NAME)));
 
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/v1/user/location")
+    public ResponseEntity postUserLocation(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody PostUserLocationRequest postUserLocationRequest
+    ) {
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        userService.updateLocation(user, postUserLocationRequest.getLatitude(), postUserLocationRequest.getLongitude());
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }
