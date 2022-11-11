@@ -37,8 +37,9 @@ dependencies {
 	implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage-extensions:2.36.1'
 	implementation 'commons-fileupload:commons-fileupload:1.4'
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
+    implementation 'org.projectlombok:lombok:1.18.22'
 
-	runtimeOnly 'mysql:mysql-connector-java'
+    runtimeOnly 'mysql:mysql-connector-java'
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -46,7 +47,10 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	implementation group: 'org.hibernate', name: 'hibernate-spatial', version: '5.6.9.Final'
-	implementation 'com.google.firebase:firebase-admin:9.0.0'
+	//firebase sdk
+	implementation 'com.google.firebase:firebase-admin:9.1.0'
+	//okhttp
+	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
 }
 
 tasks.named('test') {
