@@ -75,5 +75,11 @@ public class User {
         this.selectedBadge = userBadge;
     }
 
-    public void updateLocation(Location location) { this.location = location; }
+    public void updateLocation(Location location) {
+        if (this.location == null) {
+            this.location = location;
+        } else {
+            this.location.update(location.getLatitude(), location.getLongitude());
+        }
+    }
 }
