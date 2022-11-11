@@ -1,8 +1,11 @@
 package com.divide.user;
 
+import com.divide.location.Location;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -46,6 +49,12 @@ public class User {
     @PositiveOrZero
     private Integer savedMoney = 0;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @Nullable
+    private Location location;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -64,5 +73,13 @@ public class User {
 
     public void updateSelectedBadge(UserBadge userBadge) {
         this.selectedBadge = userBadge;
+    }
+
+    public void updateLocation(Location location) {
+        if (this.location == null) {
+            this.location = location;
+        } else {
+            this.location.update(location.getLatitude(), location.getLongitude());
+        }
     }
 }

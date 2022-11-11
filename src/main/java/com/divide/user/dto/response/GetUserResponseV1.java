@@ -1,6 +1,7 @@
 package com.divide.user.dto.response;
 
 import com.divide.common.CommonBadgeResponse;
+import com.divide.common.CommonLocationResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @Builder
-public class GetUserResponse {
+public class GetUserResponseV1 {
     private String email;
     private String nickname;
     private String profileImgUrl;

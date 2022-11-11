@@ -2,6 +2,7 @@ package com.divide.user;
 
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.UserErrorCode;
+import com.divide.location.Location;
 import com.divide.user.dto.request.SignupRequest;
 import com.divide.utils.OCIUtil;
 import lombok.RequiredArgsConstructor;
@@ -77,5 +78,10 @@ public class UserService {
         UserBadge userBadge = new UserBadge(user, badgeName);
         userBadgeRepository.save(userBadge);
         return userBadge.getId();
+    }
+
+    public void updateLocation(User user, Double latitude, Double longitude) {
+        Location newLocation = new Location(latitude, longitude);
+        user.updateLocation(newLocation);
     }
 }

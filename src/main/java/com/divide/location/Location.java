@@ -3,7 +3,6 @@ package com.divide.location;
 import com.divide.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.locationtech.jts.geom.Geometry;
 
 import javax.persistence.*;
 
@@ -15,8 +14,18 @@ public class Location {
     @Column(name = "location_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "location")
     private User user;
-    private Geometry geometry;
+    private Double latitude;
+    private Double longitude;
+
+    public Location(Double latitude, Double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public void update(Double latitude, Double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }
