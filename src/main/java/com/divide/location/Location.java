@@ -17,7 +17,6 @@ public class Location {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
     private User user;
     private Double latitude;
     private Double longitude;

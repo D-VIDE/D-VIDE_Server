@@ -1,6 +1,8 @@
 package com.divide.user;
 
+import com.divide.location.Location;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -45,6 +47,11 @@ public class User {
     @NotNull
     @PositiveOrZero
     private Integer savedMoney = 0;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    @Nullable
+    private Location location;
 
     @CreatedDate
     private LocalDateTime createdAt;
