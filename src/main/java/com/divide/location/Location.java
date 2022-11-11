@@ -3,10 +3,8 @@ package com.divide.location;
 import com.divide.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.locationtech.jts.geom.Geometry;
 
 import javax.persistence.*;
-import org.locationtech.jts.geom.Point;
 
 @Entity
 @Getter
@@ -16,8 +14,13 @@ public class Location {
     @Column(name = "location_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "location")
     private User user;
     private Double latitude;
     private Double longitude;
+
+    public Location(Double latitude, Double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }
