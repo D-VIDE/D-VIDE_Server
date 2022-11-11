@@ -1,5 +1,6 @@
 package com.divide.fcm;
 
+import com.divide.exception.RestApiException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -33,7 +34,14 @@ public class FirebaseCloudMessageService {
         Response response = client.newCall(request)
                 .execute();
 
-        System.out.println(response.body().string());
+        //TODO: FCM에러 처리
+//        ResponseBody body1 = response.body();
+//        int code = response.code();
+//        if (code != 200) {
+//            throw RestApiException();
+//        }
+
+        System.out.println("FirebaseCloudMessageService: "+response.body().string());
     }
 
     private String makeMessage(String targetToken, String title, String body) throws JsonProcessingException, JsonProcessingException {

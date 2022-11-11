@@ -16,8 +16,9 @@ public class FcmController {
 
     @PostMapping("/api/fcm")
     public ResponseEntity pushMessage(@RequestBody RequestDTO requestDTO) throws IOException {
-        System.out.println(requestDTO.getTargetToken() + " "
-                + requestDTO.getTitle() + " " + requestDTO.getBody());
+        System.out.println("Token:" + requestDTO.getTargetToken() + "\n "
+               + "Title:"  + requestDTO.getTitle() + "\n "
+                + "Body:"  + requestDTO.getBody());
 
         firebaseCloudMessageService.sendMessageTo(
                 requestDTO.getTargetToken(),
