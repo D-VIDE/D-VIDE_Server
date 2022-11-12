@@ -3,6 +3,7 @@ package com.divide.review;
 import com.divide.common.CommonReviewDetailResponse;
 import com.divide.common.CommonReviewResponse;
 import com.divide.common.CommonUserResponse;
+import com.divide.fcm.FirebaseCloudMessageService;
 import com.divide.post.dto.response.Result;
 import com.divide.review.dto.request.PostReviewRequest;
 import com.divide.review.dto.request.PostReviewRequestV2;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.ws.rs.Path;
+import java.io.IOException;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -28,6 +30,7 @@ import static java.util.stream.Collectors.toList;
 @RequestMapping("/api/")
 public class ReviewController {
     private final ReviewService reviewService;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     /**
      * 리뷰 생성 API V1
@@ -270,8 +273,15 @@ public class ReviewController {
      * @return
      */
     @PostMapping(value = "v1/review/{reviewId}/like")
-    public ResponseEntity<PostReviewLikeResponse> reviewLike( @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long reviewId){
+    public ResponseEntity<PostReviewLikeResponse> reviewLike( @AuthenticationPrincipal UserDetails userDetails, @PathVariable Long reviewId) throws IOException {
         Long newReviewLikeId = reviewService.createReviewLike(userDetails.getUsername(), reviewId);
+
+        //review 작성자에게 알림 전송
+        //review 가게 이름 조회
+        String reviewStoreName = reviewService.findReview(reviewId).getPost().getStoreName();
+        //review 작성자 조회
+        User user = reviewService.findReview(reviewId).getUser();
+        firebaseCloudMessageService.sendMessageTo(user,user.getNickname()+ "님이 리뷰 좋아요를 눌렀습니다",reviewStoreName+ "에서 먹었던 음식의 리뷰입니다.");
 
         return ResponseEntity.status(HttpStatus.CREATED).body( new PostReviewLikeResponse(newReviewLikeId));
     }
