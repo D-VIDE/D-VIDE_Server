@@ -7,6 +7,7 @@ import com.divide.auth.dto.response.LoginResponse;
 import com.divide.security.JwtFilter;
 import com.divide.auth.dto.request.LoginRequest;
 import com.divide.security.TokenProvider;
+import com.divide.user.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
@@ -21,6 +22,7 @@ import javax.validation.constraints.NotNull;
 public class AuthController {
     private final AuthService authService;
     private final TokenProvider tokenProvider;
+    private final UserService userService;
 
     @PostMapping("/auth/login")
     public ResponseEntity<LoginResponse> login(
@@ -30,8 +32,9 @@ public class AuthController {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+        Long userId = userService.getUserByEmail(loginRequest.getEmail()).getId();
 
-        return ResponseEntity.ok(new LoginResponse(jwt));
+        return ResponseEntity.ok(new LoginResponse(jwt, userId));
     }
 
     @GetMapping("/auth/kakaoTest")
