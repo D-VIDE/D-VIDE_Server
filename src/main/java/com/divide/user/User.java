@@ -3,6 +3,7 @@ package com.divide.user;
 import com.divide.fcm.FcmToken;
 import com.divide.location.Location;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -88,5 +89,18 @@ public class User {
         } else {
             this.location.update(location.getLatitude(), location.getLongitude());
         }
+    }
+
+    public void updateToken(String tokenString) {
+        if (this.fcmToken == null) {
+            this.fcmToken = new FcmToken(tokenString);
+        } else {
+            this.fcmToken.updateToken(tokenString);
+        }
+    }
+
+    public Optional<String> getFcmToken() {
+        if (this.fcmToken == null) return Optional.empty();
+        return Optional.of(this.fcmToken.getToken());
     }
 }

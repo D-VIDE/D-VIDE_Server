@@ -29,7 +29,14 @@ public class FcmToken {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    public FcmToken(String token) {
+        this.token = token;
+    }
+
     public void updateToken(String token) {
+        if (this.token.equals(token)) {
+            return;
+        }
         this.token = token;
     }
 }

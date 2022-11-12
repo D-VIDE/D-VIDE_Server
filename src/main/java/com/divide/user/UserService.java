@@ -84,4 +84,8 @@ public class UserService {
         Location newLocation = new Location(latitude, longitude);
         user.updateLocation(newLocation);
     }
+
+    public void updateFcmToken(User user, String fcmToken) {
+        user.updateToken(fcmToken);
+    }
 }
