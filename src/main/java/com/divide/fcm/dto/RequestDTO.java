@@ -1,17 +1,11 @@
 package com.divide.fcm.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@Data
+@NoArgsConstructor
+@Getter
 public class RequestDTO {
     private String title;
     private String body;
-    private String targetToken;
-
-    public RequestDTO(){
-
-    }
-
 }
