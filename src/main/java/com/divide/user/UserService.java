@@ -3,8 +3,11 @@ package com.divide.user;
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.UserErrorCode;
 import com.divide.location.Location;
+import com.divide.user.UserBadge.BadgeName;
+import com.divide.user.dto.request.PatchUserRequest;
 import com.divide.user.dto.request.SignupRequest;
 import com.divide.utils.OCIUtil;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -87,5 +90,39 @@ public class UserService {
 
     public void updateFcmToken(User user, String fcmToken) {
         user.updateToken(fcmToken);
+    }
+
+    public void updateNickname(User user, String nickname) {
+        user.updateNickname(nickname);
+    }
+
+    public void updateProfileImg(User user, MultipartFile profileImgFile) {
+        String extension = StringUtils.getFilenameExtension(profileImgFile.getOriginalFilename()).toLowerCase();
+        String profileImgUrl = OCIUtil.uploadFile(profileImgFile, OCIUtil.FolderName.PROFILE,  user.getEmail() + "/" + UUID.randomUUID() + "." + extension);
+
+        user.updateProfileImgUrl(profileImgUrl);
+    }
+
+    public void updateUserInformation(User user, PatchUserRequest patchUserRequest) {
+        if (patchUserRequest.getNickname() != null) {
+            updateNickname(user, patchUserRequest.getNickname());
+        }
+        if (patchUserRequest.getBadgeName() != null) {
+            List<UserBadge> badgeList = getBadgeList(user);
+            Optional<BadgeName> badgeName = badgeList.stream()
+                    .map(UserBadge::getBadgeName)
+                    .filter(name -> name.getKrName().equals(patchUserRequest.getBadgeName()))
+                    .findFirst();
+            updateSelectedBadge(user, badgeName.orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_BADGE_NAME)));
+        }
+        if (patchUserRequest.getFcmToken() != null) {
+            updateFcmToken(user, patchUserRequest.getFcmToken());
+        }
+        if (patchUserRequest.getLatitude() != null && patchUserRequest.getLongitude() != null) {
+            updateLocation(user, patchUserRequest.getLatitude(), patchUserRequest.getLongitude());
+        }
+        if (patchUserRequest.getProfileImgFile() != null) {
+            updateProfileImg(user, patchUserRequest.getProfileImgFile());
+        }
     }
 }

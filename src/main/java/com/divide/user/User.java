@@ -103,4 +103,12 @@ public class User {
         if (this.fcmToken == null) return Optional.empty();
         return Optional.of(this.fcmToken.getToken());
     }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateProfileImgUrl(String profileImgUrl) {
+        this.profileImgUrl = profileImgUrl;
+    }
 }
