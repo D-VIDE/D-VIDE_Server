@@ -8,6 +8,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.net.HttpHeaders;
 import java.io.IOException;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class FirebaseCloudMessageService {
-    private static final String API_URL = "https://fcm.googleapis.com/v1/projects/divide-e7a2a/messages:send";
+    private static final String API_URL = "https://fcm.googleapis.com/v1/projects/divide-de7a4/messages:send";
     private final ObjectMapper objectMapper;
 
     public void sendMessageTo(User user, String title, String body) throws IOException {
@@ -69,7 +70,7 @@ public class FirebaseCloudMessageService {
     }
 
     private String getAccessToken() throws IOException {
-        String firebaseConfigPath = "/config/divide-e7a2a-firebase-adminsdk-sau8w-66c8e2cf67.json";
+        String firebaseConfigPath = "/config/fcm_key.json";
 
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
