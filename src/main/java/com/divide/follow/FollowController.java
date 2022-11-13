@@ -2,6 +2,7 @@ package com.divide.follow;
 
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.UserErrorCode;
+import com.divide.fcm.FirebaseCloudMessageService;
 import com.divide.follow.dto.request.DeleteFollowRequest;
 import com.divide.follow.dto.request.GetFollowOtherRequest;
 import com.divide.follow.dto.response.GetFollowResponse;
@@ -19,6 +20,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,7 @@ import java.util.List;
 public class FollowController {
     private final FollowService followService;
     private final UserService userService;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     @Deprecated
     @GetMapping("/v1/follow")
@@ -115,10 +118,14 @@ public class FollowController {
     public ResponseEntity<PostFollowResponse> postFollow(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody PostFollowRequest postFollowRequest
-    ) {
+    ) throws IOException {
         User follower = userService.getUserByEmail(userDetails.getUsername());
         User followee = userService.getUserById(postFollowRequest.getUserId());
         Long saveId = followService.save(follower, followee);
+
+        //팔로우 성공시 알림
+        firebaseCloudMessageService.sendMessageTo(followee,"팔로우 알림",follower.getNickname() + "님이 팔로우 했습니다.");
+
         return ResponseEntity.status(201).body(new PostFollowResponse(saveId));
     }
 
