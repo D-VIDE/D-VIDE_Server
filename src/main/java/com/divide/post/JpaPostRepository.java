@@ -36,7 +36,9 @@ public class JpaPostRepository implements PostRepository{
 
     @Override
     public List<Post> findPostsAll(Integer first, String pointFormat) {
-        return em.createNativeQuery("SELECT * FROM post AS p WHERE MBRContains(ST_LINESTRINGFROMTEXT(:pointFormat), p.delivery_location)", Post.class)
+        return em.createNativeQuery("SELECT * FROM post AS p " +
+                        "WHERE MBRContains(ST_LINESTRINGFROMTEXT(:pointFormat), p.delivery_location) " +
+                        "ORDER BY p.target_time ", Post.class)
                 .setParameter("pointFormat", pointFormat)
                 .setMaxResults(10)
                 .setFirstResult(first)
@@ -45,7 +47,9 @@ public class JpaPostRepository implements PostRepository{
 
     @Override
     public List<Post> findPostsByCategory(Integer first, String pointFormat, Category category) {
-        return em.createNativeQuery("SELECT * FROM post AS p WHERE MBRContains(ST_LINESTRINGFROMTEXT(:pointFormat), p.delivery_location) AND p.category = :category", Post.class)
+        return em.createNativeQuery("SELECT * FROM post AS p " +
+                        "WHERE MBRContains(ST_LINESTRINGFROMTEXT(:pointFormat), p.delivery_location) AND p.category = :category " +
+                        "ORDER BY p.target_time", Post.class)
                 .setParameter("pointFormat", pointFormat)
                 .setParameter("category", category.toString())
                 .setMaxResults(10)

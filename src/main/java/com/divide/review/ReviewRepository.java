@@ -17,7 +17,8 @@ public class ReviewRepository {
     public List<Review> findReviewsAll(Integer first, String pointFormat) {
         Query query = em.createNativeQuery("SELECT r.* FROM review r " +
                         "JOIN post p on p.post_id = r.post_id " +
-                        "WHERE MBRContains( ST_LINESTRINGFROMTEXT(:pointFormat), p.delivery_location)", Review.class )
+                        "WHERE MBRContains( ST_LINESTRINGFROMTEXT(:pointFormat), p.delivery_location) " +
+                        "ORDER BY r.created_at DESC", Review.class )
                 .setFirstResult(first)
                 .setParameter("pointFormat", pointFormat)
                 .setMaxResults(10);
@@ -29,7 +30,7 @@ public class ReviewRepository {
     public List<Review> findReviewsAllByUserId(Integer first, Long user_id){
         Query query = em.createNativeQuery("SELECT r.* FROM review r " +
                 "JOIN post p on p.post_id = r.post_id " +
-                "WHERE r.user_id = :user_id", Review.class)
+                "WHERE r.user_id = :user_id ORDER BY r.created_at DESC", Review.class)
                 .setFirstResult(first)
                 .setParameter("user_id", user_id)
                 .setMaxResults(10);
@@ -42,7 +43,7 @@ public class ReviewRepository {
     public List<Review> findReviewsAllByStoreName(Integer first, String storeName){
         Query query = em.createNativeQuery("SELECT r.* FROM review r " +
                         "JOIN post p on p.post_id = r.post_id " +
-                        "WHERE p.store_name = :storeName", Review.class)
+                        "WHERE p.store_name = :storeName ORDER BY r.created_at DESC", Review.class)
                 .setFirstResult(first)
                 .setParameter("storeName", storeName)
                 .setMaxResults(10);
