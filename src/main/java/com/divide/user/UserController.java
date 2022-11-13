@@ -5,6 +5,7 @@ import com.divide.common.CommonLocationResponse;
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.UserErrorCode;
 import com.divide.follow.FollowService;
+import com.divide.user.dto.request.PatchUserRequest;
 import com.divide.user.dto.request.PostUserBadgeRequest;
 import com.divide.user.dto.request.PostUserFcmTokenRequest;
 import com.divide.user.dto.request.PostUserLocationRequest;
@@ -190,5 +191,15 @@ public class UserController {
         User user = userService.getUserByEmail(userDetails.getUsername());
         userService.updateFcmToken(user, postUserFcmTokenRequest.getFcmToken());
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PatchMapping("/v1/user")
+    public ResponseEntity patchUser(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @ModelAttribute PatchUserRequest patchUserRequest
+            ) {
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        userService.updateUserInformation(user, patchUserRequest);
+        return ResponseEntity.ok().build();
     }
 }
