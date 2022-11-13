@@ -23,11 +23,8 @@ public class FcmController {
     public ResponseEntity pushMessage(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody RequestDTO requestDTO
-    ) throws IOException {
+    ) {
         User targetUser = userService.getUserByEmail(userDetails.getUsername());
-        System.out.println("Token:" + targetUser.getFcmToken() + "\n "
-               + "Title:"  + requestDTO.getTitle() + "\n "
-                + "Body:"  + requestDTO.getBody());
 
         firebaseCloudMessageService.sendMessageTo(
                 targetUser,
