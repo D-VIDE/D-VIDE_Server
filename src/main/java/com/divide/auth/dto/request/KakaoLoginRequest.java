@@ -9,5 +9,5 @@ import javax.validation.constraints.NotNull;
 @Getter
 public class KakaoLoginRequest {
     @NotNull
-    private String code;
+    private String accessToken;
 }

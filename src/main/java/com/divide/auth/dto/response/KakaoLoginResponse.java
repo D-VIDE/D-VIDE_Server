@@ -7,4 +7,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KakaoLoginResponse {
     private final String token;
+    private final Long userId;
 }

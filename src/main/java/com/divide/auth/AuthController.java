@@ -37,23 +37,17 @@ public class AuthController {
         return ResponseEntity.ok(new LoginResponse(jwt, userId));
     }
 
-    @GetMapping("/auth/kakaoTest")
-    public void kakaoTest(
-            @NotNull @RequestParam("code") String code
-    ) {
-        System.out.println("code = " + code);
-    }
-
     @PostMapping("/auth/kakao")
     public ResponseEntity<KakaoLoginResponse> kakaoLogin(
         @Valid @RequestBody KakaoLoginRequest kakaoLoginRequest
     ) throws JsonProcessingException {
-        KaKaoLoginServiceResult kaKaoLoginServiceResult = authService.kakaoLogin(kakaoLoginRequest.getCode(), "http://localhost:8080/api/v1/auth/kakaoTest");
+        KaKaoLoginServiceResult kaKaoLoginServiceResult = authService.kakaoLogin(kakaoLoginRequest.getAccessToken());
         String jwt = tokenProvider.createToken(kaKaoLoginServiceResult.getEmail(), kaKaoLoginServiceResult.getPassword());
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+        Long userId = userService.getUserByEmail(kaKaoLoginServiceResult.getEmail()).getId();
 
-        return ResponseEntity.ok(new KakaoLoginResponse(jwt));
+        return ResponseEntity.ok(new KakaoLoginResponse(jwt, userId));
     }
 }

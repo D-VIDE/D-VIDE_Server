@@ -200,6 +200,6 @@ public class UserController {
             ) {
         User user = userService.getUserByEmail(userDetails.getUsername());
         userService.updateUserInformation(user, patchUserRequest);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

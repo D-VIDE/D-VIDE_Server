@@ -31,9 +31,8 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public KaKaoLoginServiceResult kakaoLogin(final String authorizationCode, final String callbackUrl) throws JsonProcessingException {
-        String kakaoAccessToken = getKakaoAccessToken(authorizationCode, callbackUrl);
-        Map kakaoUserMap = getKakaoUser(kakaoAccessToken);
+    public KaKaoLoginServiceResult kakaoLogin(final String accessToken) throws JsonProcessingException {
+        Map kakaoUserMap = getKakaoUser(accessToken);
         Map profile = (Map) kakaoUserMap.get("profile");
 
         String email = (String) kakaoUserMap.get("email");
@@ -47,31 +46,6 @@ public class AuthService {
         }
 
         return new KaKaoLoginServiceResult(email, password);
-    }
-
-    private String getKakaoAccessToken(final String authorizationCode, final String callbackUrl) throws JsonProcessingException {
-        /* 카카오 토큰 발급 */
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", "f5c8e321f9869cdbc2362fe45c4556a0");
-        params.add("redirect_uri", callbackUrl);
-        params.add("code", authorizationCode);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
-        RestTemplate rt = new RestTemplate();
-
-        ResponseEntity<String> response = rt.exchange(
-                "https://kauth.kakao.com/oauth/token",
-                HttpMethod.POST,
-                entity,
-                String.class
-        );
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map json = objectMapper.readValue(response.getBody(), Map.class);
-        return (String)json.get("access_token");
     }
 
     private Map getKakaoUser(final String accessToken) throws JsonProcessingException {
