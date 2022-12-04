@@ -12,6 +12,8 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.net.HttpHeaders;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.MediaType;
@@ -29,7 +31,13 @@ public class FirebaseCloudMessageService {
     private static final String API_URL = "https://fcm.googleapis.com/v1/projects/divide-de7a4/messages:send";
     private final ObjectMapper objectMapper;
 
-    public void sendMessageTo(User user, String title, String body) {
+    public Future<Void> sendMessageTo(User user, String title, String body) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        new Thread(() -> future.complete(sendMessageSync(user, title, body))).start();
+        return future;
+    }
+
+    private Void sendMessageSync(User user, String title, String body) {
         try {
             String fcmToken = user.getFcmToken()
                     .orElseThrow(() -> new RestApiException(FcmErrorCode.FCM_CODE_NOT_AVAILABLE));
@@ -54,9 +62,7 @@ public class FirebaseCloudMessageService {
             // Do Nothing
             log.error(e.toString());
         }
-//        catch (IOException e) {
-//            throw new RestApiException(FCM_PARSING_ERROR);
-//        }
+        return null;
     }
 
     private String makeMessage(String targetToken, String title, String body)
