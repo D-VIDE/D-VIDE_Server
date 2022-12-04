@@ -34,4 +34,12 @@ public class OrderRepository {
     public void save(OrderImage orderImage) {
         em.persist(orderImage);
     }
+
+    public List<Order> findOrdersByPostId(Long postId) {
+        return em.createQuery("select o from Order as o "
+                        + "join fetch o.user "
+                        + "where o.post.postId = :postId", Order.class)
+                .setParameter("postId", postId)
+                .getResultList();
+    }
 }
