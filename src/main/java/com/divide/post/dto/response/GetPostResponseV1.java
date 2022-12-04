@@ -5,11 +5,10 @@ import com.divide.common.CommonUserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-import java.util.List;
 @Data
 @AllArgsConstructor
-public class GetPostResponse {
+@Deprecated
+public class GetPostResponseV1 {
     private CommonUserResponse user;
     private CommonPostDetailResponse postDetail;
 }

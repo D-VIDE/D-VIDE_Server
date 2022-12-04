@@ -119,7 +119,8 @@ public class PostController {
     }
 
     @GetMapping("/v1/posts/{postId}")
-    public Result getPost(@PathVariable Long postId){
+    @Deprecated
+    public Result getPostV1(@PathVariable Long postId){
         Post post = postService.findOne(postId);
         List<PostImage> findPostImgs = post.getPostImages();
         List<String> postImgUrls = findPostImgs.stream()
@@ -127,7 +128,7 @@ public class PostController {
                 .collect(toList());
 
         User user = post.getUser();
-        GetPostResponse getPostResponse = new GetPostResponse(
+        GetPostResponseV1 getPostResponseV1 = new GetPostResponseV1(
                 new CommonUserResponse(
                         user.getId(),
                         user.getNickname(),
@@ -147,7 +148,7 @@ public class PostController {
                         postImgUrls
                 )
         );
-        return new Result(getPostResponse);
+        return new Result(getPostResponseV1);
     }
 
     /**
