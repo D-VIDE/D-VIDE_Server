@@ -84,6 +84,14 @@ public class OrderService {
         return order.getId();
     }
 
+    @Transactional(readOnly = true)
+    public Boolean checkOrdered(String userEmail, Long postId) {
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
+        List<Order> orders = orderRepository.findOrdersByPostId(postId);
+
+        return orders.stream().anyMatch(order -> order.getUser().equals(user));
+    }
+
     @Transactional
     public Long saveOrderTest(String userEmail, Long postId, Integer orderPrice, List<String> orderImgUrlList) {
         // 엔티티 조회
