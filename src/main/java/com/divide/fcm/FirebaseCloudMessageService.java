@@ -52,7 +52,7 @@ public class FirebaseCloudMessageService {
             }
         } catch (Exception e) {
             // Do Nothing
-            System.out.println(e);
+            log.error(e.toString());
         }
 //        catch (IOException e) {
 //            throw new RestApiException(FCM_PARSING_ERROR);
