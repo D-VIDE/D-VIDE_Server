@@ -4,7 +4,9 @@ import com.divide.common.CommonPostDetailResponse;
 import com.divide.common.CommonUserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
 public class GetPostResponseV2 {
     private CommonUserResponse user;
