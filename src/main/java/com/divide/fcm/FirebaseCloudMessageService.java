@@ -4,7 +4,7 @@ import static com.divide.exception.code.FcmErrorCode.FCM_ERROR;
 import static com.divide.exception.code.FcmErrorCode.FCM_PARSING_ERROR;
 
 import com.divide.exception.RestApiException;
-import com.divide.exception.code.CommonErrorCode;
+import com.divide.exception.code.FcmErrorCode;
 import com.divide.user.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +12,8 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.net.HttpHeaders;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.MediaType;
@@ -29,9 +31,16 @@ public class FirebaseCloudMessageService {
     private static final String API_URL = "https://fcm.googleapis.com/v1/projects/divide-de7a4/messages:send";
     private final ObjectMapper objectMapper;
 
-    public void sendMessageTo(User user, String title, String body) {
-        String fcmToken = user.getFcmToken().orElseThrow();
+    public Future<Void> sendMessageTo(User user, String title, String body) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        new Thread(() -> future.complete(sendMessageSync(user, title, body))).start();
+        return future;
+    }
+
+    private Void sendMessageSync(User user, String title, String body) {
         try {
+            String fcmToken = user.getFcmToken()
+                    .orElseThrow(() -> new RestApiException(FcmErrorCode.FCM_CODE_NOT_AVAILABLE));
             String message = makeMessage(fcmToken, title, body);
 
             OkHttpClient client = new OkHttpClient();
@@ -47,11 +56,13 @@ public class FirebaseCloudMessageService {
 
             int code = response.code();
             if (code != 200) {
-                throw new RestApiException(FCM_ERROR);
+//                throw new RestApiException(FCM_ERROR);
             }
-        } catch (IOException e) {
-            throw new RestApiException(FCM_PARSING_ERROR);
+        } catch (Exception e) {
+            // Do Nothing
+            log.error(e.toString());
         }
+        return null;
     }
 
     private String makeMessage(String targetToken, String title, String body)

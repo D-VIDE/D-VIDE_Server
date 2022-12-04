@@ -7,5 +7,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public class RestApiException extends RuntimeException {
     private final ErrorCode errorCode;
+
+    @Override
+    public String toString() {
+        return "RestApiException{" +
+                "errorCode=" + errorCode +
+                '}';
+    }
 }
 
