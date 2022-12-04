@@ -5,6 +5,7 @@ import com.divide.common.CommonLocationResponse;
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.UserErrorCode;
 import com.divide.follow.FollowService;
+import com.divide.location.Location;
 import com.divide.user.dto.request.PatchUserRequest;
 import com.divide.user.dto.request.PostUserBadgeRequest;
 import com.divide.user.dto.request.PostUserFcmTokenRequest;
@@ -79,15 +80,14 @@ public class UserController {
                 user.getSelectedBadge().getBadgeName().getKrName(),
                 user.getSelectedBadge().getBadgeName().getDescription());
 
-        CommonLocationResponse locationResponse = null;
-        if (user.getLocation() != null) {
-            locationResponse = new CommonLocationResponse(
-                    user.getLocation().getLatitude(),
-                    user.getLocation().getLongitude()
-            );
-        }
+        Location userLocation = user.getLocation().orElseThrow(() -> new RestApiException(UserErrorCode.LOCATION_NOT_SET));
+        CommonLocationResponse locationResponse = new CommonLocationResponse(
+                userLocation.getLatitude(),
+                userLocation.getLongitude()
+        );
 
         return GetUserResponseV2.builder()
+                .userId(user.getId())
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .profileImgUrl(user.getProfileImgUrl())

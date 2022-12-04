@@ -104,6 +104,10 @@ public class User {
         return Optional.of(this.fcmToken.getToken());
     }
 
+    public Optional<Location> getLocation() {
+        return Optional.ofNullable(location);
+    }
+
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
