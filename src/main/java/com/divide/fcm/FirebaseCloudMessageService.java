@@ -4,7 +4,7 @@ import static com.divide.exception.code.FcmErrorCode.FCM_ERROR;
 import static com.divide.exception.code.FcmErrorCode.FCM_PARSING_ERROR;
 
 import com.divide.exception.RestApiException;
-import com.divide.exception.code.CommonErrorCode;
+import com.divide.exception.code.FcmErrorCode;
 import com.divide.user.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,8 +30,9 @@ public class FirebaseCloudMessageService {
     private final ObjectMapper objectMapper;
 
     public void sendMessageTo(User user, String title, String body) {
-        String fcmToken = user.getFcmToken().orElseThrow();
         try {
+            String fcmToken = user.getFcmToken()
+                    .orElseThrow(() -> new RestApiException(FcmErrorCode.FCM_CODE_NOT_AVAILABLE));
             String message = makeMessage(fcmToken, title, body);
 
             OkHttpClient client = new OkHttpClient();
@@ -47,11 +48,15 @@ public class FirebaseCloudMessageService {
 
             int code = response.code();
             if (code != 200) {
-                throw new RestApiException(FCM_ERROR);
+//                throw new RestApiException(FCM_ERROR);
             }
-        } catch (IOException e) {
-            throw new RestApiException(FCM_PARSING_ERROR);
+        } catch (Exception e) {
+            // Do Nothing
+            System.out.println(e);
         }
+//        catch (IOException e) {
+//            throw new RestApiException(FCM_PARSING_ERROR);
+//        }
     }
 
     private String makeMessage(String targetToken, String title, String body)
