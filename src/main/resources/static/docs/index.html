@@ -440,7 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>Spring REST Docs</h1>
 <div class="details">
-<span id="revnumber">version 0.0.9</span>
+<span id="revnumber">version 0.1.1</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -507,14 +507,19 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 275
+Content-Length: 529
 
 {
   "data" : [ {
+    "userId" : 3,
+    "profileImgUrl" : "https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axzo04wlqj1l/b/DivideBucket/o/PROFILE/email2@gmail.com/08793157-693f-4e28-803e-eff537c09bb2.jpg",
+    "nickname" : "nickname2",
+    "isFFF" : true
+  }, {
     "userId" : 5,
-    "profileImgUrl" : "https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axzo04wlqj1l/b/DivideBucket/o/PROFILE/email4@gmail.com/08405179-1732-42da-adec-99e5b4aceaf6.jpg",
+    "profileImgUrl" : "https://objectstorage.ap-chuncheon-1.oraclecloud.com/n/axzo04wlqj1l/b/DivideBucket/o/PROFILE/email4@gmail.com/3667e915-0e17-4eed-8893-02ce8001e306.jpg",
     "nickname" : "nickname4",
-    "isFFF" : false
+    "isFFF" : true
   } ]
 }</code></pre>
 </div>
@@ -565,8 +570,8 @@ Content-Length: 275
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.0.9<br>
-Last updated 2022-11-07 16:11:00 +0900
+Version 0.1.1<br>
+Last updated 2022-12-04 19:05:49 +0900
 </div>
 </div>
 </body>
