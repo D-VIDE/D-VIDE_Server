@@ -87,6 +87,7 @@ public class UserController {
         );
 
         return GetUserResponseV2.builder()
+                .userId(user.getId())
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .profileImgUrl(user.getProfileImgUrl())
