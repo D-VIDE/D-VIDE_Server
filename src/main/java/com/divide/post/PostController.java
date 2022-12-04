@@ -3,13 +3,13 @@ package com.divide.post;
 import com.divide.common.CommonPostDetailResponse;
 import com.divide.common.CommonPostResponse;
 import com.divide.common.CommonUserResponse;
+import com.divide.order.OrderService;
 import com.divide.post.domain.Post;
 import com.divide.post.domain.PostImage;
 import com.divide.post.dto.request.PostPostRequest;
 import com.divide.post.dto.request.UpdatePostRequest;
 import com.divide.post.dto.request.GetPostsRequest;
 import com.divide.post.dto.response.*;
-import com.divide.review.ReviewImage;
 import com.divide.user.User;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +36,7 @@ import static java.util.stream.Collectors.toList;
 @Validated
 public class PostController {
     private final PostService postService;
+    private final OrderService orderService;
 
     /**
      * 게시물 생성 API V1
@@ -149,6 +150,43 @@ public class PostController {
                 )
         );
         return new Result(getPostResponseV1);
+    }
+
+    @GetMapping("/v2/posts/{postId}")
+    public Result getPostV2(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long postId
+    ){
+        Post post = postService.findOne(postId);
+        List<String> postImgUrls = post.getPostImages().stream()
+                .map(PostImage::getPostImageUrl)
+                .collect(toList());
+
+        Boolean ordered = orderService.checkOrdered(userDetails.getUsername(), postId);
+
+        User writtenUser = post.getUser();
+        GetPostResponseV2 getPostResponseV2 = new GetPostResponseV2(
+                new CommonUserResponse(
+                        writtenUser.getId(),
+                        writtenUser.getNickname(),
+                        writtenUser.getProfileImgUrl()
+                ),
+                new CommonPostDetailResponse(
+                        post.getPostId(),
+                        post.getDeliveryLocation().getCoordinate().getX(),
+                        post.getDeliveryLocation().getCoordinate().getY(),
+                        post.getTitle(),
+                        post.getTargetTime(),
+                        post.getTargetPrice(),
+                        post.getDeliveryPrice(),
+                        post.getOrderedPrice(),
+                        post.getContent(),
+                        post.getStoreName(),
+                        postImgUrls
+                ),
+                ordered
+                );
+        return new Result(getPostResponseV2);
     }
 
     /**
