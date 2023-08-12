@@ -4,9 +4,7 @@ import com.divide.common.CommonPostResponse;
 import com.divide.common.CommonUserResponse;
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.PostErrorCode;
-import com.divide.order.dto.response.GetOrdersResponseV1;
-import com.divide.order.dto.response.GetOrdersResponseV2;
-import com.divide.order.dto.response.PostResponseWithStoreName;
+import com.divide.order.dto.response.GetOrdersResponse;
 import com.divide.post.PostRepository;
 import com.divide.post.domain.Post;
 import com.divide.post.domain.PostStatus;
@@ -32,15 +30,14 @@ public class OrderService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
-    @Deprecated
     @Transactional(readOnly = true)
-    public List<GetOrdersResponseV1> findOrdersV1(String userEmail, Integer first) {
+    public List<GetOrdersResponse> findOrders(String userEmail, Integer first) {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         List<Order> orders = orderRepository.findOrders(user, first);
 
         return orders.stream().map(order -> {
             Post post = order.getPost();
-            return new GetOrdersResponseV1(
+            return new GetOrdersResponse(
                     new CommonUserResponse(
                             post.getUser().getId(),
                             post.getUser().getNickname(),
@@ -57,40 +54,7 @@ public class OrderService {
                             post.getPostStatus(),
                             post.getPostImages().get(0).getPostImageUrl()
                     ),
-                    new GetOrdersResponseV1.OrderResponse(
-                            order.getOrderPrice(),
-                            order.getCreatedAt()
-                    )
-            );
-        }).collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public List<GetOrdersResponseV2> findOrdersV2(String userEmail, Integer first) {
-        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
-        List<Order> orders = orderRepository.findOrders(user, first);
-
-        return orders.stream().map(order -> {
-            Post post = order.getPost();
-            return new GetOrdersResponseV2(
-                    new CommonUserResponse(
-                            post.getUser().getId(),
-                            post.getUser().getNickname(),
-                            post.getUser().getProfileImgUrl()
-                    ),
-                    new PostResponseWithStoreName(
-                            post.getPostId(),
-                            post.getDeliveryLocation().getCoordinate().getX(),
-                            post.getDeliveryLocation().getCoordinate().getY(),
-                            post.getTitle(),
-                            post.getTargetTime(),
-                            post.getTargetPrice(),
-                            post.getOrderedPrice(),
-                            post.getPostStatus(),
-                            post.getPostImages().get(0).getPostImageUrl(),
-                            post.getStoreName()
-                    ),
-                    new GetOrdersResponseV2.OrderResponse(
+                    new GetOrdersResponse.OrderResponse(
                             order.getOrderPrice(),
                             order.getCreatedAt()
                     )

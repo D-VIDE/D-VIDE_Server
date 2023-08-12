@@ -2,15 +2,16 @@ package com.divide.order.dto.response;
 
 import com.divide.common.CommonPostResponse;
 import com.divide.common.CommonUserResponse;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @AllArgsConstructor
-public class GetOrdersResponseV2 {
+public class GetOrdersResponse {
     private CommonUserResponse user;
-    private PostResponseWithStoreName post;
+    private CommonPostResponse post;
     private OrderResponse order;
 
     @Getter
