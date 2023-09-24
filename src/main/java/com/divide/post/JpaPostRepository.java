@@ -2,6 +2,7 @@ package com.divide.post;
 
 import com.divide.post.domain.Category;
 import com.divide.post.domain.Post;
+import com.divide.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -62,5 +63,14 @@ public class JpaPostRepository implements PostRepository{
         List<Post> result = em.createQuery("select p from Post p", Post.class)
                 .getResultList();
         return result;
+    }
+
+    @Override
+    public void setNullAllByUser(User user) {
+        em.flush();
+        em.clear();
+        em.createQuery("update Post p set p.user = null where p.user = :user")
+                .setParameter("user", user)
+                .executeUpdate();
     }
 }

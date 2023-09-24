@@ -1,5 +1,6 @@
 package com.divide.review;
 
+import com.divide.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -68,4 +69,11 @@ public class ReviewRepository {
         return reviewLists;
     }
 
+    public void setNullAllByUser(User user) {
+        em.flush();
+        em.clear();
+        em.createQuery("update Review r set r.user = null where r.user = :user")
+                .setParameter("user", user)
+                .executeUpdate();
+    }
 }

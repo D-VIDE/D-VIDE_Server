@@ -2,6 +2,7 @@ package com.divide.follow;
 
 import com.divide.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -9,6 +10,7 @@ import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
@@ -79,5 +81,14 @@ public class FollowRepository {
                 .setParameter("user", user)
                 .getSingleResult()
                 .intValue();
+    }
+
+    public void removeAllByUser(User user) {
+        em.createQuery("delete from Follow f where f.follower = :user")
+                .setParameter("user", user)
+                .executeUpdate();
+        em.createQuery("delete from Follow f where f.followee = :user")
+                .setParameter("user", user)
+                .executeUpdate();
     }
 }

@@ -52,8 +52,8 @@ public class UserController {
         Integer followerCount = followService.getFollowerCount(userDetails.getUsername());
         Integer followingCount = followService.getFollowingCount(userDetails.getUsername());
         CommonBadgeResponse badgeResponse = new CommonBadgeResponse(
-                user.getSelectedBadge().getBadgeName().getKrName(),
-                user.getSelectedBadge().getBadgeName().getDescription());
+                user.getSelectedBadge().get(0).getBadgeName().getKrName(),
+                user.getSelectedBadge().get(0).getBadgeName().getDescription());
 
         return GetUserResponseV1.builder()
                 .email(user.getEmail())
@@ -77,8 +77,8 @@ public class UserController {
         Integer followerCount = followService.getFollowerCount(userDetails.getUsername());
         Integer followingCount = followService.getFollowingCount(userDetails.getUsername());
         CommonBadgeResponse badgeResponse = new CommonBadgeResponse(
-                user.getSelectedBadge().getBadgeName().getKrName(),
-                user.getSelectedBadge().getBadgeName().getDescription());
+                user.getSelectedBadge().get(0).getBadgeName().getKrName(),
+                user.getSelectedBadge().get(0).getBadgeName().getDescription());
 
         Location userLocation = user.getLocation().orElseThrow(() -> new RestApiException(UserErrorCode.LOCATION_NOT_SET));
         CommonLocationResponse locationResponse = new CommonLocationResponse(
@@ -118,8 +118,8 @@ public class UserController {
         Boolean followed = followService.getFollowed(me, otherUser);
 
         CommonBadgeResponse badgeResponse = new CommonBadgeResponse(
-                otherUser.getSelectedBadge().getBadgeName().getKrName(),
-                otherUser.getSelectedBadge().getBadgeName().getDescription());
+                otherUser.getSelectedBadge().get(0).getBadgeName().getKrName(),
+                otherUser.getSelectedBadge().get(0).getBadgeName().getDescription());
         return GetOtherUserResponse.builder()
                 .nickname(otherUser.getNickname())
                 .profileImgUrl(otherUser.getProfileImgUrl())
@@ -200,6 +200,14 @@ public class UserController {
             ) {
         User user = userService.getUserByEmail(userDetails.getUsername());
         userService.updateUserInformation(user, patchUserRequest);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("/v1/user")
+    public ResponseEntity deleteUser(
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        userService.unregister(userDetails.getUsername());
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

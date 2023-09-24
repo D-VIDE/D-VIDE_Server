@@ -2,7 +2,12 @@ package com.divide.user;
 
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.UserErrorCode;
+import com.divide.follow.FollowRepository;
 import com.divide.location.Location;
+import com.divide.order.OrderRepository;
+import com.divide.post.PostRepository;
+import com.divide.review.ReviewLikeRepository;
+import com.divide.review.ReviewRepository;
 import com.divide.user.UserBadge.BadgeName;
 import com.divide.user.dto.request.PatchUserRequest;
 import com.divide.user.dto.request.SignupRequest;
@@ -26,6 +31,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserBadgeRepository userBadgeRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FollowRepository followRepository;
+    private final ReviewLikeRepository reviewLikeRepository;
+    private final PostRepository postRepository;
+    private final ReviewRepository reviewRepository;
+    private final OrderRepository orderRepository;
 
     @Transactional(readOnly = true)
     public User getUserById(Long userId) {
@@ -124,5 +134,18 @@ public class UserService {
         if (patchUserRequest.getProfileImgFile() != null) {
             updateProfileImg(user, patchUserRequest.getProfileImgFile());
         }
+    }
+
+    public void unregister(String userEmail) {
+        User user = this.getUserByEmail(userEmail);
+
+        postRepository.setNullAllByUser(user);
+        orderRepository.setNullAllByUser(user);
+        reviewRepository.setNullAllByUser(user);
+
+        followRepository.removeAllByUser(user);
+        reviewLikeRepository.removeAllByUser(user);
+        user = this.getUserByEmail(userEmail);
+        userRepository.delete(user);
     }
 }

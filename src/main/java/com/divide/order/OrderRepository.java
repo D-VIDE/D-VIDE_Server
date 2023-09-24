@@ -42,4 +42,12 @@ public class OrderRepository {
                 .setParameter("postId", postId)
                 .getResultList();
     }
+
+    public void setNullAllByUser(User user) {
+        em.flush();
+        em.clear();
+        em.createQuery("update Order o set o.user = null where o.user = :user")
+                .setParameter("user", user)
+                .executeUpdate();
+    }
 }

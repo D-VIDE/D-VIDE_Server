@@ -3,7 +3,6 @@ package com.divide.post.domain;
 import com.divide.order.Order;
 import com.divide.user.User;
 import lombok.*;
-import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,6 +12,7 @@ import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.lang.Nullable;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -27,7 +27,7 @@ public class Post {
     private Long postId;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id") //FK
-    @NotNull
+    @Nullable
     private User user;
 
     @NotEmpty

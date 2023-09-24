@@ -17,6 +17,7 @@ import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.lang.Nullable;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -32,7 +33,7 @@ public class Review {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id") //FK
-    @NotNull
+    @Nullable
     private User user;
 
     @ManyToOne(fetch = LAZY)

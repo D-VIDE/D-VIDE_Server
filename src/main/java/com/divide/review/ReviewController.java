@@ -74,7 +74,7 @@ public class ReviewController {
         List<Review> findReviews = reviewService.findReviewsAll(first, longitude, latitude, 0.5);
 
         List<GetReviewsResponse> collect = findReviews.stream()
-                .map( r -> new GetReviewsResponse(r))
+                .map(GetReviewsResponse::new)
                 .collect(toList());
         return new Result(collect);
     }
@@ -96,9 +96,9 @@ public class ReviewController {
 
                     return new GetReviewsResponseV2(
                             new CommonUserResponse(
-                                    user.getId(),
-                                    user.getNickname(),
-                                    user.getProfileImgUrl()
+                                    user != null ? user.getId() : null,
+                                    user != null ? user.getNickname() : null,
+                                    user != null ? user.getProfileImgUrl() : null
                             ),
                             new CommonReviewResponse(
                                     review.getReviewId(),
@@ -133,9 +133,9 @@ public class ReviewController {
 
                     return new GetReviewsResponseV2(
                             new CommonUserResponse(
-                                    user.getId(),
-                                    user.getNickname(),
-                                    user.getProfileImgUrl()
+                                    user != null ? user.getId() : null,
+                                    user != null ? user.getNickname() : null,
+                                    user != null ? user.getProfileImgUrl() : null
                             ),
                             new CommonReviewResponse(
                                     review.getReviewId(),
@@ -193,9 +193,9 @@ public class ReviewController {
 
                     return new GetReviewsResponseV2(
                             new CommonUserResponse(
-                                    user.getId(),
-                                    user.getNickname(),
-                                    user.getProfileImgUrl()
+                                    user != null ? user.getId() : null,
+                                    user != null ? user.getNickname() : null,
+                                    user != null ? user.getProfileImgUrl() : null
                             ),
                             new CommonReviewResponse(
                                     review.getReviewId(),
@@ -226,9 +226,9 @@ public class ReviewController {
 
         GetReviewResponse getReviewResponse = new GetReviewResponse(
                 new CommonUserResponse(
-                        user.getId(),
-                        user.getNickname(),
-                        user.getProfileImgUrl()
+                        user != null ? user.getId() : null,
+                        user != null ? user.getNickname() : null,
+                        user != null ? user.getProfileImgUrl() : null
                 ),
                 new CommonReviewDetailResponse(
                         review.getReviewId(),

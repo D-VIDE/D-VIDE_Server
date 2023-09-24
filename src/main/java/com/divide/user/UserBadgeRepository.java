@@ -27,4 +27,13 @@ public class UserBadgeRepository {
                 .setParameter("badgeName", badgeName)
                 .getSingleResult();
     }
+
+    public void removeAllByUser(User user) {
+        user.updateSelectedBadge(null);
+        em.flush();
+        em.clear();
+        em.createQuery("delete from UserBadge ub where ub.user = :user")
+                .setParameter("user", user)
+                .executeUpdate();
+    }
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import org.springframework.lang.Nullable;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -26,7 +27,7 @@ public class ReviewLike {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
-    @NotNull
+    @Nullable
     private User user;
 
     @Builder

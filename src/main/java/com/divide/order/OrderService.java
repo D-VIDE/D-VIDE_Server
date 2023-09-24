@@ -5,6 +5,7 @@ import com.divide.common.CommonUserResponse;
 import com.divide.exception.RestApiException;
 import com.divide.exception.code.PostErrorCode;
 import com.divide.order.dto.response.GetOrdersResponseV1;
+import com.divide.order.dto.response.GetOrdersResponseV1.OrderResponse;
 import com.divide.order.dto.response.GetOrdersResponseV2;
 import com.divide.order.dto.response.PostResponseWithStoreName;
 import com.divide.post.PostRepository;
@@ -42,9 +43,9 @@ public class OrderService {
             Post post = order.getPost();
             return new GetOrdersResponseV1(
                     new CommonUserResponse(
-                            post.getUser().getId(),
-                            post.getUser().getNickname(),
-                            post.getUser().getProfileImgUrl()
+                            post.getUser() != null ? post.getUser().getId() : null,
+                            post.getUser() != null ? post.getUser().getNickname() : null,
+                            post.getUser() != null ? post.getUser().getProfileImgUrl() : null
                     ),
                     new CommonPostResponse(
                             post.getPostId(),
@@ -57,7 +58,7 @@ public class OrderService {
                             post.getPostStatus(),
                             post.getPostImages().get(0).getPostImageUrl()
                     ),
-                    new GetOrdersResponseV1.OrderResponse(
+                    new OrderResponse(
                             order.getOrderPrice(),
                             order.getCreatedAt()
                     )
@@ -74,9 +75,9 @@ public class OrderService {
             Post post = order.getPost();
             return new GetOrdersResponseV2(
                     new CommonUserResponse(
-                            post.getUser().getId(),
-                            post.getUser().getNickname(),
-                            post.getUser().getProfileImgUrl()
+                            post.getUser() != null ? post.getUser().getId() : null,
+                            post.getUser() != null ? post.getUser().getNickname() : null,
+                            post.getUser() != null ? post.getUser().getProfileImgUrl() : null
                     ),
                     new PostResponseWithStoreName(
                             post.getPostId(),
@@ -125,7 +126,7 @@ public class OrderService {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UsernameNotFoundException(""));
         List<Order> orders = orderRepository.findOrdersByPostId(postId);
 
-        return orders.stream().anyMatch(order -> order.getUser().equals(user));
+        return orders.stream().anyMatch(order -> order.getUser() != null && order.getUser().equals(user));
     }
 
     @Transactional

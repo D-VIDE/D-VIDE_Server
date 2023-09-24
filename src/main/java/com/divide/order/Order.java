@@ -11,6 +11,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.lang.Nullable;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -24,7 +25,7 @@ public class Order {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @NotNull
+    @Nullable
     private User user;
 
     @OneToOne(fetch = FetchType.LAZY)

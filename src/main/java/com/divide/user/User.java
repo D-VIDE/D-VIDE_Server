@@ -2,9 +2,9 @@ package com.divide.user;
 
 import com.divide.fcm.FcmToken;
 import com.divide.location.Location;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cascade;
@@ -13,13 +13,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import org.springframework.lang.Nullable;
 
 @Getter
 @NoArgsConstructor
@@ -44,8 +41,8 @@ public class User {
     private UserRole role;
 
     @NotNull
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private UserBadge selectedBadge;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    private List<UserBadge> selectedBadge;
 
     @NotNull
     @PositiveOrZero
@@ -72,7 +69,7 @@ public class User {
         this.profileImgUrl = profileImgUrl;
         this.nickname = nickname;
         this.role = role;
-        this.selectedBadge = new UserBadge(this, UserBadge.BadgeName.BEGINNER);
+        this.selectedBadge = List.of(new UserBadge(this, UserBadge.BadgeName.BEGINNER));
     }
 
     public void addSavedMoney(int value) {
@@ -80,7 +77,7 @@ public class User {
     }
 
     public void updateSelectedBadge(UserBadge userBadge) {
-        this.selectedBadge = userBadge;
+        this.selectedBadge.set(0, userBadge);
     }
 
     public void updateLocation(Location location) {

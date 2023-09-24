@@ -98,9 +98,9 @@ public class PostController {
                     User user = post.getUser();
                     return new GetPostsResponse(
                             new CommonUserResponse(
-                                    user.getId(),
-                                    user.getNickname(),
-                                    user.getProfileImgUrl()
+                                    user != null ? user.getId() : null,
+                                    user != null ? user.getNickname() : null,
+                                    user != null ? user.getProfileImgUrl() : null
                             ),
                             new CommonPostResponse(
                                     post.getPostId(),
@@ -131,9 +131,9 @@ public class PostController {
         User user = post.getUser();
         GetPostResponseV1 getPostResponseV1 = new GetPostResponseV1(
                 new CommonUserResponse(
-                        user.getId(),
-                        user.getNickname(),
-                        user.getProfileImgUrl()
+                        user != null ? user.getId() : null,
+                        user != null ? user.getNickname() : null,
+                        user != null ? user.getProfileImgUrl() : null
                 ),
                 new CommonPostDetailResponse(
                         post.getPostId(),
@@ -164,12 +164,12 @@ public class PostController {
 
         Boolean ordered = orderService.checkOrdered(userDetails.getUsername(), postId);
 
-        User writtenUser = post.getUser();
+        User user = post.getUser();
         GetPostResponseV2 getPostResponseV2 = new GetPostResponseV2(
                 new CommonUserResponse(
-                        writtenUser.getId(),
-                        writtenUser.getNickname(),
-                        writtenUser.getProfileImgUrl()
+                        user != null ? user.getId() : null,
+                        user != null ? user.getNickname() : null,
+                        user != null ? user.getProfileImgUrl() : null
                 ),
                 new CommonPostDetailResponse(
                         post.getPostId(),

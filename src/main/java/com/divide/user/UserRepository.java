@@ -36,4 +36,8 @@ public class UserRepository {
         User user = em.find(User.class, id); //postId는 PK
         return user;
     }
+
+    public void delete(User user) {
+        em.remove(user);
+    }
 }

@@ -1,5 +1,6 @@
 package com.divide.review;
 
+import com.divide.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -33,9 +34,13 @@ public class ReviewLikeRepository {
                     .getSingleResult());
         }catch (NoResultException e){
             reviewLike = Optional.empty();
-        }finally {
-            return reviewLike;
         }
+        return reviewLike;
     }
 
+    public void removeAllByUser(User user) {
+        em.createQuery("delete from ReviewLike rl where rl.user = :user")
+                .setParameter("user", user)
+                .executeUpdate();
+    }
 }
